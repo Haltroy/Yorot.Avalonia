@@ -1,0 +1,54 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+            mc:Ignorable="d"
+		d:DesignWidth="800"
+		d:DesignHeight="450"
+			 VerticalAlignment="Stretch"
+			 HorizontalAlignment="Stretch"
+			 VerticalContentAlignment="Stretch"
+			 HorizontalContentAlignment="Stretch"
+             x:Class="Yorot_Avalonia.Views.TabWindow">
+	<Grid Name="Content">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="40" />
+			<RowDefinition Height="*" />
+		</Grid.RowDefinitions>
+		<StackPanel Name="stackPanel1" Orientation="Horizontal" Grid.Row="0">
+			<Button Click="goback" Name="goback" Background="{Binding BackColor}" Foreground="{Binding ForeColor}">
+				<Panel>
+					<Image Source="/Assets/back-b.png" IsVisible="{Binding !IsBackDark}" Width="36" Height="36" VerticalAlignment="Center" HorizontalAlignment="Center" />
+					<Image Source="/Assets/back-w.png" IsVisible="{Binding IsBackDark}" Width="36" Height="36" VerticalAlignment="Center" HorizontalAlignment="Center" />
+				</Panel>
+			</Button>
+			<Button Click="reload" Name="reload" Background="{Binding BackColor}" Foreground="{Binding ForeColor}">
+				<Panel>
+					<Image Source="/Assets/refresh-b.png" IsVisible="{Binding !IsBackDark}" Width="36" Height="36" VerticalAlignment="Center" HorizontalAlignment="Center" />
+					<Image Source="/Assets/refresh-w.png" IsVisible="{Binding IsBackDark}" Width="36" Height="36" VerticalAlignment="Center" HorizontalAlignment="Center" />
+				</Panel>
+			</Button>
+			<Button Click="stop" Name="stop" Background="{Binding BackColor}" Foreground="{Binding ForeColor}">
+				<Panel>
+					<Image Source="/Assets/stop-b.png" IsVisible="{Binding !IsBackDark}" Width="36" Height="36" VerticalAlignment="Center" HorizontalAlignment="Center" />
+					<Image Source="/Assets/stop-w.png" IsVisible="{Binding IsBackDark}" Width="36" Height="36" VerticalAlignment="Center" HorizontalAlignment="Center" />
+				</Panel>
+			</Button>
+			<Button Click="gohome" Background="{Binding BackColor}" Foreground="{Binding ForeColor}">
+				<Panel>
+					<Image Source="/Assets/home-b.png" IsVisible="{Binding !IsBackDark}" Width="36" Height="36" VerticalAlignment="Center" HorizontalAlignment="Center" />
+					<Image Source="/Assets/home-w.png" IsVisible="{Binding IsBackDark}" Width="36" Height="36" VerticalAlignment="Center" HorizontalAlignment="Center" />
+				</Panel>
+			</Button>
+			<Button Click="goforward" Name="goforward" Background="{Binding BackColor}" Foreground="{Binding ForeColor}">
+				<Panel>
+					<Image Source="/Assets/forward-b.png" IsVisible="{Binding !IsBackDark}" Width="36" Height="36" VerticalAlignment="Center" HorizontalAlignment="Center" />
+					<Image Source="/Assets/forward-w.png" IsVisible="{Binding IsBackDark}" Width="36" Height="36" VerticalAlignment="Center" HorizontalAlignment="Center" />
+				</Panel>
+			</Button>
+			<TextBox Name="tbUrl" KeyDown="urlkeydown"  Background="{Binding BackColor}" Foreground="{Binding ForeColor}"  HorizontalAlignment="Stretch">Test.com</TextBox>
+			<Button Click="gobutton" Background="{Binding BackColor}" Foreground="{Binding ForeColor}" HorizontalAlignment="Right">Go</Button>
+		</StackPanel>
+		<DockPanel Name="cefpanel" Grid.Row="1" />
+	</Grid>
+</UserControl>

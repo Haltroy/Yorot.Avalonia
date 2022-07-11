@@ -1,0 +1,43 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:Yorot_Avalonia.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:uc="clr-namespace:Yorot;assembly=Yorot"
+        mc:Ignorable="d"
+		d:DesignWidth="800"
+		d:DesignHeight="450"
+		Width="800" Height="450"
+        x:Class="Yorot_Avalonia.Views.MainWindow"
+        Icon="/Assets/Yorot.ico"
+        Title="Yorot"
+		KeyDown="keyDown"
+		Background="{Binding BackColor}">
+
+	<Design.DataContext>
+		<vm:MainWindowViewModel />
+	</Design.DataContext>
+
+	<StackPanel Name="frmMain" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Width="{Binding $parent.Width}" Height="{Binding $parent.Height}">
+		<Grid Name="sidebarGrid" Background="{Binding BackColor}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Width="{Binding $parent.Width}" Height="{Binding $parent.Height}">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="Auto" />
+				<ColumnDefinition Width="5" />
+				<ColumnDefinition MinWidth="{Binding $parent.Width}" Width="*" />
+			</Grid.ColumnDefinitions>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="*" />
+			</Grid.RowDefinitions>
+			<DockPanel Name="Sidebar" Grid.Row="0" Background="{Binding BackColor2}" Grid.Column="0" Width="55" MinWidth="55" Height="{Binding $parent.Height}">
+				<StackPanel DockPanel.Dock="Right" MinWidth="{Binding $parent.MinWidth}">
+					<Image MaxWidth="50" MaxHeight="50" Source="/Assets/Yorot.png" />
+				</StackPanel>
+				<WrapPanel Name="AppGrid" Background="{Binding BackColor3}">
+				</WrapPanel>
+			</DockPanel>
+			<Panel Grid.Row="0"  Name="SidebarSplitter" Background="{Binding OverlayColor}" PointerMoved="sidebarMove" Cursor="SizeWestEast" PointerReleased="sidebarRelease" PointerPressed="sidebarPressed" Grid.Column="1" MinWidth="5" />
+			<TabControl Grid.Row="0" Foreground="{Binding ForeColor}" Name="Tabs" Grid.Column="2">
+			</TabControl>
+		</Grid>
+	</StackPanel>
+</Window>

@@ -1,0 +1,179 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <Authors>haltroy</Authors>
+	<Version>1.0.0.0</Version>
+	  <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+	<AssemblyName>Yorot</AssemblyName>
+	<ApplicationIcon>Assets\Yorot.ico</ApplicationIcon>
+	<PackageIcon>Yorot.png</PackageIcon>
+  </PropertyGroup>
+	<ItemGroup Condition="'$(RuntimeIdentifier)'=='linux-x64'">
+		<None Update="cef_linux64\*">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="cef_linux64\locales\*">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(RuntimeIdentifier)'=='linux-arm'">
+		<None Update="cef_linuxarm\*">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="cef_linuxarm\locales\*">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(RuntimeIdentifier)'=='linux-arm64'">
+		<None Update="cef_linuxarm64\*">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="cef_linuxarm64\locales\*">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(RuntimeIdentifier)'=='win-x64'">
+		<None Update="cef_windows64\*">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="cef_win64\locales\*">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(RuntimeIdentifier)'=='win-x86'">
+		<None Update="cef_windows32\*">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="cef_windows32\locales\*">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(RuntimeIdentifier)'=='win-arm'">
+		<None Update="cef_windowsarm\*">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="cef_windowsarm\locales\*">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(RuntimeIdentifier)'=='win-arm64'">
+		<None Update="cef_windowsarm64\*">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="cef_windowsarm64\locales\*">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+  <ItemGroup>
+    <Folder Include="Models\" />
+    <AvaloniaResource Include="Assets\**" />
+    <AvaloniaResource Include="Assets\addon-settings.png" />
+    <AvaloniaResource Include="Assets\back-b.png" />
+    <AvaloniaResource Include="Assets\back-w.png" />
+    <AvaloniaResource Include="Assets\calc.png" />
+    <AvaloniaResource Include="Assets\calendar.png" />
+    <AvaloniaResource Include="Assets\close-w.png" />
+    <AvaloniaResource Include="Assets\close.png" />
+    <AvaloniaResource Include="Assets\CloseHover.png" />
+    <AvaloniaResource Include="Assets\colman.png" />
+    <AvaloniaResource Include="Assets\console.png" />
+    <AvaloniaResource Include="Assets\customization.png" />
+    <AvaloniaResource Include="Assets\default-pofile-pic.png" />
+    <AvaloniaResource Include="Assets\downloads.png" />
+    <AvaloniaResource Include="Assets\ext-b.png" />
+    <AvaloniaResource Include="Assets\ext-w.png" />
+    <AvaloniaResource Include="Assets\faved-b.png" />
+    <AvaloniaResource Include="Assets\faved-w.png" />
+    <AvaloniaResource Include="Assets\favorite-b.png" />
+    <AvaloniaResource Include="Assets\favorite-w.png" />
+    <AvaloniaResource Include="Assets\fileman.png" />
+    <AvaloniaResource Include="Assets\forward-b.png" />
+    <AvaloniaResource Include="Assets\forward-w.png" />
+    <AvaloniaResource Include="Assets\general-settings.png" />
+    <AvaloniaResource Include="Assets\globe_b.png" />
+    <AvaloniaResource Include="Assets\globe_w.png" />
+    <AvaloniaResource Include="Assets\hamburger-w.png" />
+    <AvaloniaResource Include="Assets\hamburger.png" />
+    <AvaloniaResource Include="Assets\home-b.png" />
+    <AvaloniaResource Include="Assets\home-w.png" />
+    <AvaloniaResource Include="Assets\incognito-b.png" />
+    <AvaloniaResource Include="Assets\incognito-w.png" />
+    <AvaloniaResource Include="Assets\kopad.png" />
+    <AvaloniaResource Include="Assets\mute-w.png" />
+    <AvaloniaResource Include="Assets\mute.png" />
+    <AvaloniaResource Include="Assets\notepad.png" />
+    <AvaloniaResource Include="Assets\pin-b.png" />
+    <AvaloniaResource Include="Assets\pin-w.png" />
+    <AvaloniaResource Include="Assets\profiles.png" />
+    <AvaloniaResource Include="Assets\refresh-b.png" />
+    <AvaloniaResource Include="Assets\refresh-w.png" />
+    <AvaloniaResource Include="Assets\safe-b.png" />
+    <AvaloniaResource Include="Assets\safe-w.png" />
+    <AvaloniaResource Include="Assets\security-settings.png" />
+    <AvaloniaResource Include="Assets\Settings.png" />
+    <AvaloniaResource Include="Assets\spacepass.png" />
+    <AvaloniaResource Include="Assets\speaker-w.png" />
+    <AvaloniaResource Include="Assets\speaker.png" />
+    <AvaloniaResource Include="Assets\stop-b.png" />
+    <AvaloniaResource Include="Assets\stop-w.png" />
+    <AvaloniaResource Include="Assets\store.png" />
+    <AvaloniaResource Include="Assets\trash-w.png" />
+    <AvaloniaResource Include="Assets\trash.png" />
+    <AvaloniaResource Include="Assets\unmute.png" />
+    <AvaloniaResource Include="Assets\unsafe-b.png" />
+    <AvaloniaResource Include="Assets\unsafe-w.png" />
+    <AvaloniaResource Include="Assets\update_and_about.png" />
+    <AvaloniaResource Include="Assets\YorotDark.png" />
+    <AvaloniaResource Include="Assets\YorotDeepBlue.png" />
+    <AvaloniaResource Include="Assets\YorotLight.png" />
+    <AvaloniaResource Include="Assets\YorotRazor.png" />
+    <AvaloniaResource Include="Assets\YorotShadow.png" />
+    <AvaloniaResource Include="Assets\YorotStone.png" />
+    <AvaloniaResource Include="Assets\Yorot.png" />
+    <AvaloniaResource Include="Assets\Yorot.ico" />
+    <None Remove=".gitignore" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Assets\Yorot.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="0.10.16" />
+    <PackageReference Include="Avalonia.Desktop" Version="0.10.16" />
+    <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
+    <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="0.10.16" />
+    <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.16" />
+    <PackageReference Include="CefNet" Version="103.0.22181.155" />
+    <PackageReference Include="CefNet.Avalonia" Version="103.0.22181.155" />
+    <PackageReference Include="System.Resources.Extensions" Version="6.0.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Yorot.Standart\Yorot.Standart.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Assets\Yorot.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
+</Project>
