@@ -4,3 +4,6 @@
 [submodule "src/YorotApps"]
 	path = src/YorotApps
 	url = https://github.com/haltroy-yorot/YorotApps
+[submodule "src/YorotAppDesigner"]
+	path = src/YorotAppDesigner
+	url = https://github.com/Haltroy/YorotAppDesigner.git
