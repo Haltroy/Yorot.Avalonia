@@ -44,7 +44,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YStore", "src\YorotApps\src
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YTerm", "src\YorotApps\src\YTerm\YTerm.csproj", "{279CD6DA-37FD-46AA-8640-6E9B6C97FF77}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YorotAppDesigner", "src\YorotApps\src\YorotAppDesigner\YorotAppDesigner.csproj", "{358E44BF-F51F-4794-8D61-68A7FF23BF16}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YorotAppDesigner", "src\YorotAppDesigner\YorotAppDesigner.csproj", "{358E44BF-F51F-4794-8D61-68A7FF23BF16}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -316,7 +316,6 @@ Global
 		{50FB8474-9EC4-48CD-AFE4-5AC62DE74943} = {C6BF1A09-42A8-4C9B-8F71-DE8B66FF4E44}
 		{CAE39E1B-4EFD-4E03-81D9-29E764BB6BB1} = {C6BF1A09-42A8-4C9B-8F71-DE8B66FF4E44}
 		{279CD6DA-37FD-46AA-8640-6E9B6C97FF77} = {C6BF1A09-42A8-4C9B-8F71-DE8B66FF4E44}
-		{358E44BF-F51F-4794-8D61-68A7FF23BF16} = {C6BF1A09-42A8-4C9B-8F71-DE8B66FF4E44}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {02B1BCF6-A6B8-49E2-B338-70028C854DC5}

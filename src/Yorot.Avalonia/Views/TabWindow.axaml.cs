@@ -1,6 +1,10 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
+using System;
+using Xilium.CefGlue;
+using Xilium.CefGlue.Avalonia;
+using Yorot.Handlers;
 
 namespace Yorot_Avalonia.Views
 {
@@ -11,8 +15,16 @@ namespace Yorot_Avalonia.Views
             InitializeComponent();
         }
 
+        public TabWindow(MainWindow window) : this()
+        {
+            mainWindow = window;
+        }
+
+        private MainWindow mainWindow;
+        private AvaloniaCefBrowser browser;
+
         private Grid? Content;
-        private TextBox? textbox;
+        private TextBox? tbUrl;
         private System.Reactive.Subjects.Subject<bool> IsNavigated;
         private System.Reactive.Subjects.Subject<bool> IsNavigating;
         private System.Reactive.Subjects.Subject<bool> CanGoBack;
@@ -22,8 +34,8 @@ namespace Yorot_Avalonia.Views
         {
             AvaloniaXamlLoader.Load(this);
             Content = this.FindControl<Grid>("Content");
-            var stackPanel1 = Content.FindControl<StackPanel>("stackPanel1");
-            textbox = stackPanel1.FindControl<TextBox>("tbUrl");
+            var stackPanel1 = Content.FindControl<DockPanel>("dockPanel1");
+            tbUrl = stackPanel1.FindControl<TextBox>("tbUrl");
             IsNavigating = new System.Reactive.Subjects.Subject<bool>();
             IsNavigated = new System.Reactive.Subjects.Subject<bool>();
             CanGoBack = new System.Reactive.Subjects.Subject<bool>();
@@ -47,46 +59,44 @@ namespace Yorot_Avalonia.Views
 
             DockPanel dockPanel = Content.FindControl<DockPanel>("cefpanel");
 
-            Handlers.YorotWebView webView = new Handlers.YorotWebView(this)
+            CefBrowserSettings cefBrowserSettings = new CefBrowserSettings();
+
+            var browser = new AvaloniaCefBrowser()
             {
-                Background = Avalonia.Media.Brush.Parse("#FFFFFF"),
-                InitialUrl = "https://google.com", // TODO: Change this to the user's homepage when you are done with schemes (or something like SchemeHandler from CefSharp).
-                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch,
-                IsVisible = true,
+                Address = "https://google.com",
+                DisplayHandler = new YorotDisplayHandler(this),
+                RequestHandler = new YorotRequestHandler(this),
             };
-            webView.LoadError += WebView1_LoadError;
-            webView.Navigated += WebView_Navigated;
-            webView.Navigating += WebView1_Navigating;
-            webView.DocumentTitleChanged += WebView_DocumentTitleChanged;
-            dockPanel.Children.Add(webView);
-            webView.BrowserCreated += WebView_BrowserCreated;
-            webView1 = webView;
-        }
 
-        private void WebView1_LoadError(object? sender, CefNet.LoadErrorEventArgs e)
-        {
-            //webView1.Navigate("yorot://error");
-        }
+            dockPanel.Children.Add(browser);
 
-        private void WebView1_Navigating(object? sender, CefNet.BeforeBrowseEventArgs e)
-        {
-            IsNavigated.OnNext(false);
-            IsNavigating.OnNext(true);
-        }
+            //wvControl1 = Content.FindControl<WebViewControl.WebView>("webView1");
 
-        private Handlers.YorotWebView webView1;
+            //wvControl1.AllowDeveloperTools = true;
 
-        private void WebView_Navigated(object? sender, CefNet.NavigatedEventArgs e)
-        {
-            IsNavigated.OnNext(true);
-            IsNavigating.OnNext(false);
-            if (textbox != null)
-            {
-                CanGoBack.OnNext(webView1.CanGoBack);
-                CanGoForward.OnNext(webView1.CanGoForward);
-                textbox.Text = e.Url;
-            }
+            //wvControl1.BeforeNavigate += WvControl1_BeforeNavigate;
+
+            //wvControl1.TitleChanged += WvControl1_TitleChanged;
+
+            //wvControl1.LoadFailed += WvControl1_LoadFailed;
+
+            //wvControl1.Navigated += WvControl1_Navigated;
+
+            //Handlers.YorotWebView webView = new Handlers.YorotWebView(this)
+            //{
+            //    Background = Avalonia.Media.Brush.Parse("#FFFFFF"),
+            //    InitialUrl = "https://google.com", // TODO: Change this to the user's homepage when you are done with schemes (or something like SchemeHandler from CefSharp).
+            //    VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
+            //    HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch,
+            //    IsVisible = true,
+            //};
+            //webView.LoadError += WebView1_LoadError;
+            //webView.Navigated += WebView_Navigated;
+            //webView.Navigating += WebView1_Navigating;
+            //webView.DocumentTitleChanged += WebView_DocumentTitleChanged;
+            //dockPanel.Children.Add(webView);
+            //webView.BrowserCreated += WebView_BrowserCreated;
+            //webView1 = webView;
         }
 
         private void urlkeydown(object? sender, Avalonia.Input.KeyEventArgs e)
@@ -99,57 +109,51 @@ namespace Yorot_Avalonia.Views
 
         private void goback(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
-            if (sender != null && webView1 != null && webView1.CanGoBack)
+            if (sender != null && browser != null && browser.CanGoBack)
             {
-                webView1.GoBack();
             }
         }
 
         private void goforward(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
-            if (sender != null && webView1 != null && webView1.CanGoForward)
+            if (sender != null && browser != null && browser.CanGoForward)
             {
-                webView1.GoForward();
             }
         }
 
         private void gohome(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
-            if (sender != null && webView1 != null && webView1.CanGoForward)
+            if (sender != null && browser != null && browser.CanGoForward)
             {
-                webView1.Navigate(YorotGlobal.Main.CurrentSettings.HomePage);
+                browser.Address = YorotGlobal.Main.CurrentSettings.HomePage;
             }
         }
 
         private void reload(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
-            webView1.Reload();
+            browser.Reload();
         }
 
         private void stop(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
-            webView1.Stop();
         }
 
         private void gobutton(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
-            webView1.Navigate(textbox.Text);
+            //webView1.Navigate(tbUrl.Text);
+            //wvControl1.LoadUrl(tbUrl.Text);
         }
 
-        private void WebView_DocumentTitleChanged(object? sender, CefNet.DocumentTitleChangedEventArgs e)
+        internal void ChangeAddress(string url, bool load = false)
         {
-            if (sender != null && sender is Handlers.YorotWebView webView && this.Parent is DockPanel dockPanel && dockPanel.Parent is TabItem tabItem)
+            Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(new System.Action(() =>
             {
-                tabItem.Header = e.Title + " - Yorot";
-            }
-        }
-
-        private void WebView_BrowserCreated(object? sender, System.EventArgs e)
-        {
-            if (sender != null && sender is Handlers.YorotWebView webView)
-            {
-                webView.Navigate("https://google.com");
-            }
+                tbUrl.Text = url;
+                if (load)
+                {
+                    browser.Address = url;
+                }
+            }), Avalonia.Threading.DispatcherPriority.Normal);
         }
     }
 }

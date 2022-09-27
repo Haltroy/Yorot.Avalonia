@@ -31,10 +31,19 @@ namespace Yorot_Avalonia.Views
             AppGrid = Sidebar.FindControl<WrapPanel>("AppGrid");
             SidebarSplitter = sidebarGrid.FindControl<Panel>("SidebarSplitter");
             tabs = sidebarGrid.FindControl<TabControl>("Tabs");
+            tabs.SelectionChanged += Tabs_SelectionChanged;
             Sidebar.Background = Avalonia.Media.Brush.Parse("#ebebeb");
             SidebarSplitter.Background = Avalonia.Media.Brush.Parse("#0080ff");
             NewTab();
             this.PropertyChanged += MainWindow_PropertyChanged;
+        }
+
+        public void Tabs_SelectionChanged(object? sender, SelectionChangedEventArgs e)
+        {
+            if (tabs.SelectedItem is TabItem item)
+            {
+                this.Title = item.Header + " - Yorot";
+            }
         }
 
         public void NewTab()
@@ -43,8 +52,9 @@ namespace Yorot_Avalonia.Views
             TabItem item = new TabItem() { Header = "test" };
             item.Bind(ForegroundProperty, tabs.GetObservable(ForegroundProperty));
             DockPanel panel = new();
+            panel.Margin = new Thickness(0, 0, 55, 10);
             item.Content = panel;
-            var tabform = new TabWindow() { VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch, HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch };
+            var tabform = new TabWindow(this) { VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch, HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch };
             //tabform.Bind(WidthProperty, panel.GetBindingObservable(WidthProperty));
             // TODO: Fix this
             //tabform.Bind(HeightProperty, panel.GetBindingObservable(HeightProperty));
