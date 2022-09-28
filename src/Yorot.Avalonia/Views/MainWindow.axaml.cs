@@ -1,7 +1,10 @@
 using Avalonia;
+using Avalonia.Collections;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Markup.Xaml;
+using DynamicData;
+using System.Collections.Generic;
 
 namespace Yorot_Avalonia.Views
 {
@@ -31,10 +34,16 @@ namespace Yorot_Avalonia.Views
             AppGrid = Sidebar.FindControl<WrapPanel>("AppGrid");
             SidebarSplitter = sidebarGrid.FindControl<Panel>("SidebarSplitter");
             tabs = sidebarGrid.FindControl<TabControl>("Tabs");
+            if (tabs.Items is AvaloniaList<object> list)
+            {
+                list.Add(new TabItem() { Header = "+" });
+            }
+
             tabs.SelectionChanged += Tabs_SelectionChanged;
+            Tabs_SelectionChanged(this, null);
             Sidebar.Background = Avalonia.Media.Brush.Parse("#ebebeb");
             SidebarSplitter.Background = Avalonia.Media.Brush.Parse("#0080ff");
-            NewTab();
+
             this.PropertyChanged += MainWindow_PropertyChanged;
         }
 
@@ -44,22 +53,30 @@ namespace Yorot_Avalonia.Views
             {
                 this.Title = item.Header + " - Yorot";
             }
+            if (tabs.SelectedIndex == tabs.ItemCount - 1)
+            {
+                NewTab(switchTo: true);
+            }
         }
 
-        public void NewTab()
+        public void NewTab(string url = "yorot://newtab", int index = -1, bool switchTo = false)
         {
             if (tabs is null) { return; }
-            TabItem item = new TabItem() { Header = "test" };
+            TabItem item = new TabItem() { Header = "New Tab" };
             item.Bind(ForegroundProperty, tabs.GetObservable(ForegroundProperty));
             DockPanel panel = new();
             panel.Margin = new Thickness(0, 0, 55, 10);
             item.Content = panel;
-            var tabform = new TabWindow(this) { VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch, HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch };
-            //tabform.Bind(WidthProperty, panel.GetBindingObservable(WidthProperty));
-            // TODO: Fix this
-            //tabform.Bind(HeightProperty, panel.GetBindingObservable(HeightProperty));
+            var tabform = new TabWindow(this, url) { VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch, HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch };
             panel.Children.Add(tabform);
-            tabs.Items = new[] { item };
+            if (tabs.Items is AvaloniaList<object> itemList)
+            {
+                itemList.Insert(index == -1 ? (itemList.Count > 1 ? itemList.Count - 1 : 0) : index, item);
+                if (switchTo)
+                {
+                    tabs.SelectedItem = item;
+                }
+            }
         }
 
         private void MainWindow_PropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)

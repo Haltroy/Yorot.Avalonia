@@ -15,6 +15,10 @@ namespace Yorot.Handlers
     {
         protected override CefResourceHandler Create(CefBrowser browser, CefFrame frame, string schemeName, CefRequest request)
         {
+            if (schemeName == "yorot")
+            {
+                throw new NotImplementedException(); // TODO
+            }
             return new DefaultResourceHandler();
         }
     }

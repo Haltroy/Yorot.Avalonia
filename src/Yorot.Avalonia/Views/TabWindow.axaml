@@ -56,8 +56,13 @@
 						<Image Source="/Assets/forward-w.png" IsVisible="{Binding IsBackDark}" Width="36" Height="36" VerticalAlignment="Center" HorizontalAlignment="Center" />
 					</Panel>
 				</Button>
-				<TextBox Name="tbUrl"  Grid.Column="5" Width="{Binding $parent.Width}" KeyDown="urlkeydown" Background="{Binding BackColor}" Foreground="{Binding ForeColor}" >Test.com</TextBox>
-				<Button DockPanel.Dock="Right" Grid.Column="6" Click="gobutton" Background="{Binding BackColor}" Foreground="{Binding ForeColor}" HorizontalAlignment="Right">Go</Button>
+				<TextBox Name="tbUrl"  Grid.Column="5" Width="{Binding $parent.Width}" KeyDown="urlkeydown" Background="{Binding BackColor}" Foreground="{Binding ForeColor}" ></TextBox>
+				<Button DockPanel.Dock="Right" Grid.Column="6" Click="gobutton" Background="{Binding BackColor}" Foreground="{Binding ForeColor}" HorizontalAlignment="Right">
+					<Panel>
+						<Image Source="/Assets/forward-b.png" IsVisible="{Binding !IsBackDark}" Width="36" Height="36" VerticalAlignment="Center" HorizontalAlignment="Center" />
+						<Image Source="/Assets/forward-w.png" IsVisible="{Binding IsBackDark}" Width="36" Height="36" VerticalAlignment="Center" HorizontalAlignment="Center" />
+					</Panel>
+				</Button>
 			</Grid>
 		</DockPanel>
 		<DockPanel Name="cefpanel" Grid.Row="1" />

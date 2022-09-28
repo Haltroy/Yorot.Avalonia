@@ -15,9 +15,19 @@ namespace Yorot_Avalonia.Views
             InitializeComponent();
         }
 
-        public TabWindow(MainWindow window) : this()
+        private string _startUrl = "https:/google.com"; // TODO: Change this
+
+        public TabWindow(string url = "yorot://newtab")
         {
+            _startUrl = url;
+            InitializeComponent();
+        }
+
+        public TabWindow(MainWindow window, string url = "yorot://newtab")
+        {
+            _startUrl = url;
             mainWindow = window;
+            InitializeComponent();
         }
 
         private MainWindow mainWindow;
@@ -63,7 +73,7 @@ namespace Yorot_Avalonia.Views
 
             var browser = new AvaloniaCefBrowser()
             {
-                Address = "https://google.com",
+                Address = _startUrl,
                 DisplayHandler = new YorotDisplayHandler(this),
                 RequestHandler = new YorotRequestHandler(this),
             };
@@ -152,6 +162,21 @@ namespace Yorot_Avalonia.Views
                 if (load)
                 {
                     browser.Address = url;
+                }
+            }), Avalonia.Threading.DispatcherPriority.Normal);
+        }
+
+        internal void ChangeTitle(string text)
+        {
+            Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(new System.Action(() =>
+            {
+                if (Parent is DockPanel dockPanel && dockPanel.Parent is TabItem tabItem)
+                {
+                    tabItem.Header = text;
+                    if (tabItem.Parent is TabControl tabControl && tabControl.SelectedItem == tabItem && mainWindow != null)
+                    {
+                        mainWindow.Tabs_SelectionChanged(this, null);
+                    }
                 }
             }), Avalonia.Threading.DispatcherPriority.Normal);
         }

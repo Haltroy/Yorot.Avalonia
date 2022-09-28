@@ -64,6 +64,7 @@ namespace Yorot.Handlers
 
         protected override void OnTitleChange(CefBrowser browser, string title)
         {
+            if (TabWindow != null) { TabWindow.ChangeTitle(title); }
             base.OnTitleChange(browser, title);
         }
 
