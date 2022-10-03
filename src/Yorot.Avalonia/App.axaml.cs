@@ -15,7 +15,7 @@ namespace Yorot_Avalonia
 
         public override void OnFrameworkInitializationCompleted()
         {
-            if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop && YorotGlobal.Main != null)
             {
                 desktop.MainWindow = new MainWindow
                 {

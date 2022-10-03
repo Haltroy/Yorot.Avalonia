@@ -4,6 +4,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 		xmlns:uc="clr-namespace:Yorot;assembly=Yorot"
+		xmlns:ui="using:FluentAvalonia.UI.Controls"
+		xmlns:uip="using:FluentAvalonia.UI.Controls.Primitives"
         mc:Ignorable="d"
 		d:DesignWidth="800"
 		d:DesignHeight="450"
@@ -26,7 +28,7 @@
 				<ColumnDefinition MinWidth="{Binding $parent.Width}" Width="*" />
 			</Grid.ColumnDefinitions>
 			<Grid.RowDefinitions>
-				<RowDefinition Height="*" />
+				<RowDefinition MinHeight="{Binding $parent.Height}" Height="*" />
 			</Grid.RowDefinitions>
 			<DockPanel Name="Sidebar" Grid.Row="0" Background="{Binding BackColor2}" Grid.Column="0" Width="55" MinWidth="55" Height="{Binding $parent.Height}">
 				<StackPanel DockPanel.Dock="Right" MinWidth="{Binding $parent.MinWidth}">
@@ -36,8 +38,8 @@
 				</WrapPanel>
 			</DockPanel>
 			<Panel Grid.Row="0"  Name="SidebarSplitter" Background="{Binding OverlayColor}" PointerMoved="sidebarMove" Cursor="SizeWestEast" PointerReleased="sidebarRelease" PointerPressed="sidebarPressed" Grid.Column="1" MinWidth="5" />
-			<TabControl Grid.Row="0" Foreground="{Binding ForeColor}" Name="Tabs" Grid.Column="2">
-			</TabControl>
+			<ui:TabView Grid.Row="0" VerticalAlignment="Stretch" Foreground="{Binding ForeColor}" Grid.Column="2" Name="Tabs">
+			</ui:TabView>
 		</Grid>
 	</StackPanel>
 </Window>

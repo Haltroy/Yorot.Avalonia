@@ -1,16 +1,9 @@
 ﻿using Avalonia;
-using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.ReactiveUI;
-using Xilium.CefGlue.Common;
-using Xilium.CefGlue.Common.Shared;
+using CefNet;
 using HTAlt;
 using System;
 using System.Linq;
-using Yorot;
-using Xilium.CefGlue;
-using Yorot.Handlers;
-using System.Reflection;
-using Xilium.CefGlue.Common.Handlers;
 
 namespace Yorot_Avalonia
 {
@@ -31,33 +24,7 @@ namespace Yorot_Avalonia
                 YorotGlobal.Main.Wolfhook.SendWolf(string.Join(Environment.NewLine, args));
             }
 
-            AppBuilder.Configure<App>()
-                      .UsePlatformDetect()
-                      .With(new Win32PlatformOptions
-                      {
-                          UseWindowsUIComposition = false
-                      })
-                      .AfterSetup(_ => CefRuntimeLoader.Initialize(new CefSettings()
-                      {
-                          CachePath = YorotGlobal.Main.Profiles.Current.CacheLoc,
-                          LocalesDirPath = YorotGlobal.Main.EngineLocaleFolder,
-                          UserAgent = YorotGlobal.Main.GetUserAgent("Chromium", Assembly.GetAssembly(typeof(CefRuntimeLoader)).GetName().Version.ToString()),
-#if WINDOWLESS
-                          WindowlessRenderingEnabled = true
-#else
-                          WindowlessRenderingEnabled = false
-#endif
-                      },
-                      customSchemes: new[] {
-                        new CustomScheme()
-                        {
-                            SchemeName = "yorot",
-                            SchemeHandlerFactory = new YorotSchemeHandlerFactory()
-                        }
-                      }))
-                      .StartWithClassicDesktopLifetime(args);
-
-            //BuildAvaloniaApp().With(new AvaloniaNativePlatformOptions { UseGpu = !PlatformInfo.IsMacOS }).StartWithCefNetApplicationLifetime(args); ;
+            BuildAvaloniaApp().With(new AvaloniaNativePlatformOptions { UseGpu = !PlatformInfo.IsMacOS }).StartWithCefNetApplicationLifetime(args); ;
         }
 
         // Avalonia configuration, don't remove; also used by visual designer.

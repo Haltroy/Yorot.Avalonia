@@ -121,6 +121,41 @@ namespace Yorot_Avalonia.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &lt;head&gt;
+        ///  &lt;title&gt;Yorot&lt;/title&gt;
+        ///  &lt;style&gt;
+        ///    html,
+        ///    body {
+        ///      height: 100%;
+        ///      background: #660000;
+        ///      color: white;
+        ///      font: Ubuntu;
+        ///    }
+        ///    .parent {
+        ///      height: 200px;
+        ///      background: #660000;
+        ///      display: flex;
+        ///      align-items: center;
+        ///      justify-content: center;
+        ///    }
+        ///  &lt;/style&gt;
+        ///&lt;/head&gt;
+        ///&lt;body class=&quot;parent&quot;&gt;
+        ///  &lt;div class=&quot;content&quot;&gt;
+        ///    &lt;h1 style=&quot;text-align: center&quot;&gt;§TITLE§&lt;/h1&gt;
+        ///    &lt;h3&gt;§DESC§&lt;/h3&gt;
+        ///    &lt;a&gt;§CERT§&lt;/a&gt;
+        ///  &lt;/div&gt;
+        ///&lt;/body&gt;
+        ///.
+        /// </summary>
+        internal static string certerror {
+            get {
+                return ResourceManager.GetString("certerror", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap close {
@@ -245,6 +280,41 @@ namespace Yorot_Avalonia.Properties {
         internal static string English_US {
             get {
                 return ResourceManager.GetString("English_US", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;head&gt;
+        ///  &lt;meta charset=&quot;utf-8&quot; /&gt;
+        ///  &lt;title&gt;§TITLE§&lt;/title&gt;
+        ///  &lt;style&gt;
+        ///    .center {
+        ///        margin: auto;
+        ///        width: 100%;
+        ///        text-align: center;
+        ///    }
+        ///
+        ///    .content {
+        ///        max-width: 500px;
+        ///        margin: auto;
+        ///    }
+        ///
+        ///    body {
+        ///        §BACKSTYLE2§ font-family: Ubuntu;
+        ///        background-size: cover;
+        ///        position: relative;
+        ///        background-repeat: no-repeat;
+        ///        background-size: 100% 100vh;
+        ///    }
+        ///
+        ///    ul {
+        ///        list-style: none;
+        ///        padding: 0;
+        ///      [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string error {
+            get {
+                return ResourceManager.GetString("error", resourceCulture);
             }
         }
         
@@ -409,6 +479,34 @@ namespace Yorot_Avalonia.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &lt;head&gt;
+        ///  &lt;style&gt;
+        ///    .content {
+        ///      max-width: 500px;
+        ///      margin: auto;
+        ///    }
+        ///
+        ///    body {
+        ///      font-family: Ubuntu;
+        ///      background-color: rgb(33, 33, 33);
+        ///      color: white;
+        ///    }
+        ///  &lt;/style&gt;
+        ///  &lt;title&gt;§TITLE§&lt;/title&gt;
+        ///&lt;/head&gt;
+        ///&lt;body class=&quot;content&quot;&gt;
+        ///  &lt;h1 style=&quot;text-align: center&quot;&gt;&amp;nbsp;&lt;/h1&gt;
+        ///  &lt;img
+        ///    style=&quot;display: block; margin-left: auto; margin-right: auto&quot;
+        ///    src=&quot;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAYAAABw4pVUAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJc [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string incognito {
+            get {
+                return ResourceManager.GetString("incognito", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap incognito_b {
@@ -435,6 +533,62 @@ namespace Yorot_Avalonia.Properties {
             get {
                 object obj = ResourceManager.GetObject("kopad", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;head&gt;
+        ///  &lt;title&gt;§TITLE§&lt;/title&gt;
+        ///  &lt;style&gt;
+        ///    body {
+        ///        §BACKSTYLE2§ font-family: Ubuntu;
+        ///        background-size: cover;
+        ///        position: relative;
+        ///        background-repeat: no-repeat;
+        ///        background-size: 100% 100vh;
+        ///    }
+        ///    p {
+        ///      font-size: large;
+        ///    }
+        ///
+        ///    .btn-group button {
+        ///        background-color: §OVERLAYCOLOR§;
+        ///        border: 1px solid §OVERLAYCOLOR§;
+        ///        color: §OCOLOR§; /* White text */
+        ///        padding: 10px 24px; /* Some padding */
+        ///        cursor: point [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string license {
+            get {
+                return ResourceManager.GetString("license", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;head&gt;
+        ///  &lt;title&gt;Yorot Links&lt;/title&gt;
+        ///  &lt;style&gt;
+        ///    body {
+        ///        §BACKSTYLE2§ font-family: Ubuntu;
+        ///        background-size: cover;
+        ///        position: relative;
+        ///        background-repeat: no-repeat;
+        ///        background-size: 100% 100vh;
+        ///    }
+        ///  &lt;/style&gt;
+        ///&lt;/head&gt;
+        ///&lt;body&gt;
+        ///  &lt;h1&gt;List of Yorot Links&lt;/h1&gt;
+        ///  &lt;p&gt;
+        ///    • &lt;a href=&quot;yorot://technical&quot;&gt;yorot://technical&lt;/a&gt; - Technical Information
+        ///  &lt;/p&gt;
+        ///  &lt;p&gt;• &lt;a href=&quot;yorot://links&quot;&gt;yorot://links&lt;/a&gt; - this page&lt;/p&gt;
+        ///  &lt;p&gt;
+        ///    • &lt;a href=&quot;yorot://incognito [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string links {
+            get {
+                return ResourceManager.GetString("links", resourceCulture);
             }
         }
         
@@ -486,6 +640,70 @@ namespace Yorot_Avalonia.Properties {
             get {
                 object obj = ResourceManager.GetObject("mute_w", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;head&gt;
+        ///  &lt;title&gt;[WebContent.NewTab]&lt;/title&gt;
+        ///  &lt;style&gt;
+        ///    :root {
+        ///      --rad: 0.7rem;
+        ///      --dur: 0.3s;
+        ///      --color-dark: #2f2f2f;
+        ///      --color-light: #fff;
+        ///      --color-brand: [WebContent.OverlayColor];
+        ///      --font-fam: &quot;Lato&quot;, sans-serif;
+        ///      --height: 5rem;
+        ///      --btn-width: 6rem;
+        ///      --bez: cubic-bezier(0, 0, 0.43, 1.49);
+        ///    }
+        ///
+        ///    * {
+        ///      box-sizing: border-box;
+        ///    }
+        ///
+        ///    .center {
+        ///      margin: auto;
+        ///      width: 100%;
+        ///      text-align: center;
+        ///    }
+        ///
+        ///    .body [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string newtab {
+            get {
+                return ResourceManager.GetString("newtab", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;head&gt;
+        ///  &lt;meta charset=&quot;utf-8&quot; /&gt;
+        ///  &lt;title&gt;§TITLE§&lt;/title&gt;
+        ///  &lt;!--
+        ///        Hello am 48 year man from somalia. Sorry for my bed england. I not selled my wife for internet connection
+        ///        for nothing. please no copy pasterino my story.
+        ///        --&gt;
+        ///  &lt;style&gt;
+        ///    .center {
+        ///        margin: auto;
+        ///        width: 100%;
+        ///        text-align: center;
+        ///    }
+        ///
+        ///    .content {
+        ///        max-width: 500px;
+        ///        margin: auto;
+        ///    }
+        ///
+        ///    body {
+        ///        §BACKSTYLE2§ font-family: Ubuntu;
+        ///        background [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string noint {
+            get {
+                return ResourceManager.GetString("noint", resourceCulture);
             }
         }
         
@@ -646,6 +864,33 @@ namespace Yorot_Avalonia.Properties {
             get {
                 object obj = ResourceManager.GetObject("store", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;head&gt;
+        ///    &lt;title&gt;Yorot&lt;/title&gt;
+        ///    &lt;style&gt;
+        ///        body {
+        ///            font-family: Ubuntu;
+        ///            background-size: cover;
+        ///            position: relative;
+        ///            background-repeat: no-repeat;
+        ///            background-size: 100% 100vh;
+        ///        }
+        ///
+        ///        textarea {
+        ///            font-family: Ubuntu;
+        ///            background-size: cover;
+        ///            position: relative;
+        ///            background-repeat: no-repeat;
+        ///            background-size: 100% 100vh;
+        ///            width: 100%;
+        ///             [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string technical {
+            get {
+                return ResourceManager.GetString("technical", resourceCulture);
             }
         }
         

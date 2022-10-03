@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Drawing;
 using Yorot;
+using System.IO;
+using System.Reflection;
 
 namespace Yorot_Avalonia
 {

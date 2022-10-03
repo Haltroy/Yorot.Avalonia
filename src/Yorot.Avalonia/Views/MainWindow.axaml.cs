@@ -3,7 +3,10 @@ using Avalonia.Collections;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Markup.Xaml;
+using CefNet;
 using DynamicData;
+using FluentAvalonia.Core;
+using FluentAvalonia.UI.Controls;
 using System.Collections.Generic;
 
 namespace Yorot_Avalonia.Views
@@ -22,7 +25,7 @@ namespace Yorot_Avalonia.Views
         private Grid? sidebarGrid;
         private DockPanel? Sidebar;
         private Panel? SidebarSplitter;
-        private TabControl? tabs;
+        public FluentAvalonia.UI.Controls.TabView? tabs;
         private Panel? AppGrid;
 
         private void InitializeComponent()
@@ -33,45 +36,71 @@ namespace Yorot_Avalonia.Views
             Sidebar = sidebarGrid.FindControl<DockPanel>("Sidebar");
             AppGrid = Sidebar.FindControl<WrapPanel>("AppGrid");
             SidebarSplitter = sidebarGrid.FindControl<Panel>("SidebarSplitter");
-            tabs = sidebarGrid.FindControl<TabControl>("Tabs");
-            if (tabs.Items is AvaloniaList<object> list)
-            {
-                list.Add(new TabItem() { Header = "+" });
-            }
-
-            tabs.SelectionChanged += Tabs_SelectionChanged;
-            Tabs_SelectionChanged(this, null);
+            tabs = sidebarGrid.FindControl<TabView>("Tabs");
+            tabs.AddTabButtonClick += Tabs_AddTabButtonClick;
+            tabs.TabCloseRequested += Tabs_TabCloseRequested;
+            tabs.TabDroppedOutside += Tabs_TabDroppedOutside;
             Sidebar.Background = Avalonia.Media.Brush.Parse("#ebebeb");
             SidebarSplitter.Background = Avalonia.Media.Brush.Parse("#0080ff");
 
             this.PropertyChanged += MainWindow_PropertyChanged;
+            this.Closed += MainWindow_Closed;
+
+            if (YorotGlobal.Main != null && YorotGlobal.Main.MainForms.Count <= 0)
+            {
+                YorotGlobal.Main.MainForms.Add(this);
+                NewTab(url: "yorot://homepage", switchTo: true);
+            }
         }
 
-        public void Tabs_SelectionChanged(object? sender, SelectionChangedEventArgs e)
+        private void Tabs_TabDroppedOutside(TabView sender, TabViewTabDroppedOutsideEventArgs args)
         {
-            if (tabs.SelectedItem is TabItem item)
+            if (YorotGlobal.Main is null) { return; }
+            MainWindow window = new MainWindow();
+            YorotGlobal.Main.MainForms.Add(window);
+            if (window.tabs != null && window.tabs.TabItems is AvaloniaList<object> list && sender.TabItems is AvaloniaList<object> list2)
             {
-                this.Title = item.Header + " - Yorot";
+                list2.Remove(args.Tab);
+                list.Add(args.Tab);
             }
-            if (tabs.SelectedIndex == tabs.ItemCount - 1)
+        }
+
+        private void Tabs_TabCloseRequested(TabView sender, TabViewTabCloseRequestedEventArgs args)
+        {
+            if (sender.TabItems is AvaloniaList<object> list)
             {
-                NewTab(switchTo: true);
+                list.Remove(args.Item);
+            }
+        }
+
+        private void Tabs_AddTabButtonClick(TabView sender, System.EventArgs args)
+        {
+            NewTab(switchTo: true);
+        }
+
+        private void MainWindow_Closed(object? sender, System.EventArgs e)
+        {
+            if (YorotGlobal.Main is null) { return; }
+            YorotGlobal.Main.MainForms.Remove(this);
+            if (YorotGlobal.Main.MainForms.Count <= 0)
+            {
+                CefNetApplication.Instance.Shutdown();
             }
         }
 
         public void NewTab(string url = "yorot://newtab", int index = -1, bool switchTo = false)
         {
             if (tabs is null) { return; }
-            TabItem item = new TabItem() { Header = "New Tab" };
+            TabViewItem item = new TabViewItem() { Header = "New Tab" };
             item.Bind(ForegroundProperty, tabs.GetObservable(ForegroundProperty));
             DockPanel panel = new();
             panel.Margin = new Thickness(0, 0, 55, 10);
             item.Content = panel;
             var tabform = new TabWindow(this, url) { VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch, HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch };
             panel.Children.Add(tabform);
-            if (tabs.Items is AvaloniaList<object> itemList)
+            if (tabs.TabItems is AvaloniaList<object> itemList)
             {
-                itemList.Insert(index == -1 ? (itemList.Count > 1 ? itemList.Count - 1 : 0) : index, item);
+                itemList.Insert(index == -1 ? (itemList.Count > 0 ? itemList.Count : 0) : index, item);
                 if (switchTo)
                 {
                     tabs.SelectedItem = item;

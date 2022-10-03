@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using LibFoster;
 using Yorot;
+using CefNet;
 
 namespace Yorot_Avalonia
 {
@@ -22,12 +23,45 @@ namespace Yorot_Avalonia
             YorotDefaultLangs.GenLangs(LangFolder);
         }
 
-        public Foster YorotUpdate = null;
+        public Foster? YorotUpdate = null;
 
-        public bool İsUpToDate => YorotUpdate.IsUpToDate;
+        public bool IsUpToDate => YorotUpdate != null ? YorotUpdate.IsUpToDate : false;
 
         public override void AfterInit()
         {
+            // CEF
+
+            var settings = new CefSettings();
+            settings.LocalesDirPath = EngineLocaleFolder;
+            settings.ResourcesDirPath = EngineFolder;
+            settings.NoSandbox = true;
+            // These two should be always true, otherwise it won't create the browser obejct or display anything.
+            settings.MultiThreadedMessageLoop = true;
+            settings.WindowlessRenderingEnabled = true;
+
+            settings.Locale = "tr";
+
+            settings.UserDataPath = Profiles.Current.CacheLoc;
+            settings.UserAgent = GetUserAgent("Chrome", YorotGlobal.ChromiumVersion);
+
+            var app = new CefNetApplication();
+            app.Initialize(EngineFolder, settings);
+
+            CefApi.RegisterSchemeHandlerFactory("yorot", "", new Handlers.YorotSchemeHandlerFactory());
+
+            // Yorot-Avalonia
+
+            RegisterWebSource("yorot://newtab", Properties.Resources.newtab, "text/html", false);
+            RegisterWebSource("yorot://license", Properties.Resources.license, "text/html", false);
+            RegisterWebSource("yorot://links", Properties.Resources.links, "text/html", false);
+            RegisterWebSource("yorot://noint", Properties.Resources.noint, "text/html", true);
+            RegisterWebSource("yorot://technical", Properties.Resources.technical, "text/html", false);
+            RegisterWebSource("yorot://error", Properties.Resources.error, "text/html", true);
+            RegisterWebSource("yorot://certerror", Properties.Resources.certerror, "text/html", true);
+            RegisterWebSource("yorot://incognito", Properties.Resources.incognito, "text/html", false);
+            RegisterWebSource("yorot://search", "<meta http-equiv=\"refresh\" content=\"0; URL=[Parameter.q]\" />\r\n", "text/html", true);
+            RegisterWebSource("yorot://homepage", "<meta http-equiv=\"refresh\" content=\"0; URL=[Info.Homepage]\" />\r\n", "text/html", true);
+
             // Yopad
             Yopad.YopadLog += new Foster.OnLogEntryDelegate((sender, e) => { Output.WriteLine(e.LogEntry, (HTAlt.LogLevel)((int)e.Level)); });
             Yopad.YopadProgress += new Yopad.YopadProgressEventHandler((sender, e) => { Output.WriteLine("[Yopad] Progress: " + e.Percentage100); });
@@ -49,6 +83,12 @@ namespace Yorot_Avalonia
                     }
                 }
             }
+        }
+
+        public override string CurrentEngineVer
+        {
+            get => YorotGlobal.ChromiumVersion;
+            set { }
         }
 
         public override YorotPermissionMode OnPermissionRequest(YorotPermission permission, YorotPermissionMode requested)
@@ -76,10 +116,6 @@ namespace Yorot_Avalonia
 
                     case ExpPack _:
                         Console.WriteLine("Permission \"" + permission.ID + "\" request accepted (NOT_IMPLEMENTED) from ID\"" + ((ExpPack)permission.Requestor).CodeName + "\" " + permission.Allowance.ToString() + " => " + requested.ToString());
-                        break;
-
-                    case YorotWebEngine _:
-                        Console.WriteLine("Permission \"" + permission.ID + "\" request accepted (NOT_IMPLEMENTED) from ID\"" + ((YorotWebEngine)permission.Requestor).CodeName + "\" " + permission.Allowance.ToString() + " => " + requested.ToString());
                         break;
                 }
                 permission.Allowance = requested;

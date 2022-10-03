@@ -10,68 +10,7 @@
 	<ApplicationIcon>Assets\Yorot.ico</ApplicationIcon>
 	<PackageIcon>Yorot.png</PackageIcon>
   </PropertyGroup>
-	<ItemGroup Condition="'$(RuntimeIdentifier)'=='linux-x64'">
-		<None Update="cef_linux64\*">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-		<None Update="cef_linux64\locales\*">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-	</ItemGroup>
-
-	<ItemGroup Condition="'$(RuntimeIdentifier)'=='linux-arm'">
-		<None Update="cef_linuxarm\*">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-		<None Update="cef_linuxarm\locales\*">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-	</ItemGroup>
-
-	<ItemGroup Condition="'$(RuntimeIdentifier)'=='linux-arm64'">
-		<None Update="cef_linuxarm64\*">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-		<None Update="cef_linuxarm64\locales\*">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-	</ItemGroup>
-
-	<ItemGroup Condition="'$(RuntimeIdentifier)'=='win-x64'">
-		<None Update="cef_windows64\*">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-		<None Update="cef_win64\locales\*">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-	</ItemGroup>
-
-	<ItemGroup Condition="'$(RuntimeIdentifier)'=='win-x86'">
-		<None Update="cef_windows32\*">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-		<None Update="cef_windows32\locales\*">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-	</ItemGroup>
-
-	<ItemGroup Condition="'$(RuntimeIdentifier)'=='win-arm'">
-		<None Update="cef_windowsarm\*">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-		<None Update="cef_windowsarm\locales\*">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-	</ItemGroup>
-
-	<ItemGroup Condition="'$(RuntimeIdentifier)'=='win-arm64'">
-		<None Update="cef_windowsarm64\*">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-		<None Update="cef_windowsarm64\locales\*">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-	</ItemGroup>
+	
   <ItemGroup>
     <Folder Include="Models\" />
     <AvaloniaResource Include="Assets\**" />
@@ -140,19 +79,39 @@
     <AvaloniaResource Include="Assets\Yorot.png" />
     <AvaloniaResource Include="Assets\Yorot.ico" />
     <None Remove=".gitignore" />
+    <None Remove="WebSources\certerror.html" />
+    <None Remove="WebSources\error.html" />
+    <None Remove="WebSources\incognito.html" />
+    <None Remove="WebSources\license.html" />
+    <None Remove="WebSources\links.html" />
+    <None Remove="WebSources\newtab.html" />
+    <None Remove="WebSources\noint.html" />
+    <None Remove="WebSources\technical.html" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\Yorot.ico" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="WebSources\certerror.html" />
+    <EmbeddedResource Include="WebSources\error.html" />
+    <EmbeddedResource Include="WebSources\incognito.html" />
+    <EmbeddedResource Include="WebSources\license.html" />
+    <EmbeddedResource Include="WebSources\links.html" />
+    <EmbeddedResource Include="WebSources\newtab.html" />
+    <EmbeddedResource Include="WebSources\noint.html" />
+    <EmbeddedResource Include="WebSources\technical.html" />
+  </ItemGroup>
+  <ItemGroup>
+  <PackageReference Include="System.Security.Permissions" Version="6.0.0" />
     <PackageReference Include="Avalonia" Version="0.10.18" />
     <PackageReference Include="Avalonia.Desktop" Version="0.10.18" />
     <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
     <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="0.10.18" />
     <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.18" />
-    <PackageReference Include="CefGlue.Avalonia" Version="91.4472.30" />
-    <PackageReference Include="CefGlue.Common" Version="91.4472.30" />
+    <PackageReference Include="FluentAvaloniaUI" Version="1.4.4" />
     <PackageReference Include="System.Resources.Extensions" Version="6.0.0" />
+	<PackageReference Include="CefNet.Avalonia" Version="105.3.22248.142" />
+	
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Yorot.Standart\Yorot.Standart.csproj" />

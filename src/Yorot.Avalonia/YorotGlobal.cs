@@ -75,7 +75,7 @@ namespace Yorot_Avalonia
         /// <summary>
         /// Version of the Chromium engine.
         /// </summary>
-        public static string ChromiumVersion = "102.0.8.0";
+        public static string ChromiumVersion = "105.3.18.0";
 
         /// <summary>
         /// Version of Yorot.
