@@ -54,7 +54,7 @@ namespace Yorot_Avalonia
             }
             else
             {
-                return HTAlt.Tools.ReadFile(YorotGlobal.Main.AppsFolder + app.AppCodeName + "\\" + app.AppIcon, System.Drawing.Imaging.ImageFormat.Png);
+                return HTAlt.Tools.ReadFile(YorotGlobal.Main.AppsFolder + app.AppCodeName + System.IO.Path.DirectorySeparatorChar + app.AppIcon, System.Drawing.Imaging.ImageFormat.Png);
             }
         }
 
@@ -122,7 +122,7 @@ namespace Yorot_Avalonia
 
         internal static System.Drawing.Image GetExtIcon(YorotExtension ext)
         {
-            return HTAlt.Tools.ReadFile(YorotGlobal.Main.ExtFolder + ext.CodeName + "\\" + ext.Icon, System.Drawing.Imaging.ImageFormat.Png);
+            return HTAlt.Tools.ReadFile(YorotGlobal.Main.ExtFolder + ext.CodeName + System.IO.Path.DirectorySeparatorChar + ext.Icon, System.Drawing.Imaging.ImageFormat.Png);
         }
 
         internal static System.Drawing.Image GetSiteIcon(YorotSite site)

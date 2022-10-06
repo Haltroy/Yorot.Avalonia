@@ -19,7 +19,7 @@ namespace Yorot_Avalonia
 
         public override void BeforeInit()
         {
-            Output.LogDirPath = AppPath + "\\logs\\";
+            Output.LogDirPath = AppPath + System.IO.Path.DirectorySeparatorChar + "logs" + System.IO.Path.DirectorySeparatorChar;
             YorotDefaultLangs.GenLangs(LangFolder);
         }
 
@@ -52,6 +52,7 @@ namespace Yorot_Avalonia
             // Yorot-Avalonia
 
             RegisterWebSource("yorot://newtab", Properties.Resources.newtab, "text/html", false);
+            RegisterWebSource("yorot://test", Properties.Resources.test, "text/html", false);
             RegisterWebSource("yorot://license", Properties.Resources.license, "text/html", false);
             RegisterWebSource("yorot://links", Properties.Resources.links, "text/html", false);
             RegisterWebSource("yorot://noint", Properties.Resources.noint, "text/html", true);

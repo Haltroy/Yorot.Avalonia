@@ -16,7 +16,7 @@ namespace Yorot_Avalonia
         /// <param name="langLoc">Location of the language folder.</param>
         public static void GenLangs(string langLoc, bool force = false)
         {
-            if (!langLoc.EndsWith("\\")) { langLoc += "\\"; }
+            if (!langLoc.EndsWith(System.IO.Path.DirectorySeparatorChar)) { langLoc += System.IO.Path.DirectorySeparatorChar; }
             var d = YorotDefaultLanguages.DefaultLangList;
             for (int i = 0; i < d.Length; i++)
             {

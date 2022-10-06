@@ -34,6 +34,8 @@ namespace Yorot_Avalonia.Views
 
         private MainWindow? mainWindow;
 
+        public SessionSystem? SessionSystem;
+
         private Grid? ContentGrid;
         private Menu? favoritesmenu;
         private TextBox? tbUrl;
@@ -47,6 +49,7 @@ namespace Yorot_Avalonia.Views
 
         private void InitializeComponent()
         {
+            SessionSystem = new(YorotGlobal.Main);
             AvaloniaXamlLoader.Load(this);
             ContentGrid = this.FindControl<Grid>("Content");
             var stackPanel1 = ContentGrid.FindControl<DockPanel>("dockPanel1");
@@ -65,24 +68,38 @@ namespace Yorot_Avalonia.Views
             IsFavorited.OnNext(false);
             IsNotFavorited.OnNext(true);
 
-            hamburgermenu = new Avalonia.Controls.MenuFlyout();
-            hamburgermenu.Bind(BackgroundProperty, tbUrl.GetBindingObservable(BackgroundProperty));
-            hamburgermenu.Bind(ForegroundProperty, tbUrl.GetBindingObservable(ForegroundProperty));
-            if (hamburgermenu.Items is AvaloniaList<object> list)
-            {
-                Avalonia.Controls.Button copy = new() { Content = "Copy" };
-                copy.Click += new EventHandler<Avalonia.Interactivity.RoutedEventArgs>((sender, e) => { if (webView1 != null) { webView1.GetMainFrame().Copy(); } });
-                list.Add(copy);
+            //hamburgermenu = new Avalonia.Controls.Flyout();
+            //var dotmenucontent = new DockPanel();
+            //hamburgermenu.Content = dotmenucontent;
+            //hamburgermenu.Bind(BackgroundProperty, tbUrl.GetBindingObservable(BackgroundProperty));
+            //hamburgermenu.Bind(ForegroundProperty, tbUrl.GetBindingObservable(ForegroundProperty));
 
-                for (int i = 0; i < list.Count; i++)
-                {
-                    if (list[i] is Control cuntrol)
-                    {
-                        cuntrol.Bind(BackgroundProperty, tbUrl.GetBindingObservable(BackgroundProperty));
-                        cuntrol.Bind(ForegroundProperty, tbUrl.GetBindingObservable(ForegroundProperty));
-                    }
-                }
-            }
+            //// TODO: add shit:
+
+            ///*
+            //    Find
+            //    Un/mute
+            //    Zoom
+            //    Developer Options
+            //    Save screenshot
+            //    Save Page
+            //    Cut - Copy - Paste
+            //    New Tab / New Window / New Incognito Window
+
+            // */
+
+            //Avalonia.Controls.Button copy = new() { Content = "Copy" };
+            //copy.Click += new EventHandler<Avalonia.Interactivity.RoutedEventArgs>((sender, e) => { if (webView1 != null) { webView1.GetMainFrame().Copy(); } });
+            //dotmenucontent.Children.Add(copy);
+
+            //for (int i = 0; i < dotmenucontent.Children.Count; i++)
+            //{
+            //    if (dotmenucontent.Children[i] is Control control)
+            //    {
+            //        control.Bind(BackgroundProperty, tbUrl.GetBindingObservable(BackgroundProperty));
+            //        control.Bind(ForegroundProperty, tbUrl.GetBindingObservable(ForegroundProperty));
+            //    }
+            //}
 
             stackPanel1.FindControl<Avalonia.Controls.Button>("reload").Bind(IsVisibleProperty, IsNavigated);
             stackPanel1.FindControl<Avalonia.Controls.Button>("stop").Bind(IsVisibleProperty, IsNavigating);
@@ -97,7 +114,6 @@ namespace Yorot_Avalonia.Views
             //var tabpanel = new TabPanel();
             //Content.Children.Add(tabpanel);
 
-            // TODO: Find a way to make a tabbed form.
             // TODO: Complete the rest of the visuals for full navigation experience.
 
             var dockPanel = ContentGrid.FindControl<DockPanel>("cefpanel");
@@ -145,16 +161,16 @@ namespace Yorot_Avalonia.Views
             }
         }
 
-        private System.Collections.Generic.List<YorotFavFolder>? CachedFavs; // TODO: Make a better diff detection
+        private string CachedFavs = "";
 
         private void RefreshFavorites(bool force = false)
         {
             if (YorotGlobal.Main != null && favoritesmenu != null && tbUrl != null)
             {
-                if (force || (YorotGlobal.Main.CurrentSettings.FavManager.Favorites != CachedFavs))
+                if (force || (YorotGlobal.Main.CurrentSettings.FavManager.ToXml() != CachedFavs))
                 {
                     favoritesmenu.IsVisible = YorotGlobal.Main.CurrentSettings.FavManager.ShowFavorites;
-                    CachedFavs = YorotGlobal.Main.CurrentSettings.FavManager.Favorites;
+                    CachedFavs = YorotGlobal.Main.CurrentSettings.FavManager.ToXml();
                     if ((favoritesmenu != null && favoritesmenu.Items is AvaloniaList<object> list))
                     {
                         list.Clear();
@@ -285,7 +301,7 @@ namespace Yorot_Avalonia.Views
             }
         }
 
-        private Avalonia.Controls.MenuFlyout? hamburgermenu;
+        private Avalonia.Controls.Flyout? hamburgermenu;
 
         private void dotmenu(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
         {

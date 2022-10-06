@@ -9,6 +9,7 @@
 	<AssemblyName>Yorot</AssemblyName>
 	<ApplicationIcon>Assets\Yorot.ico</ApplicationIcon>
 	<PackageIcon>Yorot.png</PackageIcon>
+	<RootNamespace>Yorot_Avalonia</RootNamespace>
   </PropertyGroup>
 	
   <ItemGroup>
@@ -134,5 +135,8 @@
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Views\MessageBox.axaml" />
   </ItemGroup>
 </Project>

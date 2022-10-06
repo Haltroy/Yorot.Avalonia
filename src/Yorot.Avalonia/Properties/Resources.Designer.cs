@@ -39,7 +39,7 @@ namespace Yorot_Avalonia.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Yorot-Avalonia.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Yorot_Avalonia.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -122,32 +122,28 @@ namespace Yorot_Avalonia.Properties {
         
         /// <summary>
         ///   Looks up a localized string similar to &lt;head&gt;
-        ///  &lt;title&gt;Yorot&lt;/title&gt;
-        ///  &lt;style&gt;
-        ///    html,
-        ///    body {
-        ///      height: 100%;
-        ///      background: #660000;
-        ///      color: white;
-        ///      font: Ubuntu;
-        ///    }
-        ///    .parent {
-        ///      height: 200px;
-        ///      background: #660000;
-        ///      display: flex;
-        ///      align-items: center;
-        ///      justify-content: center;
-        ///    }
-        ///  &lt;/style&gt;
+        ///    &lt;title&gt;Yorot&lt;/title&gt;
+        ///    &lt;style&gt;
+        ///        html,
+        ///        body {
+        ///            height: 100%;
+        ///            background: #660000;
+        ///            color: white;
+        ///            font: Ubuntu;
+        ///        }
+        ///
+        ///        .parent {
+        ///            height: 200px;
+        ///            background: #660000;
+        ///            display: flex;
+        ///            align-items: center;
+        ///            justify-content: center;
+        ///        }
+        ///    &lt;/style&gt;
         ///&lt;/head&gt;
         ///&lt;body class=&quot;parent&quot;&gt;
-        ///  &lt;div class=&quot;content&quot;&gt;
-        ///    &lt;h1 style=&quot;text-align: center&quot;&gt;§TITLE§&lt;/h1&gt;
-        ///    &lt;h3&gt;§DESC§&lt;/h3&gt;
-        ///    &lt;a&gt;§CERT§&lt;/a&gt;
-        ///  &lt;/div&gt;
-        ///&lt;/body&gt;
-        ///.
+        ///    &lt;div class=&quot;content&quot;&gt;
+        ///        &lt;h1 style=&quot;text-align: center&quot;&gt;[W [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string certerror {
             get {
@@ -245,13 +241,10 @@ namespace Yorot_Avalonia.Properties {
         ///		&lt;CompatibleVersion&gt;1&lt;/CompatibleVersion&gt;
         ///		&lt;Version&gt;1&lt;/Version&gt;
         ///	&lt;/Group&gt;
-        ///	&lt;Group Name=&quot;Win32&quot;&gt;
-        ///		&lt;Group Name=&quot;Locales&quot;&gt;
-        ///			&lt;Translation ID=&quot;ar&quot; Text=&quot;Arabic&quot; /&gt;
-        ///			&lt;Translation ID=&quot;am&quot; Text=&quot;Amharic&quot; /&gt;
-        ///			&lt;Translation ID=&quot;bg&quot; Text=&quot;Bulgarian&quot; /&gt;
-        ///			&lt;Translation ID=&quot;bn&quot; Text=&quot;Bengali&quot; /&gt;
-        ///			&lt;Translation I [rest of string was truncated]&quot;;.
+        ///	&lt;Group Name=&quot;WebSources&quot;&gt;
+        ///		&lt;Translation Id=&quot;Reload&quot; Text=&quot;Reload&quot; /&gt;
+        ///		&lt;Translation Id=&quot;CertErrorTitle&quot; Text=&quot;Certificate Error&quot; /&gt;
+        ///		&lt;Translation Id=&quot;CertErrorDesc&quot; Text=&quot;This website acted malicious so Yorot stopped loading the page [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string English_GB {
             get {
@@ -269,13 +262,10 @@ namespace Yorot_Avalonia.Properties {
         ///		&lt;CompatibleVersion&gt;1&lt;/CompatibleVersion&gt;
         ///		&lt;Version&gt;1&lt;/Version&gt;
         ///	&lt;/Group&gt;
-        ///	&lt;Group Name=&quot;Win32&quot;&gt;
-        ///		&lt;Group Name=&quot;Locales&quot;&gt;
-        ///			&lt;Translation ID=&quot;ar&quot; Text=&quot;Arabic&quot; /&gt;
-        ///			&lt;Translation ID=&quot;am&quot; Text=&quot;Amharic&quot; /&gt;
-        ///			&lt;Translation ID=&quot;bg&quot; Text=&quot;Bulgarian&quot; /&gt;
-        ///			&lt;Translation ID=&quot;bn&quot; Text=&quot;Bengali&quot; /&gt;
-        ///			&lt;Translation ID [rest of string was truncated]&quot;;.
+        ///	&lt;Group Name=&quot;WebSources&quot;&gt;
+        ///		&lt;Translation Id=&quot;Reload&quot; Text=&quot;Reload&quot; /&gt;
+        ///		&lt;Translation Id=&quot;CertErrorTitle&quot; Text=&quot;Certificate Error&quot; /&gt;
+        ///		&lt;Translation Id=&quot;CertErrorDesc&quot; Text=&quot;This website acted malicious so Yorot stopped loading the page. [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string English_US {
             get {
@@ -285,32 +275,27 @@ namespace Yorot_Avalonia.Properties {
         
         /// <summary>
         ///   Looks up a localized string similar to &lt;head&gt;
-        ///  &lt;meta charset=&quot;utf-8&quot; /&gt;
-        ///  &lt;title&gt;§TITLE§&lt;/title&gt;
-        ///  &lt;style&gt;
-        ///    .center {
-        ///        margin: auto;
-        ///        width: 100%;
-        ///        text-align: center;
-        ///    }
+        ///    &lt;meta charset=&quot;utf-8&quot; /&gt;
+        ///    &lt;title&gt;[WebSources.ErrorTitle]&lt;/title&gt;
+        ///    &lt;style&gt;
+        ///        .center {
+        ///            margin: auto;
+        ///            width: 100%;
+        ///            text-align: center;
+        ///        }
         ///
-        ///    .content {
-        ///        max-width: 500px;
-        ///        margin: auto;
-        ///    }
+        ///        .content {
+        ///            max-width: 500px;
+        ///            margin: auto;
+        ///        }
         ///
-        ///    body {
-        ///        §BACKSTYLE2§ font-family: Ubuntu;
-        ///        background-size: cover;
-        ///        position: relative;
-        ///        background-repeat: no-repeat;
-        ///        background-size: 100% 100vh;
-        ///    }
-        ///
-        ///    ul {
-        ///        list-style: none;
-        ///        padding: 0;
-        ///      [rest of string was truncated]&quot;;.
+        ///        body {
+        ///            background-color: [Theme.BackColor];
+        ///            color: [Theme.ForeColor];
+        ///            font-family: Ubuntu;
+        ///            background-size: cover;
+        ///            position: relative;
+        /// [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string error {
             get {
@@ -480,25 +465,24 @@ namespace Yorot_Avalonia.Properties {
         
         /// <summary>
         ///   Looks up a localized string similar to &lt;head&gt;
-        ///  &lt;style&gt;
-        ///    .content {
-        ///      max-width: 500px;
-        ///      margin: auto;
-        ///    }
+        ///    &lt;style&gt;
+        ///        .content {
+        ///            max-width: 500px;
+        ///            margin: auto;
+        ///        }
         ///
-        ///    body {
-        ///      font-family: Ubuntu;
-        ///      background-color: rgb(33, 33, 33);
-        ///      color: white;
-        ///    }
-        ///  &lt;/style&gt;
-        ///  &lt;title&gt;§TITLE§&lt;/title&gt;
+        ///        body {
+        ///            font-family: Ubuntu;
+        ///            background-color: rgb(33, 33, 33);
+        ///            color: white;
+        ///        }
+        ///    &lt;/style&gt;
+        ///    &lt;title&gt;[WebSources.IncognitoTitle]&lt;/title&gt;
         ///&lt;/head&gt;
         ///&lt;body class=&quot;content&quot;&gt;
-        ///  &lt;h1 style=&quot;text-align: center&quot;&gt;&amp;nbsp;&lt;/h1&gt;
-        ///  &lt;img
-        ///    style=&quot;display: block; margin-left: auto; margin-right: auto&quot;
-        ///    src=&quot;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAYAAABw4pVUAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJc [rest of string was truncated]&quot;;.
+        ///    &lt;h1 style=&quot;text-align: center&quot;&gt;&amp;nbsp;&lt;/h1&gt;
+        ///    &lt;img style=&quot;display: block; margin-left: auto; margin-right: auto&quot;
+        ///         src=&quot;data:image/png;base64,iVBORw0KGgoAA [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string incognito {
             get {
@@ -538,25 +522,25 @@ namespace Yorot_Avalonia.Properties {
         
         /// <summary>
         ///   Looks up a localized string similar to &lt;head&gt;
-        ///  &lt;title&gt;§TITLE§&lt;/title&gt;
-        ///  &lt;style&gt;
-        ///    body {
-        ///        §BACKSTYLE2§ font-family: Ubuntu;
-        ///        background-size: cover;
-        ///        position: relative;
-        ///        background-repeat: no-repeat;
-        ///        background-size: 100% 100vh;
-        ///    }
-        ///    p {
-        ///      font-size: large;
-        ///    }
+        ///    &lt;title&gt;§TITLE§&lt;/title&gt;
+        ///    &lt;style&gt;
+        ///        body {
+        ///            background-color: [Theme.BackColor];
+        ///            color: [Theme.ForeColor];
+        ///            font-family: Ubuntu;
+        ///            background-size: cover;
+        ///            position: relative;
+        ///            background-repeat: no-repeat;
+        ///            background-size: 100% 100vh;
+        ///        }
         ///
-        ///    .btn-group button {
-        ///        background-color: §OVERLAYCOLOR§;
-        ///        border: 1px solid §OVERLAYCOLOR§;
-        ///        color: §OCOLOR§; /* White text */
-        ///        padding: 10px 24px; /* Some padding */
-        ///        cursor: point [rest of string was truncated]&quot;;.
+        ///        p {
+        ///            font-size: large;
+        ///        }
+        ///
+        ///        .btn-group button {
+        ///            background-color: [Theme.OverlayColor];
+        ///            borde [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string license {
             get {
@@ -566,25 +550,23 @@ namespace Yorot_Avalonia.Properties {
         
         /// <summary>
         ///   Looks up a localized string similar to &lt;head&gt;
-        ///  &lt;title&gt;Yorot Links&lt;/title&gt;
-        ///  &lt;style&gt;
-        ///    body {
-        ///        §BACKSTYLE2§ font-family: Ubuntu;
-        ///        background-size: cover;
-        ///        position: relative;
-        ///        background-repeat: no-repeat;
-        ///        background-size: 100% 100vh;
-        ///    }
-        ///  &lt;/style&gt;
+        ///    &lt;title&gt;Yorot Links&lt;/title&gt;
+        ///    &lt;style&gt;
+        ///        body {
+        ///            background-color: [Theme.BackColor];
+        ///            color: [Theme.ForeColor];
+        ///            font-family: Ubuntu;
+        ///            background-size: cover;
+        ///            position: relative;
+        ///            background-repeat: no-repeat;
+        ///            background-size: 100% 100vh;
+        ///        }
+        ///    &lt;/style&gt;
         ///&lt;/head&gt;
         ///&lt;body&gt;
-        ///  &lt;h1&gt;List of Yorot Links&lt;/h1&gt;
-        ///  &lt;p&gt;
-        ///    • &lt;a href=&quot;yorot://technical&quot;&gt;yorot://technical&lt;/a&gt; - Technical Information
-        ///  &lt;/p&gt;
-        ///  &lt;p&gt;• &lt;a href=&quot;yorot://links&quot;&gt;yorot://links&lt;/a&gt; - this page&lt;/p&gt;
-        ///  &lt;p&gt;
-        ///    • &lt;a href=&quot;yorot://incognito [rest of string was truncated]&quot;;.
+        ///    &lt;h1&gt;List of Yorot Links&lt;/h1&gt;
+        ///    &lt;p&gt;
+        ///        • &lt;a href=&quot;yorot://technical&quot;&gt;yorot://technical&lt;/a&gt; - Technical Informat [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string links {
             get {
@@ -645,31 +627,26 @@ namespace Yorot_Avalonia.Properties {
         
         /// <summary>
         ///   Looks up a localized string similar to &lt;head&gt;
-        ///  &lt;title&gt;[WebContent.NewTab]&lt;/title&gt;
-        ///  &lt;style&gt;
-        ///    :root {
-        ///      --rad: 0.7rem;
-        ///      --dur: 0.3s;
-        ///      --color-dark: #2f2f2f;
-        ///      --color-light: #fff;
-        ///      --color-brand: [WebContent.OverlayColor];
-        ///      --font-fam: &quot;Lato&quot;, sans-serif;
-        ///      --height: 5rem;
-        ///      --btn-width: 6rem;
-        ///      --bez: cubic-bezier(0, 0, 0.43, 1.49);
-        ///    }
+        ///    &lt;title&gt;[WebSources.NewTab]&lt;/title&gt;
+        ///    &lt;style&gt;
+        ///        :root {
+        ///            --rad: 0.7rem;
+        ///            --dur: 0.3s;
+        ///            --color-dark: #2f2f2f;
+        ///            --color-light: #fff;
+        ///            --color-brand: [Theme.OverlayColor];
+        ///            --font-fam: &quot;Lato&quot;, sans-serif;
+        ///            --height: 5rem;
+        ///            --btn-width: 6rem;
+        ///            --bez: cubic-bezier(0, 0, 0.43, 1.49);
+        ///        }
         ///
-        ///    * {
-        ///      box-sizing: border-box;
-        ///    }
+        ///        * {
+        ///            box-sizing: border-box;
+        ///        }
         ///
-        ///    .center {
-        ///      margin: auto;
-        ///      width: 100%;
-        ///      text-align: center;
-        ///    }
-        ///
-        ///    .body [rest of string was truncated]&quot;;.
+        ///        .center {
+        ///        [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string newtab {
             get {
@@ -679,27 +656,23 @@ namespace Yorot_Avalonia.Properties {
         
         /// <summary>
         ///   Looks up a localized string similar to &lt;head&gt;
-        ///  &lt;meta charset=&quot;utf-8&quot; /&gt;
-        ///  &lt;title&gt;§TITLE§&lt;/title&gt;
-        ///  &lt;!--
-        ///        Hello am 48 year man from somalia. Sorry for my bed england. I not selled my wife for internet connection
-        ///        for nothing. please no copy pasterino my story.
-        ///        --&gt;
-        ///  &lt;style&gt;
-        ///    .center {
-        ///        margin: auto;
-        ///        width: 100%;
-        ///        text-align: center;
-        ///    }
+        ///    &lt;meta charset=&quot;utf-8&quot; /&gt;
+        ///    &lt;title&gt;[WebSources.NoIntTitle]&lt;/title&gt;
+        ///    &lt;!--
+        ///          Hello am 21 year man from tukrey. Sorry for my bed england. I not selled my wife for internet connection
+        ///          for nothing. me love me wife. please copy pasterino my story.
+        ///          --&gt;
+        ///    &lt;style&gt;
+        ///        .center {
+        ///            margin: auto;
+        ///            width: 100%;
+        ///            text-align: center;
+        ///        }
         ///
-        ///    .content {
-        ///        max-width: 500px;
-        ///        margin: auto;
-        ///    }
-        ///
-        ///    body {
-        ///        §BACKSTYLE2§ font-family: Ubuntu;
-        ///        background [rest of string was truncated]&quot;;.
+        ///        .content {
+        ///            max-width: 500px;
+        ///            margin: auto;
+        ///        [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string noint {
             get {
@@ -872,6 +845,8 @@ namespace Yorot_Avalonia.Properties {
         ///    &lt;title&gt;Yorot&lt;/title&gt;
         ///    &lt;style&gt;
         ///        body {
+        ///            background-color: [Theme.BackColor];
+        ///            color: [Theme.ForeColor];
         ///            font-family: Ubuntu;
         ///            background-size: cover;
         ///            position: relative;
@@ -883,14 +858,26 @@ namespace Yorot_Avalonia.Properties {
         ///            font-family: Ubuntu;
         ///            background-size: cover;
         ///            position: relative;
-        ///            background-repeat: no-repeat;
-        ///            background-size: 100% 100vh;
-        ///            width: 100%;
-        ///             [rest of string was truncated]&quot;;.
+        ///            background-repeat: no- [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string technical {
             get {
                 return ResourceManager.GetString("technical", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;head&gt;
+        ///    &lt;title&gt;Tests&lt;/title&gt;
+        ///&lt;/head&gt;
+        ///&lt;body&gt;
+        ///    &lt;h1&gt;Tests&lt;/h1&gt;
+        ///    &lt;button onclick=&quot;alert(&quot; I am an alert box!&quot;);&quot;&gt;Alert test&lt;/button&gt;
+        ///&lt;/body&gt;.
+        /// </summary>
+        internal static string test {
+            get {
+                return ResourceManager.GetString("test", resourceCulture);
             }
         }
         
@@ -924,13 +911,11 @@ namespace Yorot_Avalonia.Properties {
         ///		&lt;CompatibleVersion&gt;1&lt;/CompatibleVersion&gt;
         ///		&lt;Version&gt;1&lt;/Version&gt;
         ///	&lt;/Group&gt;
-        ///	&lt;Group Name=&quot;Win32&quot;&gt;
-        ///		&lt;Group Name=&quot;Locales&quot;&gt;
-        ///			&lt;Translation ID=&quot;ar&quot; Text=&quot;Arapça&quot; /&gt;
-        ///			&lt;Translation ID=&quot;am&quot; Text=&quot;Amharca&quot; /&gt;
-        ///			&lt;Translation ID=&quot;bg&quot; Text=&quot;Bulgarca&quot; /&gt;
-        ///			&lt;Translation ID=&quot;bn&quot; Text=&quot;Bengalce&quot; /&gt;
-        ///			&lt;Translation ID=&quot;ca&quot; Text=&quot;Katalanc [rest of string was truncated]&quot;;.
+        ///	&lt;Group Name=&quot;WebSources&quot;&gt;
+        ///		&lt;Translation Id=&quot;Reload&quot; Text=&quot;Yenile&quot; /&gt;
+        ///		&lt;Translation Id=&quot;CertErrorTitle&quot; Text=&quot;Sertifika Hatası&quot; /&gt;
+        ///		&lt;Translation Id=&quot;CertErrorDesc&quot; Text=&quot;Bu website kötü niyetli davrandı ve bu yüzden Yorot yüklemeyi durdurdu.&quot; /&gt;
+        ///		&lt;Tran [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string Turkish {
             get {

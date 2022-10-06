@@ -3,8 +3,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 mc:Ignorable="d"
-		d:DesignWidth="800"
-		d:DesignHeight="450"
+			 d:DesignWidth="800"
+			 d:DesignHeight="450"
 			 VerticalAlignment="Stretch"
 			 HorizontalAlignment="Stretch"
 			 VerticalContentAlignment="Stretch"
@@ -75,6 +75,19 @@
 						<Image Source="/Assets/hamburger.png" IsVisible="{Binding !IsBackDark}" Width="36" Height="36" VerticalAlignment="Center" HorizontalAlignment="Center" />
 						<Image Source="/Assets/hamburger-w.png" IsVisible="{Binding IsBackDark}" Width="36" Height="36" VerticalAlignment="Center" HorizontalAlignment="Center" />
 					</Panel>
+					<Button.ContextFlyout>
+						<!--
+							 Find
+ Un/mute
+ Zoom
+ Print
+ Developer Options
+ Save screenshot
+ Save Page
+ Cut - Copy - Paste
+ New Tab / New Window / New Incognito Window
+						-->
+					</Button.ContextFlyout>
 				</Button>
 			</Grid>
 		</DockPanel>

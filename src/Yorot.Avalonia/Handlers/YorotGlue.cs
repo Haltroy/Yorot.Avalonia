@@ -9,6 +9,7 @@ using CefNet;
 using CefNet.Internal;
 using CefNet.Net;
 using Yorot;
+using Yorot_Avalonia.Views;
 
 namespace Yorot_Avalonia.Handlers
 {
@@ -81,7 +82,8 @@ namespace Yorot_Avalonia.Handlers
                     string args = request.Url.Substring(containsArg + 1);
                     url = url.Substring(0, url.Length - args.Length - 1);
                     int i = 0;
-                    while (i < args.Length)
+                    int count = 0; //TODO: Fix this
+                    while (i < args.Length && count < 2)
                     {
                         int nextArg = args.IndexOf('&', i);
                         string arg = args.Substring(i, nextArg > 0 ? nextArg : args.Length - i);
@@ -89,6 +91,7 @@ namespace Yorot_Avalonia.Handlers
                         string value = arg.Substring(name.Length + 1);
                         arglist.Add(new YorotBrowserWebSource.Argument(name, value));
                         i += arg.Length + 1;
+                        count++;
                     }
                 }
                 var resource = YorotGlobal.Main.GetWebSource(url, arglist);
@@ -311,7 +314,66 @@ namespace Yorot_Avalonia.Handlers
 
         protected override bool OnJSDialog(CefBrowser browser, string originUrl, CefJSDialogType dialogType, string messageText, string defaultPromptText, CefJSDialogCallback callback, ref int suppressMessage)
         {
-            return base.OnJSDialog(browser, originUrl, dialogType, messageText, defaultPromptText, callback, ref suppressMessage);
+            YorotSite site = YorotGlobal.Main.CurrentSettings.SiteMan.GetSite(originUrl);
+            if (!site.ShowMessageBoxes)
+            {
+                return true;
+            }
+            switch (dialogType)
+            {
+                case CefJSDialogType.Confirm:
+                case CefJSDialogType.Alert:
+                    var task = Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(new Action(() =>
+                    {
+                        var alertmessage = new MessageBox(
+                            YorotGlobal.Main.CurrentLanguage.GetItemText("DialogBox.MessageFromSite").Replace("[Parameter.Url]", originUrl),
+                            messageText,
+                            new MessageBoxButton[] { new MessageBoxButton.Ok(), new MessageBoxButton.Cancel()
+                                // TODO: Add Image here
+                            });
+                        alertmessage.Closing += new EventHandler<System.ComponentModel.CancelEventArgs>((sender, e) =>
+                        {
+                            site.ShowMessageBoxes = !alertmessage.DontShowThis;
+                            if (alertmessage.DialogResult is MessageBoxButton.Ok)
+                            {
+                                callback.Continue(true, "");
+                            }
+                            else
+                            {
+                                callback.Continue(false, "");
+                            }
+                        });
+                        alertmessage.ShowDialog(YorotGlobal.Main.MainForm);
+                    }), Avalonia.Threading.DispatcherPriority.Input);
+
+                    return true;
+
+                default:
+                case CefJSDialogType.Prompt:
+                    var task2 = Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(new Action(() =>
+                    {
+                        var promptmessage = new MessageBox(
+                            YorotGlobal.Main.CurrentLanguage.GetItemText("DialogBox.MessageFromSite").Replace("[Parameter.Url]", originUrl),
+                            messageText, defaultPromptText,
+                            new MessageBoxButton[] { new MessageBoxButton.Ok(), new MessageBoxButton.Cancel()
+                                // TODO: Add Image here
+                            });
+                        promptmessage.Closing += new EventHandler<System.ComponentModel.CancelEventArgs>((sender, e) =>
+                        {
+                            site.ShowMessageBoxes = !promptmessage.DontShowThis;
+                            if (promptmessage.DialogResult is MessageBoxButton.Ok)
+                            {
+                                callback.Continue(true, promptmessage.Prompt);
+                            }
+                            else
+                            {
+                                callback.Continue(false, "");
+                            }
+                        });
+                        promptmessage.ShowDialog(YorotGlobal.Main.MainForm).Wait();
+                    }), Avalonia.Threading.DispatcherPriority.Input);
+                    return true;
+            }
         }
 
         protected override bool OnKeyEvent(CefBrowser browser, CefKeyEvent @event, CefEventHandle osEvent)
