@@ -214,7 +214,10 @@ namespace Yorot_Avalonia.Handlers
 
         protected override bool OnCertificateError(CefBrowser browser, CefErrorCode certError, string requestUrl, CefSSLInfo sslInfo, CefCallback callback)
         {
-            return base.OnCertificateError(browser, certError, requestUrl, sslInfo, callback);
+            // TODO: Do an actual navigation when Session System is implemented
+            browser.GetWebView().Navigate("yorot://certerror");
+            return true;
+            //return base.OnCertificateError(browser, certError, requestUrl, sslInfo, callback);
         }
 
         protected override bool OnChromeCommand(CefBrowser browser, int commandId, CefWindowOpenDisposition disposition)
@@ -279,6 +282,10 @@ namespace Yorot_Avalonia.Handlers
 
         protected override void OnFindResult(CefBrowser browser, int identifier, int count, CefRect selectionRect, int activeMatchOrdinal, bool finalUpdate)
         {
+            if (tabWindow != null && tabWindow.FindCount != null)
+            {
+                tabWindow.FindCount.Text = activeMatchOrdinal + "/" + count;
+            }
             base.OnFindResult(browser, identifier, count, selectionRect, activeMatchOrdinal, finalUpdate);
         }
 

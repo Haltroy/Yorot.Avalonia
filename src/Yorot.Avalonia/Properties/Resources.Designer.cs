@@ -204,6 +204,26 @@ namespace Yorot_Avalonia.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap copy_b {
+            get {
+                object obj = ResourceManager.GetObject("copy_b", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap copy_w {
+            get {
+                object obj = ResourceManager.GetObject("copy_w", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap customization {
             get {
                 object obj = ResourceManager.GetObject("customization", resourceCulture);
@@ -214,9 +234,49 @@ namespace Yorot_Avalonia.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap cut_b {
+            get {
+                object obj = ResourceManager.GetObject("cut_b", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap cut_w {
+            get {
+                object obj = ResourceManager.GetObject("cut_w", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap default_pofile_pic {
             get {
                 object obj = ResourceManager.GetObject("default_pofile_pic", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap devtools_b {
+            get {
+                object obj = ResourceManager.GetObject("devtools_b", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap devtools_w {
+            get {
+                object obj = ResourceManager.GetObject("devtools_w", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -294,8 +354,7 @@ namespace Yorot_Avalonia.Properties {
         ///            color: [Theme.ForeColor];
         ///            font-family: Ubuntu;
         ///            background-size: cover;
-        ///            position: relative;
-        /// [rest of string was truncated]&quot;;.
+        ///            position: relative;        /// [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string error {
             get {
@@ -376,6 +435,26 @@ namespace Yorot_Avalonia.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap folder {
+            get {
+                object obj = ResourceManager.GetObject("folder", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap folder_w {
+            get {
+                object obj = ResourceManager.GetObject("folder_w", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap forward_b {
             get {
                 object obj = ResourceManager.GetObject("forward_b", resourceCulture);
@@ -389,6 +468,26 @@ namespace Yorot_Avalonia.Properties {
         internal static System.Drawing.Bitmap forward_w {
             get {
                 object obj = ResourceManager.GetObject("forward_w", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap fullscreen {
+            get {
+                object obj = ResourceManager.GetObject("fullscreen", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap fullscreen_w {
+            get {
+                object obj = ResourceManager.GetObject("fullscreen_w", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -565,12 +664,42 @@ namespace Yorot_Avalonia.Properties {
         ///&lt;/head&gt;
         ///&lt;body&gt;
         ///    &lt;h1&gt;List of Yorot Links&lt;/h1&gt;
-        ///    &lt;p&gt;
-        ///        • &lt;a href=&quot;yorot://technical&quot;&gt;yorot://technical&lt;/a&gt; - Technical Informat [rest of string was truncated]&quot;;.
+        ///    &lt;p&gt;• &lt;a href=&quot;yorot://technical&quot;&gt;yorot://technical&lt;/a&gt; - Technical Information&lt;/p&gt;
+        ///  [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string links {
             get {
                 return ResourceManager.GetString("links", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap lockg {
+            get {
+                object obj = ResourceManager.GetObject("lockg", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap locko {
+            get {
+                object obj = ResourceManager.GetObject("locko", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap lockr {
+            get {
+                object obj = ResourceManager.GetObject("lockr", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         
@@ -683,9 +812,49 @@ namespace Yorot_Avalonia.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap normalscreen {
+            get {
+                object obj = ResourceManager.GetObject("normalscreen", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap normalscreen_w {
+            get {
+                object obj = ResourceManager.GetObject("normalscreen_w", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap notepad {
             get {
                 object obj = ResourceManager.GetObject("notepad", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap paste_b {
+            get {
+                object obj = ResourceManager.GetObject("paste_b", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap paste_w {
+            get {
+                object obj = ResourceManager.GetObject("paste_w", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -706,6 +875,26 @@ namespace Yorot_Avalonia.Properties {
         internal static System.Drawing.Bitmap pin_w {
             get {
                 object obj = ResourceManager.GetObject("pin_w", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap print_b {
+            get {
+                object obj = ResourceManager.GetObject("print_b", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap print_w {
+            get {
+                object obj = ResourceManager.GetObject("print_w", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -756,6 +945,46 @@ namespace Yorot_Avalonia.Properties {
         internal static System.Drawing.Bitmap safe_w {
             get {
                 object obj = ResourceManager.GetObject("safe_w", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap save_b {
+            get {
+                object obj = ResourceManager.GetObject("save_b", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap save_w {
+            get {
+                object obj = ResourceManager.GetObject("save_w", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap screenshot {
+            get {
+                object obj = ResourceManager.GetObject("screenshot", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap screenshot_w {
+            get {
+                object obj = ResourceManager.GetObject("screenshot_w", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -841,6 +1070,26 @@ namespace Yorot_Avalonia.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap tab {
+            get {
+                object obj = ResourceManager.GetObject("tab", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap tab_w {
+            get {
+                object obj = ResourceManager.GetObject("tab_w", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &lt;head&gt;
         ///    &lt;title&gt;Yorot&lt;/title&gt;
         ///    &lt;style&gt;
@@ -872,7 +1121,7 @@ namespace Yorot_Avalonia.Properties {
         ///&lt;/head&gt;
         ///&lt;body&gt;
         ///    &lt;h1&gt;Tests&lt;/h1&gt;
-        ///    &lt;button onclick=&quot;alert(&quot; I am an alert box!&quot;);&quot;&gt;Alert test&lt;/button&gt;
+        ///    &lt;button onclick=&quot;alert(&apos;I am an alert box!&apos;);&quot;&gt;Alert test&lt;/button&gt;
         ///&lt;/body&gt;.
         /// </summary>
         internal static string test {
@@ -959,6 +1208,26 @@ namespace Yorot_Avalonia.Properties {
         internal static System.Drawing.Bitmap update_and_about {
             get {
                 object obj = ResourceManager.GetObject("update_and_about", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap web {
+            get {
+                object obj = ResourceManager.GetObject("web", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap web_w {
+            get {
+                object obj = ResourceManager.GetObject("web_w", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

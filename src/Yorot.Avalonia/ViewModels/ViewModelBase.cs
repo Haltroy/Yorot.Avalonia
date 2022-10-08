@@ -31,6 +31,14 @@ namespace Yorot_Avalonia.ViewModels
         public bool IsArtDark => !HTAlt.Tools.IsBright(YorotGlobal.Main.CurrentTheme.ArtColor);
         public bool IsArtForeDark => !HTAlt.Tools.IsBright(YorotGlobal.Main.CurrentTheme.ArtForeColor);
 
-        public bool IsNavigated { get; set; } = false;
+        #region Translations
+
+        public string NewWindow => YorotGlobal.Main.CurrentLanguage.GetItemText("UI.NewWindow");
+        public string NewIncognitoWindow => YorotGlobal.Main.CurrentLanguage.GetItemText("UI.NewIncognitoWindow");
+        public string SearchOnPage => YorotGlobal.Main.CurrentLanguage.GetItemText("UI.SearchOnPage");
+        public string MatchCase => YorotGlobal.Main.CurrentLanguage.GetItemText("UI.MatchCase");
+        public string OtherBookmarks => YorotGlobal.Main.CurrentLanguage.GetItemText("UI.OtherBookmarks");
+
+        #endregion Translations
     }
 }

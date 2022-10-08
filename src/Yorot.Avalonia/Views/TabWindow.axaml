@@ -76,23 +76,111 @@
 						<Image Source="/Assets/hamburger-w.png" IsVisible="{Binding IsBackDark}" Width="36" Height="36" VerticalAlignment="Center" HorizontalAlignment="Center" />
 					</Panel>
 					<Button.ContextFlyout>
-						<!--
-							 Find
- Un/mute
- Zoom
- Print
- Developer Options
- Save screenshot
- Save Page
- Cut - Copy - Paste
- New Tab / New Window / New Incognito Window
-						-->
+						<Flyout>
+							<StackPanel Orientation="Vertical">
+								<StackPanel Margin="5 5 5 5" Orientation="Horizontal">
+									<Button>
+										<Panel>
+											<Image Source="/Assets/cut-b.png" IsVisible="{Binding !IsBackDark}" Width="24" Height="24" VerticalAlignment="Center" HorizontalAlignment="Center" />
+											<Image Source="/Assets/cut-w.png" IsVisible="{Binding IsBackDark}" Width="24" Height="24" VerticalAlignment="Center" HorizontalAlignment="Center" />
+										</Panel>
+									</Button>
+									<Button>
+										<Panel>
+											<Image Source="/Assets/copy-b.png" IsVisible="{Binding !IsBackDark}" Width="24" Height="24" VerticalAlignment="Center" HorizontalAlignment="Center" />
+											<Image Source="/Assets/copy-w.png" IsVisible="{Binding IsBackDark}" Width="24" Height="24" VerticalAlignment="Center" HorizontalAlignment="Center" />
+										</Panel>
+									</Button>
+									<Button>
+										<Panel>
+											<Image Source="/Assets/paste-b.png" IsVisible="{Binding !IsBackDark}" Width="24" Height="24" VerticalAlignment="Center" HorizontalAlignment="Center" />
+											<Image Source="/Assets/paste-w.png" IsVisible="{Binding IsBackDark}" Width="24" Height="24" VerticalAlignment="Center" HorizontalAlignment="Center" />
+										</Panel>
+									</Button>
+								</StackPanel>
+								<StackPanel Margin="5 5 5 5" Orientation="Horizontal">
+									<Panel>
+										<Button>
+											<Panel>
+												<Image Source="/Assets/speaker.png" IsVisible="{Binding !IsBackDark}" Width="24" Height="24" VerticalAlignment="Center" HorizontalAlignment="Center" />
+												<Image Source="/Assets/speaker-w.png" IsVisible="{Binding IsBackDark}" Width="24" Height="24" VerticalAlignment="Center" HorizontalAlignment="Center" />
+											</Panel>
+										</Button>
+										<Button>
+											<Panel>
+												<Image Source="/Assets/mute.png" IsVisible="{Binding !IsBackDark}" Width="24" Height="24" VerticalAlignment="Center" HorizontalAlignment="Center" />
+												<Image Source="/Assets/mute-w.png" IsVisible="{Binding IsBackDark}" Width="24" Height="24" VerticalAlignment="Center" HorizontalAlignment="Center" />
+											</Panel>
+										</Button>
+									</Panel>
+									<Button>
+										<Panel>
+											<Image Source="/Assets/print-b.png" IsVisible="{Binding !IsBackDark}" Width="24" Height="24" VerticalAlignment="Center" HorizontalAlignment="Center" />
+											<Image Source="/Assets/print-w.png" IsVisible="{Binding IsBackDark}" Width="24" Height="24" VerticalAlignment="Center" HorizontalAlignment="Center" />
+										</Panel>
+									</Button>
+									<Button>
+										<Panel>
+											<Image Source="/Assets/screenshot.png" IsVisible="{Binding !IsBackDark}" Width="24" Height="24" VerticalAlignment="Center" HorizontalAlignment="Center" />
+											<Image Source="/Assets/screenshot-w.png" IsVisible="{Binding IsBackDark}" Width="24" Height="24" VerticalAlignment="Center" HorizontalAlignment="Center" />
+										</Panel>
+									</Button>
+									<Button>
+										<Panel>
+											<Image Source="/Assets/save-b.png" IsVisible="{Binding !IsBackDark}" Width="24" Height="24" VerticalAlignment="Center" HorizontalAlignment="Center" />
+											<Image Source="/Assets/save-w.png" IsVisible="{Binding IsBackDark}" Width="24" Height="24" VerticalAlignment="Center" HorizontalAlignment="Center" />
+										</Panel>
+									</Button>
+									<Button>
+										<Panel>
+											<Image Source="/Assets/devtools-b.png" IsVisible="{Binding !IsBackDark}" Width="24" Height="24" VerticalAlignment="Center" HorizontalAlignment="Center" />
+											<Image Source="/Assets/devtools-w.png" IsVisible="{Binding IsBackDark}" Width="24" Height="24" VerticalAlignment="Center" HorizontalAlignment="Center" />
+										</Panel>
+									</Button>
+								</StackPanel>
+								<Button Margin="5 5 5 5" Content="{Binding NewWindow}" />
+								<Button Margin="5 5 5 5" Content="{Binding NewIncognitoWindow}" />
+								<Grid Name="Find" Margin="5 5 5 5">
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition Width="40" />
+										<ColumnDefinition Width="*" />
+										<ColumnDefinition Width="40" />
+										<ColumnDefinition Width="*" />
+									</Grid.ColumnDefinitions>
+									<Grid.RowDefinitions>
+										<RowDefinition Height="*" />
+										<RowDefinition Height="40" />
+									</Grid.RowDefinitions>
+									<Button Grid.Column="0" Grid.Row="0">
+										<Panel>
+											<Image Source="/Assets/back-b.png" IsVisible="{Binding !IsBackDark}" Width="24" Height="24" VerticalAlignment="Center" HorizontalAlignment="Center" />
+											<Image Source="/Assets/back-w.png" IsVisible="{Binding IsBackDark}" Width="24" Height="24" VerticalAlignment="Center" HorizontalAlignment="Center" />
+										</Panel>
+									</Button>
+									<TextBox Grid.Row="0" Grid.Column="1" TextAlignment="Center" Watermark="{Binding SearchOnPage}" />
+									<Button Grid.Row="0" Grid.Column="2">
+										<Panel>
+											<Image Source="/Assets/forward-b.png" IsVisible="{Binding !IsBackDark}" Width="24" Height="24" VerticalAlignment="Center" HorizontalAlignment="Center" />
+											<Image Source="/Assets/forward-w.png" IsVisible="{Binding IsBackDark}" Width="24" Height="24" VerticalAlignment="Center" HorizontalAlignment="Center" />
+										</Panel>
+									</Button>
+									<TextBlock Grid.Row="0" Margin="5 5 5 5" VerticalAlignment="Center" Grid.Column="3" Name="FindCount" />
+									<CheckBox Margin="5 5 5 5" Grid.Column="1" Grid.Row="1" Content="{Binding MatchCase}" />
+								</Grid>
+
+								<StackPanel Name="Zoom" Orientation="Horizontal">
+									<Button Margin="5 5 5 5"  Content="+" />
+									<TextBlock Margin="5 5 5 5" VerticalAlignment="Center" Name="ZoomLevel" Text="100%" />
+									<Button Margin="5 5 5 5" Content="-" />
+								</StackPanel>
+							</StackPanel>
+						</Flyout>
 					</Button.ContextFlyout>
 				</Button>
 			</Grid>
 		</DockPanel>
 		<Menu Grid.Row="1" Name="Favorites" Background="{Binding BackColor}" Foreground="{Binding ForeColor}">
-			<MenuItem Background="{Binding BackColor}" Foreground="{Binding ForeColor}" Header="Bookmarks..." Name="other_bookmarks" />
+			<MenuItem Background="{Binding BackColor}" Foreground="{Binding ForeColor}" Header="{Binding OtherBookmarks}" Name="other_bookmarks" />
 		</Menu>
 		<DockPanel Name="cefpanel" Grid.Row="2" />
 	</Grid>

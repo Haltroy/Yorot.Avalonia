@@ -79,6 +79,14 @@
     <AvaloniaResource Include="Assets\YorotStone.png" />
     <AvaloniaResource Include="Assets\Yorot.png" />
     <AvaloniaResource Include="Assets\Yorot.ico" />
+    <AvaloniaResource Include="Assets\cut-b.png" />
+    <AvaloniaResource Include="Assets\cut-w.png" />
+    <AvaloniaResource Include="Assets\copy-b.png" />
+    <AvaloniaResource Include="Assets\copy-w.png" />
+    <AvaloniaResource Include="Assets\paste-b.png" />
+    <AvaloniaResource Include="Assets\paste-w.png" />
+    <AvaloniaResource Include="Assets\print-b.png" />
+    <AvaloniaResource Include="Assets\print-w.png" />
     <None Remove=".gitignore" />
     <None Remove="WebSources\certerror.html" />
     <None Remove="WebSources\error.html" />
@@ -138,5 +146,8 @@
   </ItemGroup>
   <ItemGroup>
     <UpToDateCheckInput Remove="Views\MessageBox.axaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Views\test.axaml" />
   </ItemGroup>
 </Project>
