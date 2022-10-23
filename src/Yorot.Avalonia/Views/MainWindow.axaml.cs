@@ -8,6 +8,7 @@ using DynamicData;
 using FluentAvalonia.Core;
 using FluentAvalonia.UI.Controls;
 using System.Collections.Generic;
+using Yorot_Avalonia.ViewModels;
 
 namespace Yorot_Avalonia.Views
 {
@@ -31,6 +32,12 @@ namespace Yorot_Avalonia.Views
         private void InitializeComponent()
         {
             AvaloniaXamlLoader.Load(this);
+            if (YorotGlobal.Main != null)
+            {
+                Width = YorotGlobal.Main.CurrentSettings.LastSize.Width;
+                Height = YorotGlobal.Main.CurrentSettings.LastSize.Height;
+                Position = new PixelPoint(YorotGlobal.Main.CurrentSettings.LastLocation.X, YorotGlobal.Main.CurrentSettings.LastLocation.Y);
+            }
             frmMain = this.FindControl<StackPanel>("frmMain");
             sidebarGrid = frmMain.FindControl<Grid>("sidebarGrid");
             Sidebar = sidebarGrid.FindControl<DockPanel>("Sidebar");
@@ -40,8 +47,6 @@ namespace Yorot_Avalonia.Views
             tabs.AddTabButtonClick += Tabs_AddTabButtonClick;
             tabs.TabCloseRequested += Tabs_TabCloseRequested;
             tabs.TabDroppedOutside += Tabs_TabDroppedOutside;
-            Sidebar.Background = Avalonia.Media.Brush.Parse("#ebebeb");
-            SidebarSplitter.Background = Avalonia.Media.Brush.Parse("#0080ff");
 
             this.PropertyChanged += MainWindow_PropertyChanged;
             this.Closed += MainWindow_Closed;
@@ -84,6 +89,9 @@ namespace Yorot_Avalonia.Views
             YorotGlobal.Main.MainForms.Remove(this);
             if (YorotGlobal.Main.MainForms.Count <= 0)
             {
+                YorotGlobal.Main.CurrentSettings.LastLocation = new System.Drawing.Point(Position.X, Position.Y);
+                YorotGlobal.Main.CurrentSettings.LastSize = new System.Drawing.Size((int)Width, (int)Height);
+                YorotGlobal.Main.Shutdown();
                 CefNetApplication.Instance.Shutdown();
             }
         }
@@ -96,7 +104,7 @@ namespace Yorot_Avalonia.Views
             DockPanel panel = new();
             panel.Margin = new Thickness(0, 0, 55, 10);
             item.Content = panel;
-            var tabform = new TabWindow(this, url) { VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch, HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch };
+            var tabform = new TabWindow() { mainWindow = this, _startUrl = url, VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch, HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch };
             panel.Children.Add(tabform);
             if (tabs.TabItems is AvaloniaList<object> itemList)
             {
@@ -106,6 +114,27 @@ namespace Yorot_Avalonia.Views
                     tabs.SelectedItem = item;
                 }
             }
+        }
+
+        public void NewWindow(string url = "yorot://newtab")
+        {
+            if (YorotGlobal.Main is null) { return; }
+            var mainform = new MainWindow()
+            {
+                DataContext = YorotGlobal.ViewModel,
+                IsVisible = true,
+                IsEnabled = true,
+                WindowState = WindowState.Normal,
+                ShowInTaskbar = true,
+                Position = new PixelPoint(YorotGlobal.Main.CurrentSettings.LastLocation.X, YorotGlobal.Main.CurrentSettings.LastLocation.Y),
+                Width = YorotGlobal.Main.CurrentSettings.LastSize.Width,
+                Height = YorotGlobal.Main.CurrentSettings.LastSize.Height
+            };
+            mainform.Activate();
+            mainform.Show();
+            mainform.BringIntoView();
+
+            YorotGlobal.Main.MainForms.Add(mainform);
         }
 
         private void MainWindow_PropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)

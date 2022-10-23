@@ -9,9 +9,6 @@ namespace Yorot_Avalonia
 {
     internal class Program
     {
-        // Initialization code. Don't use any Avalonia, third-party APIs or any
-        // SynchronizationContext-reliant code before AppMain is called: things aren't initialized
-        // yet and stuff might break.
         [STAThread]
         public static void Main(string[] args)
         {
@@ -24,12 +21,27 @@ namespace Yorot_Avalonia
                 YorotGlobal.Main.Wolfhook.SendWolf(string.Join(Environment.NewLine, args));
             }
 
-            BuildAvaloniaApp().With(new AvaloniaNativePlatformOptions { UseGpu = !PlatformInfo.IsMacOS }).StartWithCefNetApplicationLifetime(args); ;
+            YorotGlobal.ViewModel = new ViewModels.MainViewModel();
+
+            if (args.Contains("--oobe"))
+            {
+                BuildAvaloniaAppOOBE().With(new AvaloniaNativePlatformOptions { UseGpu = !PlatformInfo.IsMacOS }).StartWithCefNetApplicationLifetime(args); ;
+            }
+            else
+            {
+                BuildAvaloniaApp().With(new AvaloniaNativePlatformOptions { UseGpu = !PlatformInfo.IsMacOS }).StartWithCefNetApplicationLifetime(args); ;
+            }
         }
 
         // Avalonia configuration, don't remove; also used by visual designer.
         public static AppBuilder BuildAvaloniaApp()
             => AppBuilder.Configure<App>()
+                .UsePlatformDetect()
+                .LogToTrace()
+                .UseReactiveUI();
+
+        public static AppBuilder BuildAvaloniaAppOOBE()
+            => AppBuilder.Configure<AppOOBE>()
                 .UsePlatformDetect()
                 .LogToTrace()
                 .UseReactiveUI();

@@ -16,7 +16,7 @@ ExtendClientAreaTitleBarHeightHint="0"
 		WindowStartupLocation="CenterOwner">
 
 	<Design.DataContext>
-		<vm:MainWindowViewModel />
+		<vm:MainViewModel />
 	</Design.DataContext>
 
 	<Grid Name="MainGrid" Background="{Binding BackColor}">

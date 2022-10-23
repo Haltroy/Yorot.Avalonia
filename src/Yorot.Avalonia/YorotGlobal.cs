@@ -7,6 +7,8 @@ namespace Yorot_Avalonia
     /// </summary>
     public static class YorotGlobal
     {
+        public static ViewModels.ViewModelBase ViewModel { get; set; }
+
         public static string Arch
         {
             get
@@ -60,7 +62,7 @@ namespace Yorot_Avalonia
         /// <summary>
         /// Application location.
         /// </summary>
-        public static string YorotAppPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + System.IO.Path.DirectorySeparatorChar + ".yorot" + System.IO.Path.DirectorySeparatorChar;
+        public static string YorotAppPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + System.IO.Path.DirectorySeparatorChar + ".yorot" + System.IO.Path.DirectorySeparatorChar;
 
         /// <summary>
         /// Yorot Main

@@ -5,11 +5,12 @@
     <Nullable>enable</Nullable>
     <Authors>haltroy</Authors>
 	<Version>1.0.0.0</Version>
-	  <RuntimeIdentifier>win-x64</RuntimeIdentifier>
 	<AssemblyName>Yorot</AssemblyName>
 	<ApplicationIcon>Assets\Yorot.ico</ApplicationIcon>
 	<PackageIcon>Yorot.png</PackageIcon>
 	<RootNamespace>Yorot_Avalonia</RootNamespace>
+	  <PublishSingleFile>true</PublishSingleFile>
+	  <DebugType>embedded</DebugType>
   </PropertyGroup>
 	
   <ItemGroup>
@@ -38,8 +39,6 @@
     <AvaloniaResource Include="Assets\forward-b.png" />
     <AvaloniaResource Include="Assets\forward-w.png" />
     <AvaloniaResource Include="Assets\general-settings.png" />
-    <AvaloniaResource Include="Assets\globe_b.png" />
-    <AvaloniaResource Include="Assets\globe_w.png" />
     <AvaloniaResource Include="Assets\hamburger-w.png" />
     <AvaloniaResource Include="Assets\hamburger.png" />
     <AvaloniaResource Include="Assets\home-b.png" />
@@ -87,7 +86,14 @@
     <AvaloniaResource Include="Assets\paste-w.png" />
     <AvaloniaResource Include="Assets\print-b.png" />
     <AvaloniaResource Include="Assets\print-w.png" />
+	<AvaloniaResource Include="Assets\globe-b.png" />
+    <AvaloniaResource Include="Assets\globe-w.png" />
+    <Folder Include="Resources\" />
     <None Remove=".gitignore" />
+	  <AvaloniaResource Include="Assets\userdefault-b.png" />
+	  <AvaloniaResource Include="Assets\userdefault-w.png" />
+	  <AvaloniaResource Include="Assets\search-b.png" />
+	  <AvaloniaResource Include="Assets\search-w.png" />
     <None Remove="WebSources\certerror.html" />
     <None Remove="WebSources\error.html" />
     <None Remove="WebSources\incognito.html" />
@@ -126,6 +132,9 @@
     <ProjectReference Include="..\Yorot.Standart\Yorot.Standart.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Update="AppOOBE.axaml.cs">
+      <DependentUpon>AppOOBE.axaml</DependentUpon>
+    </Compile>
     <Compile Update="Properties\Resources.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -146,8 +155,5 @@
   </ItemGroup>
   <ItemGroup>
     <UpToDateCheckInput Remove="Views\MessageBox.axaml" />
-  </ItemGroup>
-  <ItemGroup>
-    <UpToDateCheckInput Remove="Views\test.axaml" />
   </ItemGroup>
 </Project>

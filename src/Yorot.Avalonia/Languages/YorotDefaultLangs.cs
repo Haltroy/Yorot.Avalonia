@@ -21,10 +21,14 @@ namespace Yorot_Avalonia
             for (int i = 0; i < d.Length; i++)
             {
                 string l = d[i];
-                string _l = langLoc + l + System.IO.Path.DirectorySeparatorChar + l + ".ylf";
+                string _ll = langLoc + l + System.IO.Path.DirectorySeparatorChar;
+                if (!System.IO.Directory.Exists(_ll)) { System.IO.Directory.CreateDirectory(_ll); }
+                string _l = _ll + l + ".ylf";
 
                 if (force || YorotGlobal.isPreOut || !System.IO.File.Exists(_l))
                 {
+                    System.IO.File.Create(_l).Close();
+
                     HTAlt.Tools.WriteFile(_l, GetDefaultLang(l), Encoding.Unicode);
                 }
             }

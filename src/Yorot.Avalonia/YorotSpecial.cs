@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using LibFoster;
 using Yorot;
 using CefNet;
+using System.Reflection;
 
 namespace Yorot_Avalonia
 {
@@ -51,17 +52,32 @@ namespace Yorot_Avalonia
 
             // Yorot-Avalonia
 
-            RegisterWebSource("yorot://newtab", Properties.Resources.newtab, "text/html", false);
-            RegisterWebSource("yorot://test", Properties.Resources.test, "text/html", false);
-            RegisterWebSource("yorot://license", Properties.Resources.license, "text/html", false);
-            RegisterWebSource("yorot://links", Properties.Resources.links, "text/html", false);
-            RegisterWebSource("yorot://noint", Properties.Resources.noint, "text/html", true);
-            RegisterWebSource("yorot://technical", Properties.Resources.technical, "text/html", false);
-            RegisterWebSource("yorot://error", Properties.Resources.error, "text/html", true);
-            RegisterWebSource("yorot://certerror", Properties.Resources.certerror, "text/html", true);
-            RegisterWebSource("yorot://incognito", Properties.Resources.incognito, "text/html", false);
-            RegisterWebSource("yorot://search", "<meta http-equiv=\"refresh\" content=\"0; URL=[Parameter.q]\" />\r\n", "text/html", true);
-            RegisterWebSource("yorot://homepage", "<meta http-equiv=\"refresh\" content=\"0; URL=[Info.Homepage]\" />\r\n", "text/html", true);
+            var technical = Properties.Resources.technical;
+
+            var packages = GetPackages();
+
+            string packlist = "";
+
+            for (int i = 0; i < packages.Length / 2; i++)
+            {
+                packlist += "<a><b>" + packages[i, 0] + ":</b>" + packages[i, 1] + "</a></br>" + Environment.NewLine;
+            }
+
+            RegisterWebSource("yorot://newtab", Properties.Resources.newtab, "text/html", false, false);
+            RegisterWebSource("yorot://test", Properties.Resources.test, "text/html", false, false);
+            RegisterWebSource("yorot://license", Properties.Resources.license, "text/html", false, false);
+            RegisterWebSource("yorot://links", Properties.Resources.links, "text/html", false, false);
+            RegisterWebSource("yorot://noint", Properties.Resources.noint, "text/html", true, true);
+            RegisterWebSource("yorot://technical", Properties.Resources.technical.Replace("[Parameter.Packages]", packlist), "text/html", false, false);
+            RegisterWebSource("yorot://error", Properties.Resources.error, "text/html", true, true);
+            RegisterWebSource("yorot://certerror", Properties.Resources.certerror, "text/html", true, true);
+            RegisterWebSource("yorot://incognito", Properties.Resources.incognito, "text/html", false, false);
+            RegisterWebSource("yorot://map", Properties.Resources.map, "text/html", true, true);
+            RegisterWebSource("yorot://empty", "", "text/html", true, true);
+            RegisterWebSource("yorot://search", "<meta http-equiv=\"refresh\" content=\"0; URL=[Parameter.q]\" />\r\n", "text/html", true, true);
+            RegisterWebSource("yorot://homepage", "<meta http-equiv=\"refresh\" content=\"0; URL=[Info.Homepage]\" />\r\n", "text/html", true, true);
+            RegisterWebSource("yorot://dad", "<meta http-equiv=\"refresh\" content=\"0; URL=https://haltroy.com\" />\r\n", "text/html", false, false);
+            RegisterWebSource("yorot://me", "<meta http-equiv=\"refresh\" content=\"0; URL=https://haltroy.com/yorot/\" />\r\n", "text/html", false, false);
 
             // Yopad
             Yopad.YopadLog += new Foster.OnLogEntryDelegate((sender, e) => { Output.WriteLine(e.LogEntry, (HTAlt.LogLevel)((int)e.Level)); });
@@ -84,6 +100,22 @@ namespace Yorot_Avalonia
                     }
                 }
             }
+        }
+
+        public static string[,] GetPackages()
+        {
+            var referencedAssemblies = Assembly.GetExecutingAssembly().GetReferencedAssemblies();
+            var list = new string[referencedAssemblies.Length, 2];
+            for (int i = 0; i < referencedAssemblies.Length; i++)
+            {
+                AssemblyName? assembly = referencedAssemblies[i];
+                if (assembly != null)
+                {
+                    list[i, 0] = assembly.Name ?? "/!\\ [Unknown Package]";
+                    list[i, 1] = assembly.Version != null ? assembly.Version.ToString() : "";
+                }
+            }
+            return list;
         }
 
         public override string CurrentEngineVer

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Yorot_Avalonia.ViewModels
 {
-    public class MainWindowViewModel : ViewModelBase
+    public class MainViewModel : ViewModelBase
     {
     }
 }

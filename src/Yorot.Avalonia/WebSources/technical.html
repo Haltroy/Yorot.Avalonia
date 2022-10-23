@@ -74,8 +74,7 @@
     <!-- Tab links -->
     <div class="tab">
         <button id="defaultOpen" class="tablinks" onclick="openCity(event, 'Main')">Main</button>
-        <button class="tablinks" onclick="openCity(event, 'UserInterface')">User Interface</button>
-        <button class="tablinks" onclick="openCity(event, 'BrowserEngine')">Browser Engine &amp; Other</button>
+        <button class="tablinks" onclick="openCity(event, 'Libraries')">Libraries</button>
     </div>
 
     <!-- Tab content -->
@@ -91,17 +90,9 @@
         <a><b>Language:</b> [Info.Language]</a></br>
     </div>
 
-    <div id="UserInterface" class="tabcontent">
-        <h2>User Interface</h2>
-        <a><b>HTAlt:</b> Standart [Info.HTAltVer]</a></br>
-        <a><b>.NET:</b> [Info.DotNetVer]</a></br>
-    </div>
-
-    <div id="BrowserEngine" class="tabcontent">
-        <h2>Browser Engine &amp; Other</h2>
-        <a><b>Chromium:</b> [Info.EngineVer]</a></br>
-        <a><b>Fostrian:</b> [Info.FostrianVer]</a></br>
-        <a><b>Foster:</b> [Info.FosterVer]</a></br>
+    <div id="Libraries" class="tabcontent">
+        <h2>Libraries</h2>
+        [Parameter.Packages]
     </div>
 
     <script>

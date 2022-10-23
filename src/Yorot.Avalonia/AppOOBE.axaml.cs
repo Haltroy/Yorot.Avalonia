@@ -6,7 +6,7 @@ using Yorot_Avalonia.Views;
 
 namespace Yorot_Avalonia
 {
-    public class App : Application
+    public class AppOOBE : Application
     {
         public override void Initialize()
         {
@@ -25,7 +25,7 @@ namespace Yorot_Avalonia
 
         private void Desktop_Startup(object? sender, ControlledApplicationLifetimeStartupEventArgs e)
         {
-            new MainWindow
+            new OOBEWindow
             {
                 DataContext = YorotGlobal.ViewModel,
             }.Show();

@@ -11,21 +11,23 @@ namespace Yorot_Avalonia.Handlers
 {
     internal class YorotWebView : WebView
     {
-        private Views.TabWindow tabWindow;
+        public object Window;
+        public YorotGlue Glue;
 
-        public YorotWebView(Views.TabWindow tabWindow)
+        public YorotWebView(object window)
         {
-            this.tabWindow = tabWindow;
+            Window = window;
         }
 
-        public YorotWebView(Views.TabWindow tabWindow, WebView opener) : base(opener)
+        public YorotWebView(object window, WebView opener) : base(opener)
         {
-            this.tabWindow = tabWindow;
+            Window = window;
         }
 
         protected override WebViewGlue CreateWebViewGlue()
         {
-            return new YorotGlue(tabWindow, this);
+            Glue = new YorotGlue(Window, this);
+            return Glue;
         }
     }
 }

@@ -1,0 +1,15 @@
+{
+  "profiles": {
+    "OOBE": {
+      "commandName": "Project",
+      "commandLineArgs": "--oobe"
+    },
+    "Incognito": {
+      "commandName": "Project",
+      "commandLineArgs": "-i"
+    },
+    "Yorot": {
+      "commandName": "Project"
+    }
+  }
+}

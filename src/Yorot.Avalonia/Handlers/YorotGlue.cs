@@ -5,11 +5,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
+using Avalonia.Controls;
 using CefNet;
 using CefNet.Internal;
 using CefNet.Net;
 using Yorot;
 using Yorot_Avalonia.Views;
+using static Yorot.DefaultApps;
 
 namespace Yorot_Avalonia.Handlers
 {
@@ -23,11 +25,11 @@ namespace Yorot_Avalonia.Handlers
 
     internal class YorotGlue : WebViewGlue
     {
-        private Views.TabWindow tabWindow;
+        public object Window;
 
-        public YorotGlue(Views.TabWindow _tabwindow, IChromiumWebViewPrivate view) : base(view)
+        public YorotGlue(object window, IChromiumWebViewPrivate view) : base(view)
         {
-            tabWindow = _tabwindow;
+            Window = window;
         }
 
         protected override bool CanDownload(CefBrowser browser, string url, string requestMethod)
@@ -37,11 +39,37 @@ namespace Yorot_Avalonia.Handlers
 
         protected override bool CanSaveCookie(CefBrowser browser, CefFrame frame, CefRequest request, CefResponse response, CefCookie cookie)
         {
+            // TODO: Site Permission feature here
+            if (Window is PopupWindow window && window.IsPageSafe != null && window.IsPageUsedCookie != null && window.IsPageUnsafe != null)
+            {
+                window.IsPageSafe.OnNext(false);
+                window.IsPageUsedCookie.OnNext(true);
+                window.IsPageUnsafe.OnNext(false);
+            }
+            if (Window is TabWindow tab && tab.IsPageSafe != null && tab.IsPageUsedCookie != null && tab.IsPageUnsafe != null)
+            {
+                tab.IsPageSafe.OnNext(false);
+                tab.IsPageUsedCookie.OnNext(true);
+                tab.IsPageUnsafe.OnNext(false);
+            }
             return base.CanSaveCookie(browser, frame, request, response, cookie);
         }
 
         protected override bool CanSendCookie(CefBrowser browser, CefFrame frame, CefRequest request, CefCookie cookie)
         {
+            // TODO: Site Permission feature here
+            if (Window is PopupWindow window && window.IsPageSafe != null && window.IsPageUsedCookie != null && window.IsPageUnsafe != null)
+            {
+                window.IsPageSafe.OnNext(true);
+                window.IsPageUsedCookie.OnNext(false);
+                window.IsPageUnsafe.OnNext(false);
+            }
+            if (Window is TabWindow tab && tab.IsPageSafe != null && tab.IsPageUsedCookie != null && tab.IsPageUnsafe != null)
+            {
+                tab.IsPageSafe.OnNext(true);
+                tab.IsPageUsedCookie.OnNext(false);
+                tab.IsPageUnsafe.OnNext(false);
+            }
             return base.CanSendCookie(browser, frame, request, cookie);
         }
 
@@ -187,11 +215,6 @@ namespace Yorot_Avalonia.Handlers
             base.OnBeforeClose(browser);
         }
 
-        protected override void OnBeforeContextMenu(CefBrowser browser, CefFrame frame, CefContextMenuParams menuParams, CefMenuModel model)
-        {
-            base.OnBeforeContextMenu(browser, frame, menuParams, model);
-        }
-
         protected override void OnBeforeDownload(CefBrowser browser, CefDownloadItem downloadItem, string suggestedName, CefBeforeDownloadCallback callback)
         {
             base.OnBeforeDownload(browser, downloadItem, suggestedName, callback);
@@ -199,7 +222,57 @@ namespace Yorot_Avalonia.Handlers
 
         protected override bool OnBeforePopup(CefBrowser browser, CefFrame frame, string targetUrl, string targetFrameName, CefWindowOpenDisposition targetDisposition, bool userGesture, CefPopupFeatures popupFeatures, CefWindowInfo windowInfo, ref CefClient client, CefBrowserSettings settings, ref CefDictionaryValue extraInfo, ref int noJavascriptAccess)
         {
-            return base.OnBeforePopup(browser, frame, targetUrl, targetFrameName, targetDisposition, userGesture, popupFeatures, windowInfo, ref client, settings, ref extraInfo, ref noJavascriptAccess);
+            if (YorotGlobal.Main is null) { return true; }
+            switch (targetDisposition)
+            {
+                case CefWindowOpenDisposition.SwitchToTab:
+                case CefWindowOpenDisposition.Unknown:
+                case CefWindowOpenDisposition.CurrentTab:
+                case CefWindowOpenDisposition.SingletonTab:
+                case CefWindowOpenDisposition.NewWindow:
+                case CefWindowOpenDisposition.NewForegroundTab:
+                    YorotGlobal.Main.MainForm.NewTab(targetUrl, -1, true);
+                    break;
+
+                case CefWindowOpenDisposition.NewBackgroundTab:
+                    YorotGlobal.Main.MainForm.NewTab(targetUrl, -1, false);
+                    break;
+
+                case CefWindowOpenDisposition.NewPopup:
+                    Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(() =>
+                    {
+                        PopupWindow window = new(targetUrl);
+                        if (Window is TabWindow tab) { window.mainWindow = tab.mainWindow; }
+                        window.Activate();
+                        window.Show();
+                        window.BringIntoView();
+                    }, Avalonia.Threading.DispatcherPriority.Normal);
+                    return true;
+
+                case CefWindowOpenDisposition.SaveToDisk:
+                    // TODO: Implement a save function here
+                    return true;
+
+                case CefWindowOpenDisposition.OffTheRecord:
+                    // Ignored.
+                    return true;
+
+                case CefWindowOpenDisposition.IgnoreAction:
+                case CefWindowOpenDisposition.NewPictureInPicture: // TODO: Use this for Picture-In-Picture mode
+                    return base.OnBeforePopup(browser,
+                                              frame,
+                                              targetUrl,
+                                              targetFrameName,
+                                              targetDisposition,
+                                              userGesture,
+                                              popupFeatures,
+                                              windowInfo,
+                                              ref client,
+                                              settings,
+                                              ref extraInfo,
+                                              ref noJavascriptAccess);
+            }
+            return true;
         }
 
         protected override CefReturnValue OnBeforeResourceLoad(CefBrowser browser, CefFrame frame, CefRequest request, CefCallback callback)
@@ -214,10 +287,27 @@ namespace Yorot_Avalonia.Handlers
 
         protected override bool OnCertificateError(CefBrowser browser, CefErrorCode certError, string requestUrl, CefSSLInfo sslInfo, CefCallback callback)
         {
-            // TODO: Do an actual navigation when Session System is implemented
-            browser.GetWebView().Navigate("yorot://certerror");
+            if (Window is Views.TabWindow tabWindow)
+            {
+                tabWindow.redirectTo("yorot://certerror", "");
+                if (tabWindow.IsPageSafe != null && tabWindow.IsPageUnsafe != null && tabWindow.IsPageUsedCookie != null)
+                {
+                    tabWindow.IsPageUnsafe.OnNext(true);
+                    tabWindow.IsPageSafe.OnNext(false);
+                    tabWindow.IsPageUsedCookie.OnNext(false);
+                }
+            }
+            if (Window is Views.PopupWindow popupWindow)
+            {
+                popupWindow.redirectTo("yorot://certerror", "");
+                if (popupWindow.IsPageSafe != null && popupWindow.IsPageUnsafe != null && popupWindow.IsPageUsedCookie != null)
+                {
+                    popupWindow.IsPageUnsafe.OnNext(true);
+                    popupWindow.IsPageSafe.OnNext(false);
+                    popupWindow.IsPageUsedCookie.OnNext(false);
+                }
+            }
             return true;
-            //return base.OnCertificateError(browser, certError, requestUrl, sslInfo, callback);
         }
 
         protected override bool OnChromeCommand(CefBrowser browser, int commandId, CefWindowOpenDisposition disposition)
@@ -228,16 +318,6 @@ namespace Yorot_Avalonia.Handlers
         protected override bool OnConsoleMessage(CefBrowser browser, CefLogSeverity level, string message, string source, int line)
         {
             return base.OnConsoleMessage(browser, level, message, source, line);
-        }
-
-        protected override bool OnContextMenuCommand(CefBrowser browser, CefFrame frame, CefContextMenuParams menuParams, int commandId, CefEventFlags eventFlags)
-        {
-            return base.OnContextMenuCommand(browser, frame, menuParams, commandId, eventFlags);
-        }
-
-        protected override void OnContextMenuDismissed(CefBrowser browser, CefFrame frame)
-        {
-            base.OnContextMenuDismissed(browser, frame);
         }
 
         protected override bool OnCursorChange(CefBrowser browser, IntPtr cursor, CefCursorType type, CefCursorInfo customCursorInfo)
@@ -282,9 +362,13 @@ namespace Yorot_Avalonia.Handlers
 
         protected override void OnFindResult(CefBrowser browser, int identifier, int count, CefRect selectionRect, int activeMatchOrdinal, bool finalUpdate)
         {
-            if (tabWindow != null && tabWindow.FindCount != null)
+            if (Window is Views.TabWindow tabWindow && tabWindow.FindCount != null)
             {
-                tabWindow.FindCount.Text = activeMatchOrdinal + "/" + count;
+                Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(() =>
+                {
+                    tabWindow.FindCount.Text = activeMatchOrdinal + "/" + count;
+                }, Avalonia.Threading.DispatcherPriority.Layout);
+                return;
             }
             base.OnFindResult(browser, identifier, count, selectionRect, activeMatchOrdinal, finalUpdate);
         }
@@ -321,6 +405,10 @@ namespace Yorot_Avalonia.Handlers
 
         protected override bool OnJSDialog(CefBrowser browser, string originUrl, CefJSDialogType dialogType, string messageText, string defaultPromptText, CefJSDialogCallback callback, ref int suppressMessage)
         {
+            if (YorotGlobal.Main is null)
+            {
+                return true;
+            }
             YorotSite site = YorotGlobal.Main.CurrentSettings.SiteMan.GetSite(originUrl);
             if (!site.ShowMessageBoxes)
             {
@@ -330,7 +418,7 @@ namespace Yorot_Avalonia.Handlers
             {
                 case CefJSDialogType.Confirm:
                 case CefJSDialogType.Alert:
-                    var task = Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(new Action(() =>
+                    var task = Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(() =>
                     {
                         var alertmessage = new MessageBox(
                             YorotGlobal.Main.CurrentLanguage.GetItemText("DialogBox.MessageFromSite").Replace("[Parameter.Url]", originUrl),
@@ -351,13 +439,13 @@ namespace Yorot_Avalonia.Handlers
                             }
                         });
                         alertmessage.ShowDialog(YorotGlobal.Main.MainForm);
-                    }), Avalonia.Threading.DispatcherPriority.Input);
+                    }, Avalonia.Threading.DispatcherPriority.Input);
 
                     return true;
 
                 default:
                 case CefJSDialogType.Prompt:
-                    var task2 = Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(new Action(() =>
+                    var task2 = Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(() =>
                     {
                         var promptmessage = new MessageBox(
                             YorotGlobal.Main.CurrentLanguage.GetItemText("DialogBox.MessageFromSite").Replace("[Parameter.Url]", originUrl),
@@ -378,7 +466,7 @@ namespace Yorot_Avalonia.Handlers
                             }
                         });
                         promptmessage.ShowDialog(YorotGlobal.Main.MainForm).Wait();
-                    }), Avalonia.Threading.DispatcherPriority.Input);
+                    }, Avalonia.Threading.DispatcherPriority.Input);
                     return true;
             }
         }
@@ -568,10 +656,101 @@ namespace Yorot_Avalonia.Handlers
             base.OnVirtualKeyboardRequested(browser, inputMode);
         }
 
+        #region Context Menu
+
+        internal class ContextMenuParams : IEquatable<ContextMenuParams?>
+        {
+            public ContextMenuParams(CefContextMenuParams menuParams)
+            {
+                SelectedText = menuParams.SelectionText;
+                LinkUrl = menuParams.LinkUrl;
+                UnfilteredLinkUrl = menuParams.UnfilteredLinkUrl;
+                SourceUrl = menuParams.SourceUrl;
+                FrameUrl = menuParams.FrameUrl;
+                IsEditable = menuParams.IsEditable;
+                IsImage = menuParams.HasImageContents;
+                ImageTitle = menuParams.TitleText;
+            }
+
+            public string ImageTitle { get; }
+            public string SelectedText { get; }
+            public bool IsTextSelected => !string.IsNullOrWhiteSpace(SelectedText);
+            public string LinkUrl { get; }
+            public bool IsSelectedUrl => !string.IsNullOrWhiteSpace(LinkUrl) && !string.IsNullOrWhiteSpace(UnfilteredLinkUrl);
+            public string UnfilteredLinkUrl { get; }
+            public string SourceUrl { get; }
+            public string PageUrl { get; }
+            public string FrameUrl { get; }
+            public bool IsEditable { get; }
+            public bool IsImage { get; }
+
+            public override bool Equals(object? obj)
+            {
+                return Equals(obj as ContextMenuParams);
+            }
+
+            public bool Equals(ContextMenuParams? other)
+            {
+                return other is not null &&
+                       ImageTitle == other.ImageTitle &&
+                       SelectedText == other.SelectedText &&
+                       LinkUrl == other.LinkUrl &&
+                       UnfilteredLinkUrl == other.UnfilteredLinkUrl &&
+                       SourceUrl == other.SourceUrl &&
+                       PageUrl == other.PageUrl &&
+                       FrameUrl == other.FrameUrl &&
+                       IsEditable == other.IsEditable;
+            }
+
+            public override int GetHashCode()
+            {
+                return HashCode.Combine(ImageTitle, SelectedText, LinkUrl, UnfilteredLinkUrl, SourceUrl, PageUrl, FrameUrl, IsEditable);
+            }
+
+            public static bool operator ==(ContextMenuParams? left, ContextMenuParams? right)
+            {
+                return EqualityComparer<ContextMenuParams>.Default.Equals(left, right);
+            }
+
+            public static bool operator !=(ContextMenuParams? left, ContextMenuParams? right)
+            {
+                return !(left == right);
+            }
+        }
+
         protected override bool RunContextMenu(CefBrowser browser, CefFrame frame, CefContextMenuParams menuParams, CefMenuModel model, CefRunContextMenuCallback callback)
         {
-            return base.RunContextMenu(browser, frame, menuParams, model, callback);
+            ContextMenuParams param = new(menuParams);
+            Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                if (Window is TabWindow tab)
+                {
+                    tab.ShowContextMenu(param, frame);
+                }
+                if (Window is PopupWindow popup)
+                {
+                    popup.ShowContextMenu(param, frame);
+                }
+            }, Avalonia.Threading.DispatcherPriority.Input);
+            return true;
         }
+
+        protected override void OnBeforeContextMenu(CefBrowser browser, CefFrame frame, CefContextMenuParams menuParams, CefMenuModel model)
+        {
+            // Ignored
+        }
+
+        protected override bool OnContextMenuCommand(CefBrowser browser, CefFrame frame, CefContextMenuParams menuParams, int commandId, CefEventFlags eventFlags)
+        {
+            return base.OnContextMenuCommand(browser, frame, menuParams, commandId, eventFlags);
+        }
+
+        protected override void OnContextMenuDismissed(CefBrowser browser, CefFrame frame)
+        {
+            // Ignored
+        }
+
+        #endregion Context Menu
 
         protected override bool StartDragging(CefBrowser browser, CefDragData dragData, CefDragOperationsMask allowedOps, int x, int y)
         {

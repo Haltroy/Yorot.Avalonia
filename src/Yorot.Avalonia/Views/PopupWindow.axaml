@@ -1,0 +1,38 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:vm="using:Yorot_Avalonia.ViewModels"
+        mc:Ignorable="d"
+		Width="600"
+		Height="450"
+        x:Class="Yorot_Avalonia.Views.PopupWindow">
+
+	<Design.DataContext>
+		<vm:MainViewModel />
+	</Design.DataContext>
+	<DockPanel Name="ContentPanel">
+		<Grid DockPanel.Dock="Top" Name="UrlBar">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="40" />
+				<ColumnDefinition Width="*" />
+			</Grid.ColumnDefinitions>
+			<Button Name="SecurityInfo">
+				<Panel Name="ButtonContent">
+					<Image Name="WebsiteGood" Source="/Assets/lockg.png" Width="36" Height="36" VerticalAlignment="Center" HorizontalAlignment="Center" />
+					<Image Name="WebsiteMeh" Source="/Assets/locko.png" Width="36" Height="36" VerticalAlignment="Center" HorizontalAlignment="Center" />
+					<Image Name="WebsiteBad" Source="/Assets/lockr.png" Width="36" Height="36" VerticalAlignment="Center" HorizontalAlignment="Center" />
+				</Panel>
+				<Button.ContextFlyout>
+					<Flyout>
+						<Grid>
+							<TextBlock Text="Website safe" />
+						</Grid>
+					</Flyout>
+				</Button.ContextFlyout>
+			</Button>
+			<TextBox Grid.Column="1" Name="Url" IsReadOnly="true" Text="Test" />
+		</Grid>
+		<DockPanel Name="cefpanel" />
+	</DockPanel>
+</Window>

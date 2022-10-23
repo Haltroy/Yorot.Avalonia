@@ -17,7 +17,7 @@
 		Background="{Binding BackColor}">
 
 	<Design.DataContext>
-		<vm:MainWindowViewModel />
+		<vm:MainViewModel />
 	</Design.DataContext>
 
 	<StackPanel Name="frmMain" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Width="{Binding $parent.Width}" Height="{Binding $parent.Height}">

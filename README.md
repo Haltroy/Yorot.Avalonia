@@ -1,7 +1,7 @@
 ## ⚠ In case of website beign down, please check my [Instagram](https://instagram.com/haltroy_) or [Discord Server](https://discord.gg/DjZQEvZ8n5). ⚠
 
 <p align="center" style="text-align: center;">
-  <img width="128" height="128" src="https://github.com/Haltroy/Yorot/raw/main/Yorot-Avalonia/Assets/Yorot.png" />
+  <img width="128" height="128" src="https://github.com/Haltroy/Yorot.Avalonia/raw/main/src/Yorot.Avalonia/Assets/Yorot.png" />
 </p>
 
 # [Yorot](https://haltroy.com/Yorot.html "Yorot's Page")
