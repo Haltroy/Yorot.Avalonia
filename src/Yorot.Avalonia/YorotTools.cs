@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Drawing.Imaging;
 using Avalonia.Platform;
 using Avalonia;
+using System.Linq;
 
 namespace Yorot_Avalonia
 {
@@ -22,6 +23,27 @@ namespace Yorot_Avalonia
             using (FileStream fs = new FileStream(main.AppPath + System.IO.Path.DirectorySeparatorChar + "favicons" + System.IO.Path.DirectorySeparatorChar + HTAlt.Tools.GetBaseURL(site.Url) + ".ico", FileMode.Create))
             {
                 image.Save(fs);
+            }
+        }
+
+        /// <summary>
+        /// Reads embedded resources.
+        /// <para />
+        /// Format: "{Namespace}.{Folder}.{filename}.{Extension}"
+        /// </summary>
+        /// <param name="name">Format: "{Namespace}.{Folder}.{filename}.{Extension}"</param>
+        /// <returns><see cref="string"/></returns>
+        public static string ReadResource(string name)
+        {
+            // Determine path
+            var assembly = Assembly.GetExecutingAssembly();
+            string resourcePath = name;
+            //
+
+            using (Stream stream = assembly.GetManifestResourceStream(resourcePath))
+            using (StreamReader reader = new StreamReader(stream))
+            {
+                return reader.ReadToEnd();
             }
         }
 
@@ -64,7 +86,7 @@ namespace Yorot_Avalonia
             }
             else
             {
-                return new Avalonia.Media.Imaging.Bitmap(AvaloniaLocator.Current.GetService<IAssetLoader>().Open(new Uri("avares://Yorot_Avalonia/Assets/globe" + (YorotGlobal.Main.CurrentTheme.BackColor.IsBright ? " - b" : "-w") + ".png")));
+                return new Avalonia.Media.Imaging.Bitmap(AvaloniaLocator.Current.GetService<IAssetLoader>().Open(new Uri("avares://Yorot/Assets/globe" + (YorotGlobal.Main.CurrentTheme.BackColor.IsBright ? " - b" : "-w") + ".png")));
             }
         }
 

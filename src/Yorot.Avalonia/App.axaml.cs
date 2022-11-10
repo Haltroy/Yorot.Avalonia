@@ -25,10 +25,20 @@ namespace Yorot_Avalonia
 
         private void Desktop_Startup(object? sender, ControlledApplicationLifetimeStartupEventArgs e)
         {
-            new MainWindow
+            if (YorotGlobal.Main != null && !YorotGlobal.Main.OOBE)
             {
-                DataContext = YorotGlobal.ViewModel,
-            }.Show();
+                new MainWindow
+                {
+                    DataContext = YorotGlobal.ViewModel,
+                }.Show();
+            }
+            else
+            {
+                new OOBEWindow()
+                {
+                    DataContext = YorotGlobal.ViewModel,
+                }.Show();
+            }
         }
     }
 }

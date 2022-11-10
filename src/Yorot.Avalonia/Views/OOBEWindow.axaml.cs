@@ -31,9 +31,9 @@ namespace Yorot_Avalonia.Views
         private ComboBox datetimeBox;
         private TextBox profilename;
         private TextBox profileusername;
-        private ToggleButton selected;
+        private YorotLanguage selectedLang;
+        private YorotTheme selectedTheme;
         private ToggleButton[] themes;
-        private ComboBox datetime;
         private CheckBox importKorot;
         private CheckBox importChrome;
         private CheckBox importFirefox;
@@ -218,6 +218,7 @@ namespace Yorot_Avalonia.Views
                             themebutton.IsChecked = false;
                         }
                     }
+                    selectedTheme = theme;
                     YorotGlobal.Main.CurrentSettings.CurrentTheme = theme;
                 };
 
@@ -310,6 +311,7 @@ namespace Yorot_Avalonia.Views
         }
 
         private YorotLocaleMap LocaleMap = new YorotLocaleMap();
+        private YorotLocale selectedLocale;
 
         private void Webview_DocumentTitleChanged(object? sender, CefNet.DocumentTitleChangedEventArgs e)
         {
@@ -330,6 +332,8 @@ namespace Yorot_Avalonia.Views
                                 if (item.Tag == lang)
                                 {
                                     langBox.SelectedIndex = i;
+                                    YorotGlobal.Main.CurrentSettings.CurrentLanguage = lang;
+                                    selectedLang = lang;
                                     break;
                                 }
                             }
@@ -344,9 +348,10 @@ namespace Yorot_Avalonia.Views
                     {
                         if (list[i] is ComboBoxItem item)
                         {
-                            if (item.Name == locale.Locale)
+                            if (item.Name == locale.Locale.ToString())
                             {
                                 localeBox.SelectedIndex = i;
+                                selectedLocale = locale.Locale;
                                 break;
                             }
                         }
@@ -419,6 +424,34 @@ namespace Yorot_Avalonia.Views
 
         public void Finish(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
+            // Create the profile and switch to it
+            var profile = new YorotProfile(profileusername.Text, profilename.Text, YorotGlobal.Main.Profiles);
+            YorotGlobal.Main.Profiles.Profiles.Add(profile);
+            YorotGlobal.Main.Profiles.Current = profile;
+            profile.Settings.CurrentTheme = selectedTheme;
+            profile.Settings.CurrentLanguage = selectedLang;
+            profile.Settings.Locale = selectedLocale;
+            switch (datetimeBox.SelectedIndex)
+            {
+                case 0:
+                    profile.Settings.DateFormat = YorotDateAndTime.DMY;
+                    break;
+
+                case 1:
+                    profile.Settings.DateFormat = YorotDateAndTime.YMD;
+                    break;
+
+                case 2:
+                    profile.Settings.DateFormat = YorotDateAndTime.MDY;
+                    break;
+            }
+            // TODO: Import from other browsers
+
+            // Shutdown
+            YorotGlobal.Main.Shutdown(true);
+            CefNetApplication.Instance.Shutdown();
+            this.Close();
+            System.Diagnostics.Process.Start(System.Diagnostics.Process.GetCurrentProcess().ProcessName);
         }
     }
 }

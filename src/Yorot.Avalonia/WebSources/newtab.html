@@ -4,10 +4,10 @@
         :root {
             --rad: 0.7rem;
             --dur: 0.3s;
-            --color-dark: #2f2f2f;
-            --color-light: #fff;
+            --color-dark: [Theme.BackColor];
+            --color-light: [Theme.ForeColor];
             --color-brand: [Theme.OverlayColor];
-            --font-fam: "Lato", sans-serif;
+            --font-fam: "Ubuntu", sans-serif;
             --height: 5rem;
             --btn-width: 6rem;
             --bez: cubic-bezier(0, 0, 0.43, 1.49);
@@ -30,6 +30,8 @@
 
         html,
         body {
+            background-color: var(--color-dark);
+            color: var(--color-light);
             margin: 0;
             padding: 0;
             display: flex;
@@ -164,7 +166,7 @@
         }
 
         label {
-            color: #e0e0e0;
+            color: var(--color-light);
             transition-duration: 0.6s;
             cursor: pointer;
         }
@@ -172,7 +174,7 @@
         #i_1:checked ~ .controls label[for="i_1"],
         #i_2:checked ~ .controls label[for="i_2"],
         #i_3:checked ~ .controls label[for="i_3"] {
-            filter: invert();
+            color: var(--color-brand);
         }
 
         form {
@@ -193,7 +195,8 @@
             .searchinput[type="search"] {
                 outline: 0;
                 width: 100%;
-                background: var(--color-light);
+                background: [Theme.BackColor2];
+                color: var(--color-light);
                 padding: 0 1.6rem;
                 border-radius: var(--rad);
                 appearance: none;
@@ -249,7 +252,7 @@
             position: absolute;
             left: calc(50% - 1px);
             width: 2px;
-            background: #f4eed7;
+            background: [Theme.OverlayColor];
             transform-origin: bottom center;
             z-index: 2;
             border-radius: 1px;
@@ -258,7 +261,7 @@
         .analogclock__second {
             height: 90px;
             margin-top: 10px;
-            background: #4b9aaa;
+            background: [Theme.OverlayColor2];
             animation: time 60s infinite steps(60);
             z-index: 3;
         }
@@ -278,7 +281,7 @@
 
         .analogclock__indicator {
             height: 98px;
-            border-top: 2px solid #4b9aaa;
+            border-top: 2px solid [Theme.OverlayColor3];
             background: none;
         }
 
@@ -846,6 +849,7 @@
                        name="q"
                        type="search"
                        placeholder="[WebSources.Search]"
+                       style="background-color: [Theme.BackColor2]; color: var(--color-light)"
                        autofocus
                        required />
                 <button class="searchbutton" type="submit">[WebSources.Go]</button>

@@ -25,23 +25,14 @@ namespace Yorot_Avalonia
 
             if (args.Contains("--oobe"))
             {
-                BuildAvaloniaAppOOBE().With(new AvaloniaNativePlatformOptions { UseGpu = !PlatformInfo.IsMacOS }).StartWithCefNetApplicationLifetime(args); ;
+                YorotGlobal.Main.OOBE = true;
             }
-            else
-            {
-                BuildAvaloniaApp().With(new AvaloniaNativePlatformOptions { UseGpu = !PlatformInfo.IsMacOS }).StartWithCefNetApplicationLifetime(args); ;
-            }
+            BuildAvaloniaApp().With(new AvaloniaNativePlatformOptions { UseGpu = !PlatformInfo.IsMacOS }).StartWithCefNetApplicationLifetime(args); ;
         }
 
         // Avalonia configuration, don't remove; also used by visual designer.
         public static AppBuilder BuildAvaloniaApp()
             => AppBuilder.Configure<App>()
-                .UsePlatformDetect()
-                .LogToTrace()
-                .UseReactiveUI();
-
-        public static AppBuilder BuildAvaloniaAppOOBE()
-            => AppBuilder.Configure<AppOOBE>()
                 .UsePlatformDetect()
                 .LogToTrace()
                 .UseReactiveUI();

@@ -40,12 +40,13 @@ namespace Yorot_Avalonia.Views
             {
                 TitleBar.Text = title;
             }
-            if (PromptBox != null && DontAskAgain != null)
+            if (defaultPrompt != null && DontAskAgain != null)
             {
                 DontAskAgain.IsVisible = false;
                 DontAskAgain.IsEnabled = false;
                 PromptBox.IsVisible = true;
                 PromptBox.IsEnabled = true;
+                PromptBox.Text = defaultPrompt;
             }
         }
 
@@ -118,7 +119,7 @@ namespace Yorot_Avalonia.Views
             TitleBar = maingrid.FindControl<TextBlock>("TitleBar");
             DontAskAgain = maingrid.FindControl<CheckBox>("DontAskAgain");
             DontAskAgain.Content = new TextBlock() { Text = YorotGlobal.Main.CurrentLanguage.GetItemText("DialogBox.DontAskAgain") };
-            PromptBox = maingrid.FindControl<TextBox>("Prompt");
+            PromptBox = maingrid.FindControl<TextBox>("PromptBox");
             Buttons = maingrid.FindControl<DockPanel>("Buttons");
             var contentgrid = maingrid.FindControl<Grid>("ContentGrid");
             Image = contentgrid.FindControl<Image>("ImageContent");

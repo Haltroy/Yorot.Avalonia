@@ -16,39 +16,35 @@ No images are available.
  - Built in Apps. 
  - UI language, apps, theme and extension system (supports proxies).
  - Profiles
+ - Tabbed, built-in search bar that auto-detects URLs.
+ - Developer tools, View Source, Page screen-shot, Print, Keyboard Shortcuts, Save page & Zoom in page
+ - Custom pages (New Tab, Incognito, Error Page etc.)
+ - View local & online webpages
 
 ### Features that I'm aiming to add:
  - HTML5, CSS3, JS, HTML5 Video (except `H.264` and many non-free codecs), WebGL 3D, etc. 
- - Tabbed, built-in search bar that auto-detects URLs.
  - Celebrates your birthday.
- - Developer tools, View Source, Page screen-shot, Print, Keyboard Shortcuts, Save page & Zoom in page
- - Web apps & support for web engines. 
  - Notifications
  - Download manager
- - Custom pages (New Tab, Incognito, Error Page etc.)
- - View local & online webpages
 
 ## System Requirements
 
 ### Windows
- - .Net Framework 4.6.1 capable computer:
+ - .Net 6.0 capable computer:
    - Windows 7 SP1 (x86 and x64), Windows 8 (x86 and x64), Windows 8.1 (x86 and x64), Windows 10, Windows Server 2008 R2 SP1 (x64), Windows Server 2012 (x64), Windows Server 2012 R2 (x64) 
    - 1 GHz or faster processor
    - At least 512MB of RAM
    - 2.5 GiB space in drive
  - Internet connection for online content.
- - .Net Framework 4.6.1 & Microsoft Visual C++ 2015
-   - Installer will auto-install these requirements if they aren't installed.
 
-### Linux
- - .Net Core 3.1 & Avalonia capable computer:
-   - Windows 7 SP1
-   - Windows 8.1
+### Windows, Linux
+ - .Net 6.0 capable computer:
+   - Windows 7 SP1+
+   - Windows 8.1+
    - Windows 10 1607+
    - Windows 11+
    - Nano Server 1803+
    - Windows Server 2012 R2+
-   - macOS 10.13+
    - Fedora 32+
    - RHEL 7+
    - CentOS 7+
@@ -59,12 +55,16 @@ No images are available.
    - openSUSE 15+
    - SLES 12 SP2+
    - Alpine Linux 3.10+ 
+   - Android 7+
    - Arch Linux and any derivitables (Manjaro, Artix, Garuda etc.)
 
 **+**: That version or newer.
 
-### Android
- - Android 7+
+### Apple
+
+Due to the naute of this project, Apple might not like it so we are not going to release
+builds for either macOS or iOS. However, you still can build it for macOS if you want to.
+ 
 
 
 ## Links
@@ -89,7 +89,7 @@ Yorot-Win32 packages requires my fork of [`EasyTabs`](https://github.com/Haltroy
 
 	git clone https://github.com/Haltroy/EasyTabs.git
 
-###### NOTE: Execute the command above on the Yorot main source folder, not on Yorot-Win32 folder or anywhere else.
+###### NOTE: Execute the command above on the Yorot main source folder.
 
  ## Releases & Branches
 
@@ -108,4 +108,3 @@ Here's a list of third-party coeds used in this project.
 | Project | License | Website |
 |---------|---------|---------|
 | HTAlt | [MIT License]() | [GitHub Repo]() |
-| EasyTabs | [BSD License]() | [GitHub Repo]() |

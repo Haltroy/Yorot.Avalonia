@@ -6,7 +6,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using CefNet;
+using CefNet.Avalonia;
 using CefNet.Internal;
 using CefNet.Net;
 using Yorot;
@@ -15,7 +17,7 @@ using static Yorot.DefaultApps;
 
 namespace Yorot_Avalonia.Handlers
 {
-    internal class YorotSchemeHandlerFactory : CefSchemeHandlerFactory
+    public class YorotSchemeHandlerFactory : CefSchemeHandlerFactory
     {
         protected override CefResourceHandler Create(CefBrowser browser, CefFrame frame, string schemeName, CefRequest request)
         {
@@ -23,7 +25,29 @@ namespace Yorot_Avalonia.Handlers
         }
     }
 
-    internal class YorotGlue : WebViewGlue
+    public class YorotWebView : WebView
+    {
+        public object Window;
+        public YorotGlue Glue;
+
+        public YorotWebView(object window)
+        {
+            Window = window;
+        }
+
+        public YorotWebView(object window, WebView opener) : base(opener)
+        {
+            Window = window;
+        }
+
+        protected override WebViewGlue CreateWebViewGlue()
+        {
+            Glue = new YorotGlue(Window, this);
+            return Glue;
+        }
+    }
+
+    public class YorotGlue : WebViewGlue
     {
         public object Window;
 
@@ -39,38 +63,61 @@ namespace Yorot_Avalonia.Handlers
 
         protected override bool CanSaveCookie(CefBrowser browser, CefFrame frame, CefRequest request, CefResponse response, CefCookie cookie)
         {
-            // TODO: Site Permission feature here
+            bool _cookie = false;
             if (Window is PopupWindow window && window.IsPageSafe != null && window.IsPageUsedCookie != null && window.IsPageUnsafe != null)
             {
                 window.IsPageSafe.OnNext(false);
                 window.IsPageUsedCookie.OnNext(true);
                 window.IsPageUnsafe.OnNext(false);
+
+                _cookie = window.CurrentSite.Permissions.allowCookies.Allowance == YorotPermissionMode.Allow || window.CurrentSite.Permissions.allowPopup.Allowance == YorotPermissionMode.AllowOneTime;
+                if (window.CurrentSite.Permissions.allowCookies.Allowance == YorotPermissionMode.AllowOneTime)
+                {
+                    window.CurrentSite.Permissions.allowCookies.Allowance = YorotPermissionMode.Deny;
+                }
             }
-            if (Window is TabWindow tab && tab.IsPageSafe != null && tab.IsPageUsedCookie != null && tab.IsPageUnsafe != null)
+            if (Window is TabWindow tab)
             {
-                tab.IsPageSafe.OnNext(false);
-                tab.IsPageUsedCookie.OnNext(true);
-                tab.IsPageUnsafe.OnNext(false);
+                tab.IsPageSafe = false;
+                tab.IsPageUsedCookie = true;
+                tab.IsPageUnsafe = false;
+
+                _cookie = tab.CurrentSite.Permissions.allowPopup.Allowance == YorotPermissionMode.Allow || tab.CurrentSite.Permissions.allowPopup.Allowance == YorotPermissionMode.AllowOneTime;
+                if (tab.CurrentSite.Permissions.allowPopup.Allowance == YorotPermissionMode.AllowOneTime)
+                {
+                    tab.CurrentSite.Permissions.allowPopup.Allowance = YorotPermissionMode.Deny;
+                }
             }
-            return base.CanSaveCookie(browser, frame, request, response, cookie);
+
+            return _cookie;
         }
 
         protected override bool CanSendCookie(CefBrowser browser, CefFrame frame, CefRequest request, CefCookie cookie)
         {
-            // TODO: Site Permission feature here
+            bool _cookie = false;
             if (Window is PopupWindow window && window.IsPageSafe != null && window.IsPageUsedCookie != null && window.IsPageUnsafe != null)
             {
                 window.IsPageSafe.OnNext(true);
                 window.IsPageUsedCookie.OnNext(false);
                 window.IsPageUnsafe.OnNext(false);
+                _cookie = window.CurrentSite.Permissions.allowCookies.Allowance == YorotPermissionMode.Allow || window.CurrentSite.Permissions.allowPopup.Allowance == YorotPermissionMode.AllowOneTime;
+                if (window.CurrentSite.Permissions.allowCookies.Allowance == YorotPermissionMode.AllowOneTime)
+                {
+                    window.CurrentSite.Permissions.allowCookies.Allowance = YorotPermissionMode.Deny;
+                }
             }
-            if (Window is TabWindow tab && tab.IsPageSafe != null && tab.IsPageUsedCookie != null && tab.IsPageUnsafe != null)
+            if (Window is TabWindow tab)
             {
-                tab.IsPageSafe.OnNext(true);
-                tab.IsPageUsedCookie.OnNext(false);
-                tab.IsPageUnsafe.OnNext(false);
+                tab.IsPageSafe = true;
+                tab.IsPageUsedCookie = false;
+                tab.IsPageUnsafe = false;
+                _cookie = tab.CurrentSite.Permissions.allowPopup.Allowance == YorotPermissionMode.Allow || tab.CurrentSite.Permissions.allowPopup.Allowance == YorotPermissionMode.AllowOneTime;
+                if (tab.CurrentSite.Permissions.allowPopup.Allowance == YorotPermissionMode.AllowOneTime)
+                {
+                    tab.CurrentSite.Permissions.allowPopup.Allowance = YorotPermissionMode.Deny;
+                }
             }
-            return base.CanSendCookie(browser, frame, request, cookie);
+            return _cookie;
         }
 
         protected override bool DoClose(CefBrowser browser)
@@ -100,6 +147,15 @@ namespace Yorot_Avalonia.Handlers
 
         protected override CefResourceHandler GetResourceHandler(CefBrowser browser, CefFrame frame, CefRequest request)
         {
+            var site = YorotGlobal.Main.CurrentSettings.SiteMan.GetSite(request.Url);
+            if (Window is TabWindow tab)
+            {
+                tab.CurrentSite = site;
+            }
+            else if (Window is PopupWindow popup)
+            {
+                popup.CurrentSite = site;
+            }
             if (request.Url.ToLowerInvariant().StartsWith("yorot://") && YorotGlobal.Main != null)
             {
                 var url = request.Url;
@@ -239,6 +295,25 @@ namespace Yorot_Avalonia.Handlers
                     break;
 
                 case CefWindowOpenDisposition.NewPopup:
+
+                    bool _popup = false;
+                    if (Window is TabWindow tab)
+                    {
+                        _popup = tab.CurrentSite.Permissions.allowPopup.Allowance == YorotPermissionMode.Allow || tab.CurrentSite.Permissions.allowPopup.Allowance == YorotPermissionMode.AllowOneTime;
+                        if (tab.CurrentSite.Permissions.allowPopup.Allowance == YorotPermissionMode.AllowOneTime)
+                        {
+                            tab.CurrentSite.Permissions.allowPopup.Allowance = YorotPermissionMode.Deny;
+                        }
+                    }
+                    else if (Window is PopupWindow popup)
+                    {
+                        _popup = popup.CurrentSite.Permissions.allowPopup.Allowance == YorotPermissionMode.Allow || popup.CurrentSite.Permissions.allowPopup.Allowance == YorotPermissionMode.AllowOneTime;
+                        if (popup.CurrentSite.Permissions.allowPopup.Allowance == YorotPermissionMode.AllowOneTime)
+                        {
+                            popup.CurrentSite.Permissions.allowPopup.Allowance = YorotPermissionMode.Deny;
+                        }
+                    }
+                    if (!_popup) { return true; }
                     Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(() =>
                     {
                         PopupWindow window = new(targetUrl);
@@ -292,9 +367,9 @@ namespace Yorot_Avalonia.Handlers
                 tabWindow.redirectTo("yorot://certerror", "");
                 if (tabWindow.IsPageSafe != null && tabWindow.IsPageUnsafe != null && tabWindow.IsPageUsedCookie != null)
                 {
-                    tabWindow.IsPageUnsafe.OnNext(true);
-                    tabWindow.IsPageSafe.OnNext(false);
-                    tabWindow.IsPageUsedCookie.OnNext(false);
+                    tabWindow.IsPageUnsafe = true;
+                    tabWindow.IsPageSafe = false;
+                    tabWindow.IsPageUsedCookie = false;
                 }
             }
             if (Window is Views.PopupWindow popupWindow)
@@ -366,7 +441,7 @@ namespace Yorot_Avalonia.Handlers
             {
                 Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(() =>
                 {
-                    tabWindow.FindCount.Text = activeMatchOrdinal + "/" + count;
+                    tabWindow.FindCount = activeMatchOrdinal + "/" + count;
                 }, Avalonia.Threading.DispatcherPriority.Layout);
                 return;
             }

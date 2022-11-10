@@ -88,8 +88,12 @@
     <AvaloniaResource Include="Assets\print-w.png" />
 	<AvaloniaResource Include="Assets\globe-b.png" />
     <AvaloniaResource Include="Assets\globe-w.png" />
-    <Folder Include="Resources\" />
     <None Remove=".gitignore" />
+    <None Remove="Languages\English-GB.ylf" />
+    <None Remove="Languages\English-US.ylf" />
+    <None Remove="Languages\Turkish.ylf" />
+    <None Remove="WebSources\map.html" />
+    <None Remove="WebSources\test.html" />
 	  <AvaloniaResource Include="Assets\userdefault-b.png" />
 	  <AvaloniaResource Include="Assets\userdefault-w.png" />
 	  <AvaloniaResource Include="Assets\search-b.png" />
@@ -107,45 +111,53 @@
     <Content Include="Assets\Yorot.ico" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="WebSources\certerror.html" />
-    <EmbeddedResource Include="WebSources\error.html" />
-    <EmbeddedResource Include="WebSources\incognito.html" />
-    <EmbeddedResource Include="WebSources\license.html" />
-    <EmbeddedResource Include="WebSources\links.html" />
-    <EmbeddedResource Include="WebSources\newtab.html" />
-    <EmbeddedResource Include="WebSources\noint.html" />
-    <EmbeddedResource Include="WebSources\technical.html" />
+    <EmbeddedResource Include="Languages\English-GB.ylf" />
+    <EmbeddedResource Include="Languages\English-US.ylf" />
+    <EmbeddedResource Include="Languages\Turkish.ylf" />
+    <EmbeddedResource Include="WebSources\certerror.html">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WebSources\error.html">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WebSources\incognito.html">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WebSources\license.html">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WebSources\links.html">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WebSources\map.html">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WebSources\newtab.html">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WebSources\noint.html">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WebSources\technical.html">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WebSources\test.html">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-  <PackageReference Include="System.Security.Permissions" Version="6.0.0" />
     <PackageReference Include="Avalonia" Version="0.10.18" />
     <PackageReference Include="Avalonia.Desktop" Version="0.10.18" />
     <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
     <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="0.10.18" />
     <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.18" />
+    <PackageReference Include="CefNet" Version="105.3.22248.142" />
     <PackageReference Include="FluentAvaloniaUI" Version="1.4.4" />
-    <PackageReference Include="System.Resources.Extensions" Version="6.0.0" />
 	<PackageReference Include="CefNet.Avalonia" Version="105.3.22248.142" />
 	
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Yorot.Standart\Yorot.Standart.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Update="AppOOBE.axaml.cs">
-      <DependentUpon>AppOOBE.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="Properties\Resources.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Update="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <None Update="Assets\Yorot.png">

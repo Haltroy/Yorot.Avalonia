@@ -11,6 +11,7 @@ namespace Yorot_Avalonia.ViewModels
 {
     public class ViewModelBase : ReactiveObject
     {
+#pragma warning disable CA1822 // Mark members as static
         public Avalonia.Media.IBrush BackColor { get => Avalonia.Media.Brush.Parse(YorotGlobal.Main != null ? YorotGlobal.Main.CurrentTheme.BackColor.ToHex() : Yorot.DefaultThemes.YorotLight.BackColor.ToHex()); }
         public Avalonia.Media.IBrush BackColor2 { get => Avalonia.Media.Brush.Parse(YorotGlobal.Main != null ? YorotGlobal.Main.CurrentTheme.BackColor2.ToHex() : Yorot.DefaultThemes.YorotLight.BackColor2.ToHex()); }
         public Avalonia.Media.IBrush BackColor3 { get => Avalonia.Media.Brush.Parse(YorotGlobal.Main != null ? YorotGlobal.Main.CurrentTheme.BackColor3.ToHex() : Yorot.DefaultThemes.YorotLight.BackColor3.ToHex()); }
@@ -20,7 +21,9 @@ namespace Yorot_Avalonia.ViewModels
         public Avalonia.Media.IBrush OverlayColor2 { get => Avalonia.Media.Brush.Parse(YorotGlobal.Main != null ? YorotGlobal.Main.CurrentTheme.OverlayColor2.ToHex() : Yorot.DefaultThemes.YorotLight.OverlayColor2.ToHex()); }
         public Avalonia.Media.IBrush OverlayColor3 { get => Avalonia.Media.Brush.Parse(YorotGlobal.Main != null ? YorotGlobal.Main.CurrentTheme.OverlayColor3.ToHex() : Yorot.DefaultThemes.YorotLight.OverlayColor3.ToHex()); }
         public Avalonia.Media.IBrush OverlayColor4 { get => Avalonia.Media.Brush.Parse(YorotGlobal.Main != null ? YorotGlobal.Main.CurrentTheme.OverlayColor4.ToHex() : Yorot.DefaultThemes.YorotLight.OverlayColor4.ToHex()); }
+
         public Avalonia.Media.IBrush ArtColor { get => Avalonia.Media.Brush.Parse(YorotGlobal.Main != null ? YorotGlobal.Main.CurrentTheme.ArtColor.ToHex() : Yorot.DefaultThemes.YorotLight.ArtColor.ToHex()); }
+
         public Avalonia.Media.IBrush ArtColor2 { get => Avalonia.Media.Brush.Parse(YorotGlobal.Main != null ? YorotGlobal.Main.CurrentTheme.ArtColor2.ToHex() : Yorot.DefaultThemes.YorotLight.ArtColor2.ToHex()); }
         public Avalonia.Media.IBrush ArtColor3 { get => Avalonia.Media.Brush.Parse(YorotGlobal.Main != null ? YorotGlobal.Main.CurrentTheme.ArtColor3.ToHex() : Yorot.DefaultThemes.YorotLight.ArtColor3.ToHex()); }
         public Avalonia.Media.IBrush ArtColor4 { get => Avalonia.Media.Brush.Parse(YorotGlobal.Main != null ? YorotGlobal.Main.CurrentTheme.ArtColor4.ToHex() : Yorot.DefaultThemes.YorotLight.ArtColor4.ToHex()); }
@@ -105,7 +108,6 @@ namespace Yorot_Avalonia.ViewModels
         public string Locale_vi => YorotGlobal.Main.CurrentLanguage.GetItemText("Locales.vi");
         public string Locale_zh_CN => YorotGlobal.Main.CurrentLanguage.GetItemText("Locales.zh_CN");
         public string Locale_zh_TW => YorotGlobal.Main.CurrentLanguage.GetItemText("Locales.zh_TW");
-        public string Locale_ => YorotGlobal.Main.CurrentLanguage.GetItemText("Locales.");
 
         #endregion Locale
 
@@ -135,30 +137,51 @@ namespace Yorot_Avalonia.ViewModels
 
         #endregion OOBE
 
+        #region Favorites
+
+        public string FavoriteManTitle => YorotGlobal.Main.CurrentLanguage.GetItemText("Favorites.Title");
+        public string FavoritesText => YorotGlobal.Main.CurrentLanguage.GetItemText("Favorites.Text");
+        public string FavoritesUrl => YorotGlobal.Main.CurrentLanguage.GetItemText("Favorites.Url");
+        public string FavoritesCut => YorotGlobal.Main.CurrentLanguage.GetItemText("Favorites.Cut");
+        public string FavoritesCopy => YorotGlobal.Main.CurrentLanguage.GetItemText("Favorites.Copy");
+        public string FavoritesPaste => YorotGlobal.Main.CurrentLanguage.GetItemText("Favorites.Paste");
+        public string FavoritesAdd => YorotGlobal.Main.CurrentLanguage.GetItemText("Favorites.Add");
+        public string FavoritesRemove => YorotGlobal.Main.CurrentLanguage.GetItemText("Favorites.Remove");
+        public string FavoritesNewFolder => YorotGlobal.Main.CurrentLanguage.GetItemText("Favorites.NewFolder");
+
+        #endregion Favorites
+
         public string NewWindow => YorotGlobal.Main.CurrentLanguage.GetItemText("UI.NewWindow");
         public string NewIncognitoWindow => YorotGlobal.Main.CurrentLanguage.GetItemText("UI.NewIncognitoWindow");
         public string SearchOnPage => YorotGlobal.Main.CurrentLanguage.GetItemText("UI.SearchOnPage");
         public string MatchCase => YorotGlobal.Main.CurrentLanguage.GetItemText("UI.MatchCase");
         public string OtherBookmarks => YorotGlobal.Main.CurrentLanguage.GetItemText("UI.OtherBookmarks");
+        public string ManageBookmarks => YorotGlobal.Main.CurrentLanguage.GetItemText("UI.ManageBookmarks");
+        public string ManageExtensions => YorotGlobal.Main.CurrentLanguage.GetItemText("UI.ManageExtensions");
+        public string ExtensionsTitle => YorotGlobal.Main.CurrentLanguage.GetItemText("UI.Extensions");
         public string ProfileChangeName => YorotGlobal.Main.CurrentLanguage.GetItemText("UI.ProfileChangeName");
         public string ProfileChangeImage => YorotGlobal.Main.CurrentLanguage.GetItemText("UI.ProfileChangeImage");
         public string ProfileSwitch => YorotGlobal.Main.CurrentLanguage.GetItemText("UI.ProfileSwitch");
-        public string ConnectionSafe => YorotGlobal.Main.CurrentLanguage.GetItemText("UI.ConnectionSafe");
-        public string ConnectionNotSafe => YorotGlobal.Main.CurrentLanguage.GetItemText("UI.ConnectionNotSafe");
+        public string ProfileSettings => YorotGlobal.Main.CurrentLanguage.GetItemText("UI.ProfileSettings");
         public string PageSafe => YorotGlobal.Main.CurrentLanguage.GetItemText("UI.PageSafe");
         public string PageSafeDesc => YorotGlobal.Main.CurrentLanguage.GetItemText("UI.PageSafeDesc");
         public string PageUsedCookie => YorotGlobal.Main.CurrentLanguage.GetItemText("UI.PageUsedCookies");
         public string PageUsedCookieDesc => YorotGlobal.Main.CurrentLanguage.GetItemText("UI.PageUsedCookiesDesc");
-        public string AllowMicrophone => YorotGlobal.Main.CurrentLanguage.GetItemText("UI.AllowMicrophone");
-        public string AllowCamera => YorotGlobal.Main.CurrentLanguage.GetItemText("UI.AllowCamera");
-        public string AllowYS => YorotGlobal.Main.CurrentLanguage.GetItemText("UI.AllowYS");
-        public string AllowNotif => YorotGlobal.Main.CurrentLanguage.GetItemText("UI.AllowNotif");
-        public string StartNotifOnBoot => YorotGlobal.Main.CurrentLanguage.GetItemText("UI.StartNotifOnBoot");
-        public string NotifPriority => YorotGlobal.Main.CurrentLanguage.GetItemText("UI.NotifPriority");
-        public string NotifPriority1 => YorotGlobal.Main.CurrentLanguage.GetItemText("UI.NotifPriority1");
-        public string NotifPriority2 => YorotGlobal.Main.CurrentLanguage.GetItemText("UI.NotifPriority2");
-        public string NotifPriority3 => YorotGlobal.Main.CurrentLanguage.GetItemText("UI.NotifPriority3");
+        public string PageMicrophone => YorotGlobal.Main.CurrentLanguage.GetItemText("UI.AllowMicrophone");
+        public string PagePopup => YorotGlobal.Main.CurrentLanguage.GetItemText("UI.AllowPopup");
+        public string PageCookies => YorotGlobal.Main.CurrentLanguage.GetItemText("UI.AllowCookies");
+        public string PageCamera => YorotGlobal.Main.CurrentLanguage.GetItemText("UI.AllowCamera");
+        public string PageYS => YorotGlobal.Main.CurrentLanguage.GetItemText("UI.AllowYS");
+        public string PageNotif => YorotGlobal.Main.CurrentLanguage.GetItemText("UI.AllowNotif");
+        public string PageNotifBoot => YorotGlobal.Main.CurrentLanguage.GetItemText("UI.StartNotifOnBoot");
+        public string PageNotifPriority => YorotGlobal.Main.CurrentLanguage.GetItemText("UI.NotifPriority");
+        public string PageNotifP1 => YorotGlobal.Main.CurrentLanguage.GetItemText("UI.NotifPriority1");
+        public string PageNotifP2 => YorotGlobal.Main.CurrentLanguage.GetItemText("UI.NotifPriority2");
+        public string PageNotifP3 => YorotGlobal.Main.CurrentLanguage.GetItemText("UI.NotifPriority3");
+        public string PageSettings => YorotGlobal.Main.CurrentLanguage.GetItemText("UI.PageSettings");
 
         #endregion Translations
+
+#pragma warning restore CA1822 // Mark members as static
     }
 }

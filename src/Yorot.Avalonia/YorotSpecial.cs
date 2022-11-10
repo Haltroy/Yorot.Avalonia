@@ -52,8 +52,6 @@ namespace Yorot_Avalonia
 
             // Yorot-Avalonia
 
-            var technical = Properties.Resources.technical;
-
             var packages = GetPackages();
 
             string packlist = "";
@@ -63,16 +61,16 @@ namespace Yorot_Avalonia
                 packlist += "<a><b>" + packages[i, 0] + ":</b>" + packages[i, 1] + "</a></br>" + Environment.NewLine;
             }
 
-            RegisterWebSource("yorot://newtab", Properties.Resources.newtab, "text/html", false, false);
-            RegisterWebSource("yorot://test", Properties.Resources.test, "text/html", false, false);
-            RegisterWebSource("yorot://license", Properties.Resources.license, "text/html", false, false);
-            RegisterWebSource("yorot://links", Properties.Resources.links, "text/html", false, false);
-            RegisterWebSource("yorot://noint", Properties.Resources.noint, "text/html", true, true);
-            RegisterWebSource("yorot://technical", Properties.Resources.technical.Replace("[Parameter.Packages]", packlist), "text/html", false, false);
-            RegisterWebSource("yorot://error", Properties.Resources.error, "text/html", true, true);
-            RegisterWebSource("yorot://certerror", Properties.Resources.certerror, "text/html", true, true);
-            RegisterWebSource("yorot://incognito", Properties.Resources.incognito, "text/html", false, false);
-            RegisterWebSource("yorot://map", Properties.Resources.map, "text/html", true, true);
+            RegisterWebSource("yorot://newtab", YorotTools.ReadResource("Yorot_Avalonia.WebSources.newtab.html"), "text/html", false, false);
+            RegisterWebSource("yorot://test", YorotTools.ReadResource("Yorot_Avalonia.WebSources.test.html"), "text/html", false, false);
+            RegisterWebSource("yorot://license", YorotTools.ReadResource("Yorot_Avalonia.WebSources.license.html"), "text/html", false, false);
+            RegisterWebSource("yorot://links", YorotTools.ReadResource("Yorot_Avalonia.WebSources.links.html"), "text/html", false, false);
+            RegisterWebSource("yorot://noint", YorotTools.ReadResource("Yorot_Avalonia.WebSources.noint.html"), "text/html", true, true);
+            RegisterWebSource("yorot://technical", YorotTools.ReadResource("Yorot_Avalonia.WebSources.technical.html").Replace("[Parameter.Packages]", packlist), "text/html", false, false);
+            RegisterWebSource("yorot://error", YorotTools.ReadResource("Yorot_Avalonia.WebSources.error.html"), "text/html", true, true);
+            RegisterWebSource("yorot://certerror", YorotTools.ReadResource("Yorot_Avalonia.WebSources.certerror.html"), "text/html", true, true);
+            RegisterWebSource("yorot://incognito", YorotTools.ReadResource("Yorot_Avalonia.WebSources.incognito.html"), "text/html", false, false);
+            RegisterWebSource("yorot://map", YorotTools.ReadResource("Yorot_Avalonia.WebSources.map.html"), "text/html", true, true);
             RegisterWebSource("yorot://empty", "", "text/html", true, true);
             RegisterWebSource("yorot://search", "<meta http-equiv=\"refresh\" content=\"0; URL=[Parameter.q]\" />\r\n", "text/html", true, true);
             RegisterWebSource("yorot://homepage", "<meta http-equiv=\"refresh\" content=\"0; URL=[Info.Homepage]\" />\r\n", "text/html", true, true);
@@ -146,12 +144,7 @@ namespace Yorot_Avalonia
                     case YorotLanguage _:
                         Console.WriteLine("Permission \"" + permission.ID + "\" request accepted (NOT_IMPLEMENTED) from ID\"" + ((YorotLanguage)permission.Requestor).CodeName + "\" " + permission.Allowance.ToString() + " => " + requested.ToString());
                         break;
-
-                    case ExpPack _:
-                        Console.WriteLine("Permission \"" + permission.ID + "\" request accepted (NOT_IMPLEMENTED) from ID\"" + ((ExpPack)permission.Requestor).CodeName + "\" " + permission.Allowance.ToString() + " => " + requested.ToString());
-                        break;
                 }
-                permission.Allowance = requested;
             }
             return requested;
         }

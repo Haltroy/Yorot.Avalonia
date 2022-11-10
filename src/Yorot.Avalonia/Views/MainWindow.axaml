@@ -30,7 +30,7 @@
 			<Grid.RowDefinitions>
 				<RowDefinition MinHeight="{Binding $parent.Height}" Height="*" />
 			</Grid.RowDefinitions>
-			<DockPanel Name="Sidebar" Grid.Row="0" Background="{Binding BackColor2}" Grid.Column="0" Width="55" MinWidth="55" Height="{Binding $parent.Height}">
+			<DockPanel Name="Sidebar" Grid.Row="0" Background="{Binding BackColor}" Grid.Column="0" Width="55" MinWidth="55" Height="{Binding $parent.Height}">
 				<StackPanel DockPanel.Dock="Right" MinWidth="{Binding $parent.MinWidth}">
 					<Image MaxWidth="50" MaxHeight="50" Source="/Assets/Yorot.png" />
 				</StackPanel>
@@ -38,8 +38,208 @@
 				</WrapPanel>
 			</DockPanel>
 			<Panel Grid.Row="0"  Name="SidebarSplitter" Background="{Binding OverlayColor}" PointerMoved="sidebarMove" Cursor="SizeWestEast" PointerReleased="sidebarRelease" PointerPressed="sidebarPressed" Grid.Column="1" MinWidth="5" />
-			<ui:TabView Grid.Row="0" VerticalAlignment="Stretch" Foreground="{Binding ForeColor}" Grid.Column="2" Name="Tabs">
-			</ui:TabView>
+			<Canvas Name="ContentCanvas" Grid.Row="0" Grid.Column="2" Margin="0 0 60 0">
+				<ui:TabView Width="{Binding $parent.Bounds.Width}" Height="{Binding $parent.Bounds.Height}" VerticalAlignment="Stretch" Foreground="{Binding ForeColor}" Name="Tabs" />
+				<Grid ColumnDefinitions="40,40,40,40,40,*,40,Auto,40,40,40" Name="dockPanel1" Canvas.Top="40" Width="{Binding $parent.Bounds.Width}" Margin="0 0 0 0">
+					<Button Click="goback"  Grid.Column="0" Name="goback" Background="{Binding ArtColor}" Foreground="{Binding ArtForeColor}">
+						<Panel>
+							<Image Source="/Assets/back-b.png" IsVisible="{Binding !IsBackDark}" Width="36" Height="36" VerticalAlignment="Center" HorizontalAlignment="Center" />
+							<Image Source="/Assets/back-w.png" IsVisible="{Binding IsBackDark}" Width="36" Height="36" VerticalAlignment="Center" HorizontalAlignment="Center" />
+						</Panel>
+					</Button>
+					<Button Click="reload"  Grid.Column="1" Name="reload" Background="{Binding ArtColor}" Foreground="{Binding ArtForeColor}">
+						<Panel>
+							<Image Source="/Assets/refresh-b.png" IsVisible="{Binding !IsBackDark}" Width="36" Height="36" VerticalAlignment="Center" HorizontalAlignment="Center" />
+							<Image Source="/Assets/refresh-w.png" IsVisible="{Binding IsBackDark}" Width="36" Height="36" VerticalAlignment="Center" HorizontalAlignment="Center" />
+						</Panel>
+					</Button>
+					<Button Click="stop"  Grid.Column="1" Name="stop" Background="{Binding ArtColor}" Foreground="{Binding ArtForeColor}">
+						<Panel>
+							<Image Source="/Assets/stop-b.png" IsVisible="{Binding !IsBackDark}" Width="36" Height="36" VerticalAlignment="Center" HorizontalAlignment="Center" />
+							<Image Source="/Assets/stop-w.png" IsVisible="{Binding IsBackDark}" Width="36" Height="36" VerticalAlignment="Center" HorizontalAlignment="Center" />
+						</Panel>
+					</Button>
+					<Button Click="gohome" Grid.Column="2" Background="{Binding ArtColor}" Foreground="{Binding ArtForeColor}">
+						<Panel>
+							<Image Source="/Assets/home-b.png" IsVisible="{Binding !IsBackDark}" Width="36" Height="36" VerticalAlignment="Center" HorizontalAlignment="Center" />
+							<Image Source="/Assets/home-w.png" IsVisible="{Binding IsBackDark}" Width="36" Height="36" VerticalAlignment="Center" HorizontalAlignment="Center" />
+						</Panel>
+					</Button>
+					<Button Click="goforward"  Grid.Column="3" Name="goforward" Background="{Binding ArtColor}" Foreground="{Binding ArtForeColor}">
+						<Panel>
+							<Image Source="/Assets/forward-b.png" IsVisible="{Binding !IsBackDark}" Width="36" Height="36" VerticalAlignment="Center" HorizontalAlignment="Center" />
+							<Image Source="/Assets/forward-w.png" IsVisible="{Binding IsBackDark}" Width="36" Height="36" VerticalAlignment="Center" HorizontalAlignment="Center" />
+						</Panel>
+					</Button>
+					<Button Grid.Column="4" Name="SecurityInfo" Click="openmenu" Background="{Binding ArtColor}" Foreground="{Binding ArtForeColor}">
+						<Panel Name="ButtonContent">
+							<Image Name="WebsiteGood" Source="/Assets/lockg.png" Width="36" Height="36" VerticalAlignment="Center" HorizontalAlignment="Center" />
+							<Image Name="WebsiteMeh" Source="/Assets/locko.png" Width="36" Height="36" VerticalAlignment="Center" HorizontalAlignment="Center" />
+							<Image Name="WebsiteBad" Source="/Assets/lockr.png" Width="36" Height="36" VerticalAlignment="Center" HorizontalAlignment="Center" />
+						</Panel>
+						<Button.ContextFlyout>
+							<Flyout>
+								<!-- Whenever you change stuff here (adding, removing, reorganizing etc.) don't forget to also
+								update the InitializeComponent() part.-->
+								<StackPanel Orientation="Vertical" Background="{Binding ArtColor}">
+									<Panel Margin="5 5 5 5">
+										<StackPanel>
+											<TextBlock Text="{Binding PageSafe}" Foreground="{Binding ArtForeColor}" FontSize="15" />
+											<TextBlock Text="{Binding PageSafeDesc}" Foreground="{Binding ArtForeColor}" />
+										</StackPanel>
+										<StackPanel>
+											<TextBlock Text="{Binding PageUsedCookie}" Foreground="{Binding ArtForeColor}" FontSize="15" />
+											<TextBlock Text="{Binding PageUsedCookieDesc}" Foreground="{Binding ArtForeColor}" />
+										</StackPanel>
+									</Panel>
+									<ToggleSwitch Margin="5 5 5 5" Foreground="{Binding ArtForeColor}"  Checked="AllowMicChecked" Unchecked="DisableMicrophone" OnContent="{Binding PageMicrophone}" OffContent="{Binding PageMicrophone}" />
+									<ToggleSwitch Margin="5 5 5 5" Foreground="{Binding ArtForeColor}"  Checked="AllowCamChecked" Unchecked="DisableCamera" OnContent="{Binding PageCamera}" OffContent="{Binding PageCamera}" />
+									<ToggleSwitch Margin="5 5 5 5" Foreground="{Binding ArtForeColor}"  Checked="AllowCookieChecked" Unchecked="DisableCookie" OnContent="{Binding PageCookies}" OffContent="{Binding PageCookies}" />
+									<ToggleSwitch Margin="5 5 5 5" Foreground="{Binding ArtForeColor}"  Checked="AllowPopupChecked" Unchecked="DisablePopup" OnContent="{Binding PagePopup}" OffContent="{Binding PagePopup}" />
+									<ToggleSwitch Margin="5 5 5 5" Foreground="{Binding ArtForeColor}"  Checked="AllowYSChecked" Unchecked="DisableYS" OnContent="{Binding PageYS}" OffContent="{Binding PageYS}" />
+									<ToggleSwitch Margin="5 5 5 5" Foreground="{Binding ArtForeColor}"  Checked="AllowNotifChecked" Unchecked="DisableNotif" OnContent="{Binding PageNotif}" OffContent="{Binding PageNotif}" />
+									<ToggleSwitch Margin="5 5 5 5" Foreground="{Binding ArtForeColor}"  Checked="AllowNotifBootChecked" Unchecked="DisableNotifBoot" OnContent="{Binding PageNotifBoot}" OffContent="{Binding PageNotifBoot}" />
+									<StackPanel Orientation="Horizontal" Spacing="5">
+										<TextBlock Foreground="{Binding ArtForeColor}"  VerticalAlignment="Center" Text="{Binding PageNotifPriority}" />
+										<ComboBox Background="{Binding ArtColor2}" Foreground="{Binding ArtForeColor}"  SelectedIndex="1" SelectionChanged="NotifPriorityChange">
+											<ComboBoxItem Foreground="{Binding ArtForeColor}" Background="{Binding ArtColor2}"  Content="{Binding PageNotifP1}" />
+											<ComboBoxItem Foreground="{Binding ArtForeColor}" Background="{Binding ArtColor2}" Content="{Binding PageNotifP2}" />
+											<ComboBoxItem Foreground="{Binding ArtForeColor}" Background="{Binding ArtColor2}" Content="{Binding PageNotifP3}" />
+										</ComboBox>
+									</StackPanel>
+									<Button Content="{Binding PageSettings}" Click="PageSettings" Margin="5 5 5 5" />
+								</StackPanel>
+							</Flyout>
+						</Button.ContextFlyout>
+					</Button>
+					<TextBox Name="tbUrl" Grid.Column="5"  KeyDown="urlkeydown" Background="{Binding ArtColor2}" Foreground="{Binding ArtForeColor}" />
+					<Button Grid.Column="6" Name="favoritedbutton" Click="unfavorite" Background="{Binding ArtColor}" Foreground="{Binding ArtForeColor}">
+						<Panel>
+							<Image Source="/Assets/faved-b.png" IsVisible="{Binding !IsBackDark}" Width="36" Height="36" VerticalAlignment="Center" HorizontalAlignment="Center" />
+							<Image Source="/Assets/faved-w.png" IsVisible="{Binding IsBackDark}" Width="36" Height="36" VerticalAlignment="Center" HorizontalAlignment="Center" />
+						</Panel>
+					</Button>
+					<Button  Grid.Column="6" Name="favoritebutton" Click="favorite" Background="{Binding ArtColor}" Foreground="{Binding ArtForeColor}">
+						<Panel>
+							<Image Source="/Assets/favorite-b.png" IsVisible="{Binding !IsBackDark}" Width="36" Height="36" VerticalAlignment="Center" HorizontalAlignment="Center" />
+							<Image Source="/Assets/favorite-w.png" IsVisible="{Binding IsBackDark}" Width="36" Height="36" VerticalAlignment="Center" HorizontalAlignment="Center" />
+						</Panel>
+					</Button>
+					<StackPanel Grid.Column="7" Orientation="Horizontal" Name="PinnedExt" Background="{Binding ArtColor}" />
+					<Button  Grid.Column="8" Name="extbutton" Click="openmenu" Background="{Binding ArtColor}" Foreground="{Binding ArtForeColor}">
+						<Panel>
+							<Image Source="/Assets/ext-b.png" IsVisible="{Binding !IsBackDark}" Width="36" Height="36" VerticalAlignment="Center" HorizontalAlignment="Center" />
+							<Image Source="/Assets/ext-w.png" IsVisible="{Binding IsBackDark}" Width="36" Height="36" VerticalAlignment="Center" HorizontalAlignment="Center" />
+						</Panel>
+						<Button.ContextFlyout>
+							<Flyout>
+								<StackPanel  Background="{Binding ArtColor}" Orientation="Vertical" Spacing="10">
+									<TextBlock Foreground="{Binding ArtForeColor}" FontSize="20" FontWeight="Bold" Text="{Binding ExtensionsTitle}" />
+									<Button Foreground="{Binding ArtForeColor}" Click="ManageExtensions" Content="{Binding ExtensionsTitle}" />
+								</StackPanel>
+							</Flyout>
+						</Button.ContextFlyout>
+					</Button>
+					<Button Grid.Column="9" Name="userbutton" Click="openmenu" Background="{Binding ArtColor}" Foreground="{Binding ArtForeColor}">
+						<Panel>
+							<Image Source="{Binding UserProfilePicture}" Width="36" Height="36" />
+						</Panel>
+						<Button.ContextFlyout>
+							<Flyout>
+								<StackPanel Background="{Binding ArtColor}" Orientation="Horizontal" Margin="5 5 5 5">
+									<StackPanel Orientation="Vertical">
+										<Image Source="{Binding UserProfilePicture}" Margin="5 5 5 5" Width="64" Height="64" />
+										<TextBlock Text="{Binding UserName}" HorizontalAlignment="Center" />
+									</StackPanel>
+									<StackPanel Orientation="Vertical" Margin="5 5 5 5">
+										<Button Click="ProfileChangeName" Content="{Binding ProfileChangeName}" />
+										<Button Click="ProfileChangeImage" Content="{Binding ProfileChangeImage}" />
+										<Button Click="ProfileSwitch" Content="{Binding ProfileSwitch}" />
+										<Button Click="ProfileSettings" Content="{Binding ProfileSettings}" />
+									</StackPanel>
+								</StackPanel>
+							</Flyout>
+						</Button.ContextFlyout>
+					</Button>
+					<Button Grid.Column="10" Click="openmenu" Name="dotmenu" Background="{Binding ArtColor}" Foreground="{Binding ArtForeColor}">
+						<Panel>
+							<Image Source="/Assets/hamburger.png" IsVisible="{Binding !IsBackDark}" Width="36" Height="36" VerticalAlignment="Center" HorizontalAlignment="Center" />
+							<Image Source="/Assets/hamburger-w.png" IsVisible="{Binding IsBackDark}" Width="36" Height="36" VerticalAlignment="Center" HorizontalAlignment="Center" />
+						</Panel>
+						<Button.ContextFlyout>
+							<!-- Whenever you change stuff here (adding, removing, reorganizing etc.) don't forget to also
+								update the InitializeComponent() part.-->
+							<Flyout>
+								<StackPanel Orientation="Vertical" Background="{Binding ArtColor}">
+									<StackPanel Margin="5 5 5 5" Orientation="Horizontal">
+										<Panel>
+											<Button>
+												<Panel>
+													<Image Source="/Assets/speaker.png" IsVisible="{Binding !IsBackDark}" Width="24" Height="24" VerticalAlignment="Center" HorizontalAlignment="Center" />
+													<Image Source="/Assets/speaker-w.png" IsVisible="{Binding IsBackDark}" Width="24" Height="24" VerticalAlignment="Center" HorizontalAlignment="Center" />
+												</Panel>
+											</Button>
+											<Button>
+												<Panel>
+													<Image Source="/Assets/mute.png" IsVisible="{Binding !IsBackDark}" Width="24" Height="24" VerticalAlignment="Center" HorizontalAlignment="Center" />
+													<Image Source="/Assets/mute-w.png" IsVisible="{Binding IsBackDark}" Width="24" Height="24" VerticalAlignment="Center" HorizontalAlignment="Center" />
+												</Panel>
+											</Button>
+										</Panel>
+										<Button>
+											<Panel>
+												<Image Source="/Assets/print-b.png" IsVisible="{Binding !IsBackDark}" Width="24" Height="24" VerticalAlignment="Center" HorizontalAlignment="Center" />
+												<Image Source="/Assets/print-w.png" IsVisible="{Binding IsBackDark}" Width="24" Height="24" VerticalAlignment="Center" HorizontalAlignment="Center" />
+											</Panel>
+										</Button>
+										<Button>
+											<Panel>
+												<Image Source="/Assets/screenshot.png" IsVisible="{Binding !IsBackDark}" Width="24" Height="24" VerticalAlignment="Center" HorizontalAlignment="Center" />
+												<Image Source="/Assets/screenshot-w.png" IsVisible="{Binding IsBackDark}" Width="24" Height="24" VerticalAlignment="Center" HorizontalAlignment="Center" />
+											</Panel>
+										</Button>
+										<Button>
+											<Panel>
+												<Image Source="/Assets/save-b.png" IsVisible="{Binding !IsBackDark}" Width="24" Height="24" VerticalAlignment="Center" HorizontalAlignment="Center" />
+												<Image Source="/Assets/save-w.png" IsVisible="{Binding IsBackDark}" Width="24" Height="24" VerticalAlignment="Center" HorizontalAlignment="Center" />
+											</Panel>
+										</Button>
+										<Button>
+											<Panel>
+												<Image Source="/Assets/devtools-b.png" IsVisible="{Binding !IsBackDark}" Width="24" Height="24" VerticalAlignment="Center" HorizontalAlignment="Center" />
+												<Image Source="/Assets/devtools-w.png" IsVisible="{Binding IsBackDark}" Width="24" Height="24" VerticalAlignment="Center" HorizontalAlignment="Center" />
+											</Panel>
+										</Button>
+									</StackPanel>
+									<Button Margin="5 5 5 5" Content="{Binding NewWindow}" />
+									<Button Margin="5 5 5 5" Content="{Binding NewIncognitoWindow}" />
+									<Button Margin="5 5 5 5" Content="{Binding ManageBookmarks}" />
+									<Grid ColumnDefinitions="*,40,*" RowDefinitions="*,40" Name="Find" Margin="5 5 5 5">
+										<TextBox Grid.Row="0" Grid.Column="0" TextAlignment="Center" Watermark="{Binding SearchOnPage}" />
+										<Button Grid.Row="0" Grid.Column="1">
+											<Panel>
+												<Image Source="/Assets/search-b.png" IsVisible="{Binding !IsBackDark}" Width="24" Height="24" VerticalAlignment="Center" HorizontalAlignment="Center" />
+												<Image Source="/Assets/search-w.png" IsVisible="{Binding IsBackDark}" Width="24" Height="24" VerticalAlignment="Center" HorizontalAlignment="Center" />
+											</Panel>
+										</Button>
+										<TextBlock Grid.Row="0" Margin="5 5 5 5" VerticalAlignment="Center" Grid.Column="2" Name="FindCount" />
+										<CheckBox Margin="5 5 5 5" Grid.Column="0" Grid.Row="1" Content="{Binding MatchCase}" />
+									</Grid>
+
+									<StackPanel Name="Zoom" Orientation="Horizontal">
+										<Button Margin="5 5 5 5"  Content="-" />
+										<TextBlock Margin="5 5 5 5" VerticalAlignment="Center" Name="ZoomLevel" Text="100%" />
+										<Button Margin="5 5 5 5" Content="+" />
+									</StackPanel>
+								</StackPanel>
+							</Flyout>
+						</Button.ContextFlyout>
+					</Button>
+				</Grid>
+				<Menu Canvas.Top="80" Width="{Binding $parent.Bounds.Width}" Name="Favorites" Background="{Binding ArtColor}" Foreground="{Binding ArtForeColor}">
+					<MenuItem Background="{Binding ArtColor}" Foreground="{Binding ArtForeColor}" Header="{Binding OtherBookmarks}" Name="other_bookmarks" />
+				</Menu>
+			</Canvas>
 		</Grid>
 	</StackPanel>
 </Window>

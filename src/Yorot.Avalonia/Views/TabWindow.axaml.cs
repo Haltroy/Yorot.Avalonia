@@ -1,207 +1,198 @@
 using Avalonia;
 using Avalonia.Collections;
 using Avalonia.Controls;
-using Avalonia.Data;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media.Imaging;
+using Avalonia.Platform;
 using CefNet;
-using FluentAvalonia.Core;
 using FluentAvalonia.UI.Controls;
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
+using System.Security.Policy;
 using Yorot;
-using Yorot.AppForms;
 using Yorot_Avalonia.Handlers;
-using Yorot_Avalonia.ViewModels;
 
 namespace Yorot_Avalonia.Views
 {
     public partial class TabWindow : UserControl
     {
-        public TabWindow()
+        public TabWindow() : this(null)
         {
+        }
+
+        public TabWindow(SessionSystem? session)
+        {
+            if (session == null) { session = YorotGlobal.Main.CurrentSettings.SessionManager.GenerateNew(); }
+            SessionSystem = session;
             InitializeComponent();
         }
 
         public string _startUrl = "yorot://newtab";
+        public string findText = "";
+
+        public YorotSite CurrentSite;
 
         public MainWindow? mainWindow;
-        public System.Reactive.Subjects.Subject<bool>? IsPageSafe;
-        public System.Reactive.Subjects.Subject<bool>? IsPageUsedCookie;
-        public System.Reactive.Subjects.Subject<bool>? IsPageUnsafe;
+
         public SessionSystem? SessionSystem;
 
+        // tbUrl
+
+        private string _tbUrl = ""; public string tbUrl
+        { get => _tbUrl; set { _tbUrl = value; RefreshMainWindow(); } }
+
+        // IsNavigated
+        private bool _IsNavigated = true; public bool IsNavigated
+
+        { get => _IsNavigated; set { _IsNavigated = value; RefreshMainWindow(); } }
+
+        // ZoomLevel
+        private string _ZoomLevel = "100%"; public string ZoomLevel
+
+        { get => _ZoomLevel; set { _ZoomLevel = value; RefreshMainWindow(); } }
+
+        // IsNavigating
+        private bool _IsNavigating = false; public bool IsNavigating
+
+        { get => _IsNavigating; set { _IsNavigating = value; RefreshMainWindow(); } }
+
+        // CanGoBack
+        private bool _CanGoBack = false; public bool CanGoBack
+
+        { get => _CanGoBack; set { _CanGoBack = value; RefreshMainWindow(); } }
+
+        // CanGoForward
+        private bool _CanGoForward = false; public bool CanGoForward
+
+        { get => _CanGoForward; set { _CanGoForward = value; RefreshMainWindow(); } }
+
+        // CanZoomIn
+        private bool _CanZoomIn = true; public bool CanZoomIn
+
+        { get => _CanZoomIn; set { _CanZoomIn = value; RefreshMainWindow(); } }
+
+        // CanZoomOut
+        private bool _CanZoomOut = true; public bool CanZoomOut
+
+        { get => _CanZoomOut; set { _CanZoomOut = value; RefreshMainWindow(); } }
+
+        // IsFavorited
+        private bool _IsFavorited = false; public bool IsFavorited
+
+        { get => _IsFavorited; set { _IsFavorited = value; RefreshMainWindow(); } }
+
+        // IsNotFavorited
+        private bool _IsNotFavorited = true; public bool IsNotFavorited
+
+        { get => _IsNotFavorited; set { _IsNotFavorited = value; RefreshMainWindow(); } }
+
+        // IsMuted
+        private bool _IsMuted = false; public bool IsMuted
+
+        { get => _IsMuted; set { _IsMuted = value; RefreshMainWindow(); } }
+
+        // IsUnmuted
+        private bool _IsUnmuted = true; public bool IsUnmuted
+
+        { get => _IsUnmuted; set { _IsUnmuted = value; RefreshMainWindow(); } }
+
+        // IsPageSafe
+        private bool _IsPageSafe = true; public bool IsPageSafe
+
+        { get => _IsPageSafe; set { _IsPageSafe = value; RefreshMainWindow(); } }
+
+        // IsPageUsedCookie
+        private bool _IsPageUsedCookie = false; public bool IsPageUsedCookie
+
+        { get => _IsPageUsedCookie; set { _IsPageUsedCookie = value; RefreshMainWindow(); } }
+
+        // IsPageUnsafe
+        private bool _IsPageUnsafe = false; public bool IsPageUnsafe
+
+        { get => _IsPageUnsafe; set { _IsPageUnsafe = value; RefreshMainWindow(); } }
+
+        //MatchCase
+        private bool _MatchCase = false; public bool MatchCase
+
+        { get => _MatchCase; set { _MatchCase = value; RefreshMainWindow(); } }
+
+        // FindCount
+        private string _FindCount = ""; public string FindCount
+
+        { get => _FindCount; set { _FindCount = value; RefreshMainWindow(); } }
+
         private Grid? ContentGrid;
-        private Avalonia.Controls.Menu? favoritesmenu;
-        private TextBox? tbUrl;
-        private System.Reactive.Subjects.Subject<bool>? IsNavigated;
-        private System.Reactive.Subjects.Subject<bool>? IsNavigating;
-        private System.Reactive.Subjects.Subject<bool>? CanGoBack;
-        private System.Reactive.Subjects.Subject<bool>? CanGoForward;
-        private System.Reactive.Subjects.Subject<bool>? CanZoomIn;
-        private System.Reactive.Subjects.Subject<bool>? CanZoomOut;
-        private System.Reactive.Subjects.Subject<bool>? IsFavorited;
-        private System.Reactive.Subjects.Subject<bool>? IsNotFavorited;
-        private System.Reactive.Subjects.Subject<bool>? IsMuted;
-        private System.Reactive.Subjects.Subject<bool>? IsUnmuted;
-        private Avalonia.Controls.MenuItem? other_bookmarks;
+
+        private void RefreshMainWindow()
+        {
+            Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                if (mainWindow != null &&
+                        mainWindow.tabs != null &&
+                        mainWindow.tabs.SelectedItem is TabViewItem item &&
+                        item.Content is DockPanel panel &&
+                        panel.Children[0] == this &&
+                        mainWindow.IsNavigated != null &&
+                        mainWindow.IsNavigating != null &&
+                        mainWindow.CanGoBack != null &&
+                        mainWindow.CanGoForward != null &&
+                        mainWindow.CanZoomIn != null &&
+                        mainWindow.CanZoomOut != null &&
+                        mainWindow.IsFavorited != null &&
+                        mainWindow.IsNotFavorited != null &&
+                        mainWindow.IsMuted != null &&
+                        mainWindow.IsUnmuted != null &&
+                        mainWindow.IsPageSafe != null &&
+                        mainWindow.IsPageUsedCookie != null &&
+                        mainWindow.IsPageUnsafe != null &&
+                        mainWindow.ZoomLevel != null &&
+                        mainWindow.findText != null &&
+                        mainWindow.MatchCase != null)
+                {
+                    mainWindow.IsNavigated.OnNext(IsNavigated);
+                    mainWindow.IsNavigating.OnNext(IsNavigating);
+                    mainWindow.CanGoBack.OnNext(CanGoBack);
+                    mainWindow.CanGoForward.OnNext(CanGoForward);
+                    mainWindow.CanZoomIn.OnNext(CanZoomIn);
+                    mainWindow.CanZoomOut.OnNext(CanZoomOut);
+                    mainWindow.IsFavorited.OnNext(IsFavorited);
+                    mainWindow.IsNotFavorited.OnNext(IsNotFavorited);
+                    mainWindow.IsMuted.OnNext(IsMuted);
+                    mainWindow.IsUnmuted.OnNext(IsUnmuted);
+                    mainWindow.IsPageSafe.OnNext(IsPageSafe);
+                    mainWindow.IsPageUsedCookie.OnNext(IsPageUsedCookie);
+                    mainWindow.IsPageUnsafe.OnNext(IsPageUnsafe);
+                    mainWindow.ZoomLevel.OnNext(ZoomLevel);
+                    mainWindow.tbUrl.Text = tbUrl;
+                    mainWindow.FindCount.OnNext(FindCount);
+                    mainWindow.findText.Text = findText;
+                    mainWindow.MatchCase.IsChecked = MatchCase;
+                    if (CurrentSite is null)
+                    {
+                        CurrentSite = YorotGlobal.Main.CurrentSettings.SiteMan.GetSite(String.IsNullOrWhiteSpace(url) ? _startUrl : url);
+                    }
+                    mainWindow.AllowMic.IsChecked = CurrentSite.Permissions.allowMic.Allowance == YorotPermissionMode.Allow || CurrentSite.Permissions.allowMic.Allowance == YorotPermissionMode.AllowOneTime;
+                    mainWindow.AllowCam.IsChecked = CurrentSite.Permissions.allowCam.Allowance == YorotPermissionMode.Allow || CurrentSite.Permissions.allowCam.Allowance == YorotPermissionMode.AllowOneTime;
+                    mainWindow.AllowCookies.IsChecked = CurrentSite.Permissions.allowCookies.Allowance == YorotPermissionMode.Allow || CurrentSite.Permissions.allowCookies.Allowance == YorotPermissionMode.AllowOneTime;
+                    mainWindow.AllowYS.IsChecked = CurrentSite.Permissions.allowYS.Allowance == YorotPermissionMode.Allow || CurrentSite.Permissions.allowYS.Allowance == YorotPermissionMode.AllowOneTime;
+                    mainWindow.AllowPopup.IsChecked = CurrentSite.Permissions.allowPopup.Allowance == YorotPermissionMode.Allow || CurrentSite.Permissions.allowPopup.Allowance == YorotPermissionMode.AllowOneTime;
+                    mainWindow.AllowNotif.IsChecked = CurrentSite.Permissions.allowNotif.Allowance == YorotPermissionMode.Allow || CurrentSite.Permissions.allowNotif.Allowance == YorotPermissionMode.AllowOneTime;
+                    mainWindow.AllowNotifBoot.IsChecked = CurrentSite.Permissions.startNotifOnBoot;
+                    mainWindow.NotifPriority.SelectedIndex = CurrentSite.Permissions.notifPriority + 1;
+                }
+            }, Avalonia.Threading.DispatcherPriority.Input);
+        }
 
         private void InitializeComponent()
         {
-            SessionSystem = new(YorotGlobal.Main);
             SessionSystem.LoadPage += (url) => { if (webView1 != null) { webView1.Navigate(url); } };
             SessionSystem.Sessions.Add(new Session(_startUrl));
             SessionSystem.SelectedSession = SessionSystem.Sessions[0];
             SessionSystem.SelectedIndex = 0;
             AvaloniaXamlLoader.Load(this);
             ContentGrid = this.FindControl<Grid>("Content");
-            var stackPanel1 = ContentGrid.FindControl<DockPanel>("dockPanel1");
-            tbUrl = stackPanel1.FindControl<TextBox>("tbUrl");
-            IsNavigating = new System.Reactive.Subjects.Subject<bool>();
-            IsNavigated = new System.Reactive.Subjects.Subject<bool>();
-            CanGoBack = new System.Reactive.Subjects.Subject<bool>();
-            CanGoForward = new System.Reactive.Subjects.Subject<bool>();
-            IsFavorited = new System.Reactive.Subjects.Subject<bool>();
-            IsNotFavorited = new System.Reactive.Subjects.Subject<bool>();
-            IsMuted = new System.Reactive.Subjects.Subject<bool>();
-            IsUnmuted = new System.Reactive.Subjects.Subject<bool>();
-            IsPageSafe = new System.Reactive.Subjects.Subject<bool>();
-            IsPageUsedCookie = new System.Reactive.Subjects.Subject<bool>();
-            IsPageUnsafe = new System.Reactive.Subjects.Subject<bool>();
-            CanZoomIn = new System.Reactive.Subjects.Subject<bool>();
-            CanZoomOut = new System.Reactive.Subjects.Subject<bool>();
-
-            IsNavigating.OnNext(true);
-            IsNavigated.OnNext(false);
-            CanGoBack.OnNext(false);
-            CanGoForward.OnNext(false);
-            IsFavorited.OnNext(false);
-            IsNotFavorited.OnNext(true);
-            IsMuted.OnNext(false);
-            IsUnmuted.OnNext(true);
-            IsPageSafe.OnNext(true);
-            IsPageUsedCookie.OnNext(false);
-            IsPageUnsafe.OnNext(false);
-            CanZoomIn.OnNext(true);
-            CanZoomOut.OnNext(true);
-
-            stackPanel1.FindControl<Avalonia.Controls.Button>("reload").Bind(IsVisibleProperty, IsNavigated);
-            stackPanel1.FindControl<Avalonia.Controls.Button>("stop").Bind(IsVisibleProperty, IsNavigating);
-            var goback = stackPanel1.FindControl<Avalonia.Controls.Button>("goback");
-            goback.Bind(IsEnabledProperty, CanGoBack);
-            var goforward = stackPanel1.FindControl<Avalonia.Controls.Button>("goforward");
-            goforward.Bind(IsEnabledProperty, CanGoForward);
-            stackPanel1.FindControl<Avalonia.Controls.Button>("favoritebutton").Bind(IsVisibleProperty, IsNotFavorited);
-            stackPanel1.FindControl<Avalonia.Controls.Button>("favoritedbutton").Bind(IsVisibleProperty, IsFavorited);
-
-            var securitybutton = stackPanel1.FindControl<Avalonia.Controls.Button>("SecurityInfo");
-
-            if (securitybutton.Content is Panel securitypanel)
-            {
-                securitypanel.FindControl<Avalonia.Controls.Image>("WebsiteGood").Bind(IsVisibleProperty, IsPageSafe);
-                securitypanel.FindControl<Avalonia.Controls.Image>("WebsiteMeh").Bind(IsVisibleProperty, IsPageUsedCookie);
-                securitypanel.FindControl<Avalonia.Controls.Image>("WebsiteBad").Bind(IsVisibleProperty, IsPageUnsafe);
-            }
-
-            var backflyout = new Avalonia.Controls.MenuFlyout();
-            goback.ContextFlyout = backflyout;
-
-            backflyout.Opening += (sender, e) =>
-            {
-                if (backflyout.Items is AvaloniaList<object> list)
-                {
-                    list.Clear();
-                    var before = SessionSystem.Before();
-                    for (int i = before.Length - 1; i > 0; i--)
-                    {
-                        Avalonia.Controls.MenuItem item = new() { Name = i + "", Header = before[i].Title, Tag = before[i] };
-                        item.Click += backforwarditem_click;
-                        list.Add(item);
-                    }
-                }
-            };
-
-            var forwardflyout = new Avalonia.Controls.MenuFlyout();
-            goforward.ContextFlyout = forwardflyout;
-
-            forwardflyout.Opening += (sender, e) =>
-            {
-                if (forwardflyout.Items is AvaloniaList<object> list)
-                {
-                    list.Clear();
-                    var after = SessionSystem.After();
-                    for (int i = 0; i < after.Length; i++)
-                    {
-                        Avalonia.Controls.MenuItem item = new() { Name = i + "", Header = after[i].Title, Tag = after[i] };
-                        item.Click += backforwarditem_click;
-                        list.Add(item);
-                    }
-                }
-            };
-
-            var dotmenu = stackPanel1.FindControl<Avalonia.Controls.Button>("dotmenu").ContextFlyout;
-
-            dotmenu.Placement = FlyoutPlacementMode.Bottom;
-            dotmenu.ShowMode = FlyoutShowMode.Standard;
-
-            if (dotmenu is Flyout dotflayout && dotflayout.Content is StackPanel menu)
-            {
-                // None of these are safe, chaning the FlyOut content fucks stuff but Avalonia forced my hand. Too bad!
-
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
-                // Not Soviet Russia, short of "Cut Copy Paste". Don't laugh.
-                //var _ccp = menu.Children[0] as StackPanel;
-                //(_ccp.Children[0] as Avalonia.Controls.Button).Click += cutbutton_click;
-                //(_ccp.Children[1] as Avalonia.Controls.Button).Click += copybutton_click;
-
-                //(_ccp.Children[2] as Avalonia.Controls.Button).Click += pastebutton_click;
-
-                // New Window
-                (menu.Children[1] as Avalonia.Controls.Button).Click += NewWindow;
-                (menu.Children[2] as Avalonia.Controls.Button).Click += NewIncWindow;
-
-                // features panel
-                var _featurespanel = menu.Children[0] as StackPanel;
-                var _panel = (_featurespanel.Children[0] as Panel);
-                var mutebutton = _panel.Children[0] as Avalonia.Controls.Button;
-                mutebutton.Bind(IsVisibleProperty, IsUnmuted);
-                mutebutton.Click += mutebutton_click;
-                var unmutebutton = _panel.Children[1] as Avalonia.Controls.Button;
-                unmutebutton.Bind(IsVisibleProperty, IsMuted);
-                unmutebutton.Click += unmutebutton_click;
-                (_featurespanel.Children[1] as Avalonia.Controls.Button).Click += printbutton_click;
-                (_featurespanel.Children[1] as Avalonia.Controls.Button).Click += screenshotbutton_click;
-                (_featurespanel.Children[1] as Avalonia.Controls.Button).Click += savebutton_click;
-                (_featurespanel.Children[1] as Avalonia.Controls.Button).Click += devtoolsbutton_click;
-
-                var _grid = menu.Children[3] as Grid;
-                FindCount = (_grid.Children[2] as TextBlock);
-                (_grid.Children[1] as Avalonia.Controls.Button).Click += findnextbutton_click;
-                findText = (_grid.Children[0] as TextBox);
-                findText.PropertyChanged += FindText_PropertyChanged;
-                var _mCase = (_grid.Children[3] as Avalonia.Controls.CheckBox);
-                _mCase.Checked += MatchCaseChecked;
-                _mCase.Unchecked += MatchCaseUnchecked;
-
-                var _zoom = menu.Children[4] as StackPanel;
-                ZoomLevel = _zoom.Children[1] as TextBlock;
-                var zoomin = (_zoom.Children[2] as Avalonia.Controls.Button);
-                zoomin.Bind(IsEnabledProperty, CanZoomIn);
-                zoomin.Click += zoominbutton_click;
-                var zoomout = (_zoom.Children[0] as Avalonia.Controls.Button);
-                zoomout.Bind(IsEnabledProperty, CanZoomOut);
-                zoomout.Click += zoomoutbutton_click;
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
-            }
-
-            this.KeyDown += TabWindow_KeyDown;
-            this.KeyUp += TabWindow_KeyUp;
 
             var dockPanel = ContentGrid.FindControl<DockPanel>("cefpanel");
-            favoritesmenu = ContentGrid.FindControl<Avalonia.Controls.Menu>("Favorites");
-            other_bookmarks = favoritesmenu.FindControl<Avalonia.Controls.MenuItem>("other_bookmarks");
-
             if (dockPanel is null)
             {
                 throw new Exception("The panel named \"cefpanel\" that should host CEF was missing. (Is it removed from TabWindow.axaml file?)");
@@ -217,7 +208,7 @@ namespace Yorot_Avalonia.Views
             };
 
             webView.Glue.Window = this;
-            webView.BrowserCreated += (sender, e) => { webView.Navigate(_startUrl); };
+            webView.BrowserCreated += (sender, e) => { webView.ReloadIgnoreCache(); webView.Navigate(_startUrl); };
             webView.LoadError += WebView1_LoadError;
             webView.Navigated += WebView_Navigated;
             webView.Navigating += WebView1_Navigating;
@@ -226,19 +217,8 @@ namespace Yorot_Avalonia.Views
             dockPanel.Children.Add(webView);
             webView1 = webView;
 
+            url = _startUrl;
             redirectTo(_startUrl, "");
-
-            RefreshFavorites(true);
-        }
-
-        private void backforwarditem_click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
-        {
-            if (sender is Avalonia.Controls.MenuItem item && item.Tag is Session session && SessionSystem != null && webView1 != null)
-            {
-                SessionSystem.SelectedIndex = SessionSystem.Sessions.IndexOf(session);
-                SessionSystem.SelectedSession = session;
-                webView1.Navigate(session.Url);
-            }
         }
 
         private void WebView1_AddressChange(object? sender, CefNet.AddressChangeEventArgs e)
@@ -246,140 +226,15 @@ namespace Yorot_Avalonia.Views
             if (SessionSystem != null && e.IsMainFrame && SessionSystem.Sessions.Count != 0)
             {
                 url = e.Url;
-                if (e.Url != SessionSystem.Sessions[SessionSystem.Sessions.Count - 1].ToString())
+                tbUrl = e.Url;
+                if (e.Url != SessionSystem.Sessions[^1].ToString())
                 {
                     redirectTo(e.Url, title);
                 }
             }
         }
 
-        private void TabWindow_KeyUp(object? sender, Avalonia.Input.KeyEventArgs e)
-        {
-            if (e.Key == Avalonia.Input.Key.LeftShift || e.Key == Avalonia.Input.Key.RightShift)
-            {
-                shiftPressed = false;
-            }
-        }
-
-        private bool shiftPressed = false;
-
-        private void TabWindow_KeyDown(object? sender, Avalonia.Input.KeyEventArgs e)
-        {
-            if (e.Key == Avalonia.Input.Key.LeftShift || e.Key == Avalonia.Input.Key.RightShift)
-            {
-                shiftPressed = true;
-            }
-        }
-
-        private string CachedFavs = "";
-
-        private void RefreshFavorites(bool force = false)
-        {
-            if (YorotGlobal.Main != null && favoritesmenu != null && tbUrl != null)
-            {
-                if (force || (YorotGlobal.Main.CurrentSettings.FavManager.ToXml() != CachedFavs))
-                {
-                    favoritesmenu.IsVisible = YorotGlobal.Main.CurrentSettings.FavManager.ShowFavorites;
-                    CachedFavs = YorotGlobal.Main.CurrentSettings.FavManager.ToXml();
-                    if ((favoritesmenu != null && favoritesmenu.Items is AvaloniaList<object> list))
-                    {
-                        list.Clear();
-                        if (other_bookmarks != null)
-                        {
-                            list.Add(other_bookmarks);
-                        }
-                        var favbars = YorotGlobal.Main.CurrentSettings.FavManager.Favorites.FindAll(it => it.Name == "FavBar");
-                        if (favbars.Count > 0)
-                        {
-                            for (int i = 0; i < favbars[0].Favorites.Count; i++)
-                            {
-                                var fav = favbars[0].Favorites[i];
-                                Avalonia.Controls.MenuItem item = new();
-                                item.Bind(BackgroundProperty, tbUrl.GetBindingObservable(BackgroundProperty));
-                                item.Bind(ForegroundProperty, tbUrl.GetBindingObservable(ForegroundProperty));
-                                item.Header = fav.Text;
-                                item.Tag = fav;
-                                //item.Icon = fav.Icon; // TODO
-                                list.Add(item);
-                                if (fav is not YorotFavorite && fav is YorotFavFolder)
-                                {
-                                    AddFavorites(item, fav);
-                                }
-                                else
-                                {
-                                    item.Click += favitem_Click;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            YorotGlobal.Main.CurrentSettings.FavManager.Favorites.Add(new YorotFavFolder(YorotGlobal.Main.CurrentSettings.FavManager, "FavBar", "Favorites Bar"));
-                        }
-                    }
-                    if (other_bookmarks != null && other_bookmarks.Items is AvaloniaList<object> oblist)
-                    {
-                        for (int i = 0; i < YorotGlobal.Main.CurrentSettings.FavManager.Favorites.Count; i++)
-                        {
-                            var fav = YorotGlobal.Main.CurrentSettings.FavManager.Favorites[i];
-                            if (fav.Name != "FavBar")
-                            {
-                                Avalonia.Controls.MenuItem item = new()
-                                {
-                                    Header = fav.Text,
-                                    Tag = fav
-                                };
-                                item.Bind(BackgroundProperty, tbUrl.GetBindingObservable(BackgroundProperty));
-                                item.Bind(ForegroundProperty, tbUrl.GetBindingObservable(ForegroundProperty));
-                                //item.Icon = fav.Icon; // TODO
-                                oblist.Add(item);
-                                if (fav is not YorotFavorite && fav is YorotFavFolder)
-                                {
-                                    AddFavorites(item, fav);
-                                }
-                                else
-                                {
-                                    item.Click += favitem_Click;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        private void AddFavorites(Avalonia.Controls.MenuItem item, YorotFavFolder favFolder)
-        {
-            if (item.Items is AvaloniaList<object> list)
-            {
-                for (int i = 0; i < favFolder.Favorites.Count; i++)
-                {
-                    Avalonia.Controls.MenuItem newitem = new();
-                    var fav = favFolder.Favorites[i];
-                    newitem.Header = fav.Text;
-                    newitem.Tag = fav;
-                    //newitem.Icon = fav.Icon; // TODO
-                    list.Add(newitem);
-                    if (fav is not YorotFavorite && fav is YorotFavFolder)
-                    {
-                        AddFavorites(newitem, fav);
-                    }
-                    else
-                    {
-                        newitem.Click += favitem_Click;
-                    }
-                }
-            }
-        }
-
-        private void favitem_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
-        {
-            if (webView1 != null && sender is Avalonia.Controls.MenuItem item && item.Tag is YorotFavorite fav)
-            {
-                webView1.Navigate(fav.Url);
-            }
-        }
-
-        private YorotWebView? webView1;
+        public YorotWebView? webView1;
 
         private void WebView_DocumentTitleChanged(object? sender, CefNet.DocumentTitleChangedEventArgs e)
         {
@@ -422,338 +277,52 @@ namespace Yorot_Avalonia.Views
 
         private void WebView1_Navigating(object? sender, CefNet.BeforeBrowseEventArgs e)
         {
-            if (e.Frame.IsMain && IsNavigating != null && IsNavigated != null)
+            if (e.Frame.IsMain)
             {
-                IsNavigated.OnNext(false);
-                IsNavigating.OnNext(true);
-                IsPageSafe.OnNext(true);
-                IsPageUsedCookie.OnNext(false);
-                IsPageUnsafe.OnNext(false);
+                IsNavigated = false;
+                IsNavigating = true;
+                IsPageSafe = true;
+                IsPageUsedCookie = false;
+                IsPageUnsafe = false;
             }
         }
 
-        private void cutbutton_click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+        public void backforwarditem_click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
-            if (webView1 != null)
+            if (sender is Avalonia.Controls.MenuItem item && item.Tag is Session session && SessionSystem != null && webView1 != null)
             {
-                webView1.GetMainFrame().Cut();
+                SessionSystem.SelectedIndex = SessionSystem.Sessions.IndexOf(session);
+                SessionSystem.SelectedSession = session;
+                webView1.Navigate(session.Url);
             }
         }
 
-        private void copybutton_click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
-        {
-            if (webView1 != null)
-            {
-                webView1.GetMainFrame().Copy();
-            }
-        }
+        public bool Searching = false;
+        // TODO: Add this function
+#pragma warning disable IDE0044 // Add readonly modifier
+        public bool findNext = false;
+#pragma warning restore IDE0044 // Add readonly modifier
+        public bool matchCase = false;
 
-        private void pastebutton_click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
-        {
-            if (webView1 != null)
-            {
-                webView1.GetMainFrame().Paste();
-            }
-        }
-
-        private void printbutton_click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
-        {
-            if (webView1 != null)
-            {
-                webView1.Print();
-            }
-        }
-
-        private void screenshotbutton_click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
-        {
-            if (webView1 != null)
-            {
-                // TODO: Find a way to take a screnshot of page
-                //webView1.GetMainFrame().TakeAScreenShot();
-            }
-        }
-
-        private void devtoolsbutton_click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
-        {
-            if (webView1 != null)
-            {
-                webView1.ShowDevTools();
-            }
-        }
-
-        public TextBlock? FindCount;
-        public TextBlock? ZoomLevel;
-        private bool Searching = false;
-        private TextBox? findText;
-        private bool findNext = false;
-        private bool matchCase = false;
-
-        private void findbackbutton_click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
-        {
-            if (webView1 != null && findText != null)
-            {
-                Searching = true;
-                webView1.Find(findText.Text, false, matchCase, findNext);
-            }
-        }
-
-        private int zoomLevel = 0; // For some reason, the web view's ZoomLevel is broken, always showing up 0.
-
-        private void zoominbutton_click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
-        {
-            if (webView1 != null)
-            {
-                if (zoomLevel < 500)
-                {
-                    if (zoomLevel < 0)
-                    {
-                        zoomLevel += 10;
-                    }
-                    else if (zoomLevel < 300)
-                    {
-                        zoomLevel += 25;
-                    }
-                    else if (zoomLevel >= 300)
-                    {
-                        zoomLevel += 50;
-                    }
-
-                    CanZoomOut.OnNext(true);
-                    webView1.ZoomLevel = ((double)zoomLevel / 100);
-                    if (ZoomLevel != null)
-                    {
-                        ZoomLevel.Text = (zoomLevel + 100) + "%";
-                    }
-
-                    if (zoomLevel >= 500) { CanZoomIn.OnNext(false); }
-                }
-                else
-                {
-                    CanZoomIn.OnNext(false);
-                }
-            }
-        }
-
-        private void zoomoutbutton_click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
-        {
-            if (webView1 != null)
-            {
-                if (zoomLevel > -100)
-                {
-                    if (zoomLevel > 300)
-                    {
-                        zoomLevel -= 50;
-                    }
-                    else if (zoomLevel > 0)
-                    {
-                        zoomLevel -= 25;
-                    }
-                    else if (zoomLevel <= 0)
-                    {
-                        zoomLevel -= 10;
-                    }
-
-                    CanZoomIn.OnNext(true);
-                    webView1.ZoomLevel = ((double)zoomLevel / 100);
-                    if (ZoomLevel != null)
-                    {
-                        ZoomLevel.Text = (zoomLevel + 100) + "%";
-                    }
-
-                    if (zoomLevel <= -100)
-                    {
-                        CanZoomOut.OnNext(false);
-                    }
-                }
-                else
-                {
-                    CanZoomOut.OnNext(false);
-                }
-            }
-        }
-
-        private void findnextbutton_click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
-        {
-            if (webView1 != null && findText != null)
-            {
-                if (string.IsNullOrWhiteSpace(findText.Text))
-                {
-                    Searching = false;
-                    webView1.StopFinding(true);
-                }
-                else
-                {
-                    Searching = true;
-                    webView1.Find(findText.Text, true, matchCase, true);
-                }
-            }
-        }
-
-        private void MatchCaseChecked(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
-        {
-            if (sender is Avalonia.Controls.CheckBox checkBox && checkBox.IsChecked.HasValue)
-            {
-                matchCase = checkBox.IsChecked.Value;
-                if (webView1 != null && Searching && findText != null && Searching)
-                {
-                    webView1.Find(findText.Text, false, matchCase, findNext);
-                }
-            }
-        }
-
-        private void FindText_PropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
-        {
-            if (e.Property == TextBox.TextProperty && webView1 != null && findText != null)
-            {
-                if (!string.IsNullOrWhiteSpace(findText.Text))
-                {
-                    if (!Searching)
-                    {
-                        Searching = true;
-                        webView1.Find(findText.Text, true, matchCase, true);
-                    }
-                    else
-                    {
-                        Searching = true;
-                        webView1.Find(findText.Text, true, matchCase, findNext);
-                    }
-                }
-                else
-                {
-                    webView1.StopFinding(true);
-                    Searching = false;
-                }
-            }
-        }
-
-        private void MatchCaseUnchecked(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
-        {
-            MatchCaseChecked(sender, e);
-        }
-
-        private void NewWindow(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
-        {
-            if (YorotGlobal.Main != null)
-            {
-                YorotGlobal.Main.MainForm.NewWindow();
-            }
-        }
-
-        private void NewIncWindow(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
-        {
-            System.Diagnostics.Process.Start(System.Diagnostics.Process.GetCurrentProcess().ProcessName, "-i");
-        }
-
-        private async void savebutton_click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
-        {
-            if (webView1 != null && YorotGlobal.Main != null)
-            {
-                var task = webView1.GetMainFrame().GetSourceAsync(System.Threading.CancellationToken.None);
-                if (task.IsCompletedSuccessfully)
-                {
-                    RunSaveFileDialog(YorotGlobal.Main.CurrentLanguage.GetItemText("DialogBox.SaveFileDialog"),
-                                new string[] { "html" },
-                                new Action<string>((filename) =>
-                                {
-                                    HTAlt.Tools.WriteFile(filename, task.Result, System.Text.Encoding.UTF8);
-                                }
-                                ));
-                }
-            }
-        }
-
-        private void mutebutton_click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
-        {
-            if (webView1 != null && IsMuted != null && IsUnmuted != null)
-            {
-                webView1.AudioMuted = true;
-                IsMuted.OnNext(true);
-                IsUnmuted.OnNext(false);
-            }
-        }
-
-        private void unmutebutton_click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
-        {
-            if (webView1 != null && IsMuted != null && IsUnmuted != null)
-            {
-                webView1.AudioMuted = false;
-                IsMuted.OnNext(false);
-                IsUnmuted.OnNext(true);
-            }
-        }
-
-        private void openmenu(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
-        {
-            if (sender is Avalonia.Controls.Control cntrl && cntrl.ContextFlyout != null)
-            {
-                cntrl.ContextFlyout.ShowAt(cntrl, true);
-            }
-        }
+        // For some reason, the web view's ZoomLevel is broken, always showing up 0. So we have to implement ours.
+        public int zoomLevel = 0;
 
         private void WebView_Navigated(object? sender, CefNet.NavigatedEventArgs e)
         {
-            if (YorotGlobal.Main != null && CanZoomIn != null && CanZoomOut != null && SessionSystem != null && webView1 != null && tbUrl != null && e.Frame.IsMain && IsNavigating != null && CanGoBack != null && CanGoForward != null && IsNavigated != null && IsFavorited != null && IsNotFavorited != null)
+            if (YorotGlobal.Main != null && SessionSystem != null && webView1 != null && e.Frame.IsMain)
             {
-                IsNavigated.OnNext(true);
-                IsNavigating.OnNext(false);
-                CanZoomIn.OnNext(true);
-                CanZoomOut.OnNext(true);
+                IsNavigated = true;
+                IsNavigating = false;
+                CanZoomIn = true;
+                CanZoomOut = true;
                 zoomLevel = 0;
                 url = e.Url;
-                CanGoBack.OnNext(SessionSystem.CanGoBack);
-                CanGoForward.OnNext(SessionSystem.CanGoForward);
-                tbUrl.Text = e.Url;
+                CanGoBack = SessionSystem.CanGoBack;
+                CanGoForward = SessionSystem.CanGoForward;
                 var favorited = YorotGlobal.Main.CurrentSettings.FavManager.isFavorited(e.Url);
-                IsFavorited.OnNext(favorited);
-                IsNotFavorited.OnNext(!favorited);
-            }
-        }
-
-        private void urlkeydown(object? sender, Avalonia.Input.KeyEventArgs e)
-        {
-            if (e.Key == Avalonia.Input.Key.Enter)
-            {
-                gobutton(sender, e);
-            }
-        }
-
-        private void goback(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
-        {
-            if (sender != null && SessionSystem != null && webView1 != null && SessionSystem.CanGoBack)
-            {
-                bypassThisDeletion = true;
-                SessionSystem.GoBack();
-            }
-        }
-
-        private void goforward(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
-        {
-            if (sender != null && SessionSystem != null && webView1 != null && SessionSystem.CanGoForward)
-            {
-                bypassThisDeletion = true;
-                SessionSystem.GoForward();
-            }
-        }
-
-        private void gohome(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
-        {
-            if (sender != null && webView1 != null && webView1.CanGoForward && YorotGlobal.Main != null)
-            {
-                redirectTo(YorotGlobal.Main.CurrentSettings.HomePage, "");
-                webView1.Navigate(YorotGlobal.Main.CurrentSettings.HomePage);
-            }
-        }
-
-        private void reload(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
-        {
-            if (webView1 is null) { return; }
-            if (shiftPressed)
-            {
-                webView1.ReloadIgnoreCache();
-            }
-            else
-            {
-                webView1.Reload();
+                IsFavorited = favorited;
+                IsNotFavorited = !favorited;
+                tbUrl = e.Url;
             }
         }
 
@@ -770,100 +339,8 @@ namespace Yorot_Avalonia.Views
             }
         }
 
-        private void stop(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
-        {
-            if (webView1 is null) { return; }
-            webView1.Stop();
-        }
-
-        private void gobutton(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
-        {
-            if (webView1 is null || YorotGlobal.Main is null) { return; }
-            if (tbUrl != null)
-            {
-                if (HTAlt.Tools.ValidUrl(tbUrl.Text, new string[] { "yorot" }, false))
-                {
-                    redirectTo(tbUrl.Text, "");
-                    webView1.Navigate(tbUrl.Text);
-                }
-                else
-                {
-                    var searchUrl = YorotGlobal.Main.CurrentSettings.SearchEngine.Search(tbUrl.Text);
-                    redirectTo(searchUrl, "");
-                    webView1.Navigate(searchUrl);
-                }
-            }
-        }
-
-        private string title = "";
-        private string url = "";
-
-        private void favorite(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
-        {
-            if (IsFavorited is null || YorotGlobal.Main is null || IsNotFavorited is null) { return; }
-            var favbars = YorotGlobal.Main.CurrentSettings.FavManager.Favorites.FindAll(it => it.Name == "FavBar");
-            if (favbars.Count > 0)
-            {
-                var favbar = favbars[0];
-                favbar.Favorites.Add(new YorotFavorite(favbar, url, title));
-            }
-            else
-            {
-                var favbar = new YorotFavFolder(YorotGlobal.Main.CurrentSettings.FavManager, "FavBar", "Favorites Bar");
-                YorotGlobal.Main.CurrentSettings.FavManager.Favorites.Add(favbar);
-                favbar.Favorites.Add(new YorotFavorite(favbar, url, title));
-            }
-            RefreshFavorites(true);
-            IsFavorited.OnNext(true);
-            IsNotFavorited.OnNext(false);
-        }
-
-        private void unfavorite(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
-        {
-            if (YorotGlobal.Main is null || IsFavorited is null || tbUrl is null || IsNotFavorited is null) { return; }
-            var favs = YorotGlobal.Main.CurrentSettings.FavManager.GetFavorite(tbUrl.Text);
-            if (favs.Count > 0)
-            {
-                favs[0].ParentFolder.Favorites.Remove(favs[0]);
-                RefreshFavorites(true);
-                IsFavorited.OnNext(true);
-                IsNotFavorited.OnNext(false);
-            }
-        }
-
-        private async void RunSaveFileDialog(string title, string[] filetypes, Action<string> OnSuccess)
-        {
-            if (YorotGlobal.Main != null)
-            {
-                SaveFileDialog saveFileDialog = new SaveFileDialog()
-                {
-                    Title = YorotGlobal.Main.CurrentLanguage.GetItemText("DialogBox.SaveFileDialog")
-                };
-                List<FileDialogFilter> Filters = new List<FileDialogFilter>();
-                FileDialogFilter filter = new FileDialogFilter();
-
-                for (int i = 0; i < filetypes.Length; i++)
-                {
-                    List<string> extension = new List<string>();
-                    extension.Add(filetypes[i]);
-                    filter.Extensions = extension;
-                    filter.Name = YorotGlobal.Main.CurrentLanguage.GetItemText("FileTypes." + filetypes[i].ToUpperInvariant());
-                    Filters.Add(filter);
-                }
-                saveFileDialog.Filters = Filters;
-
-                saveFileDialog.DefaultExtension = filetypes[0];
-
-                saveFileDialog.Directory = YorotGlobal.Main.CurrentSettings.DownloadManager.DownloadFolder;
-
-                var filename = await saveFileDialog.ShowAsync(YorotGlobal.Main.MainForm);
-
-                if (!string.IsNullOrWhiteSpace(filename))
-                {
-                    OnSuccess(filename);
-                }
-            }
-        }
+        public string title = "";
+        public string url = "";
 
         private Avalonia.Controls.Flyout? RightClickMenu;
         private YorotGlue.ContextMenuParams? lastRCMParams;
@@ -887,35 +364,35 @@ namespace Yorot_Avalonia.Views
                     {
                         Header = YorotGlobal.Main.CurrentLanguage.GetItemText("RightClick.Back"),
                     };
-                    back.Click += (sender, e) => { goback(this, null); RightClickMenu.Hide(); };
+                    back.Click += (sender, e) => { if (SessionSystem != null && SessionSystem.CanGoBack) { SessionSystem.GoBack(); } RightClickMenu.Hide(); };
                     _content.Children.Add(back);
 
                     Avalonia.Controls.MenuItem forward = new()
                     {
                         Header = YorotGlobal.Main.CurrentLanguage.GetItemText("RightClick.Forward"),
                     };
-                    forward.Click += (sender, e) => { goforward(this, null); RightClickMenu.Hide(); };
+                    forward.Click += (sender, e) => { if (SessionSystem != null && SessionSystem.CanGoForward) { SessionSystem.GoForward(); } RightClickMenu.Hide(); };
                     _content.Children.Add(forward);
 
                     Avalonia.Controls.MenuItem refresh = new()
                     {
                         Header = YorotGlobal.Main.CurrentLanguage.GetItemText("RightClick.Refresh"),
                     };
-                    refresh.Click += (sender, e) => { reload(this, null); RightClickMenu.Hide(); };
+                    refresh.Click += (sender, e) => { webView1.Reload(); RightClickMenu.Hide(); };
                     _content.Children.Add(refresh);
 
                     Avalonia.Controls.MenuItem refreshNoCache = new()
                     {
                         Header = YorotGlobal.Main.CurrentLanguage.GetItemText("RightClick.RefreshNoCache"),
                     };
-                    refreshNoCache.Click += (sender, e) => { shiftPressed = true; reload(this, null); shiftPressed = false; RightClickMenu.Hide(); };
+                    refreshNoCache.Click += (sender, e) => { webView1.ReloadIgnoreCache(); RightClickMenu.Hide(); };
                     _content.Children.Add(refreshNoCache);
 
                     Avalonia.Controls.MenuItem stopbutton = new()
                     {
                         Header = YorotGlobal.Main.CurrentLanguage.GetItemText("RightClick.Stop"),
                     };
-                    stopbutton.Click += (sender, e) => { stop(this, null); RightClickMenu.Hide(); };
+                    stopbutton.Click += (sender, e) => { webView1.Stop(); RightClickMenu.Hide(); };
                     _content.Children.Add(stopbutton);
 
                     Avalonia.Controls.MenuItem selectall = new()
@@ -1087,7 +564,7 @@ namespace Yorot_Avalonia.Views
                         var task = frame.GetSourceAsync(System.Threading.CancellationToken.None);
                         if (task.IsCompletedSuccessfully)
                         {
-                            RunSaveFileDialog(YorotGlobal.Main.CurrentLanguage.GetItemText("DialogBox.SaveFileDialog"),
+                            mainWindow.RunSaveFileDialog(YorotGlobal.Main.CurrentLanguage.GetItemText("DialogBox.SaveFileDialog"),
                                 new string[] { "html" },
                                 new Action<string>((filename) =>
                                 {
@@ -1116,7 +593,7 @@ namespace Yorot_Avalonia.Views
                     };
                     printPdf.Click += (sender, e) =>
                     {
-                        RunSaveFileDialog(YorotGlobal.Main.CurrentLanguage.GetItemText("DialogBox.SaveFileDialog"),
+                        mainWindow.RunSaveFileDialog(YorotGlobal.Main.CurrentLanguage.GetItemText("DialogBox.SaveFileDialog"),
                                 new string[] { "pdf" },
                                 new Action<string>((filename) =>
                                 {

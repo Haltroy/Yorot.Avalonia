@@ -5,6 +5,7 @@ using CefNet;
 using CefNet.Avalonia;
 using System;
 using System.Collections.Generic;
+using Yorot;
 using Yorot_Avalonia.Handlers;
 
 namespace Yorot_Avalonia.Views
@@ -19,6 +20,8 @@ namespace Yorot_Avalonia.Views
         {
             InitializeComponent();
         }
+
+        public YorotSite CurrentSite;
 
         private string _startUrl = "yorot://blank";
 
