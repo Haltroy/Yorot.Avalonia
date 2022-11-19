@@ -27,6 +27,7 @@ namespace Yorot_Avalonia.Views
             InitializeComponent();
         }
 
+        public bool IsAlive = false;
         public string _startUrl = "yorot://newtab";
         public string findText = "";
 
@@ -208,7 +209,7 @@ namespace Yorot_Avalonia.Views
             };
 
             webView.Glue.Window = this;
-            webView.BrowserCreated += (sender, e) => { webView.ReloadIgnoreCache(); webView.Navigate(_startUrl); };
+            webView.BrowserCreated += (sender, e) => { IsAlive = true; webView.ReloadIgnoreCache(); webView.Navigate(_startUrl); };
             webView.LoadError += WebView1_LoadError;
             webView.Navigated += WebView_Navigated;
             webView.Navigating += WebView1_Navigating;

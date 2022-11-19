@@ -861,7 +861,7 @@ namespace Yorot_Avalonia.Views
         private void FindText_PropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
         {
             if (_tabSwitching) { _tabSwitching = false; return; }
-            if (e.Property == TextBox.TextProperty && tabs != null && tabs.SelectedItem is TabViewItem item && item.Content is DockPanel dockPanel1 && dockPanel1.Children[0] is TabWindow window && window.webView1 is YorotWebView webView && findText != null)
+            if (e.Property == TextBox.TextProperty && tabs != null && tabs.SelectedItem is TabViewItem item && item.Content is DockPanel dockPanel1 && dockPanel1.Children[0] is TabWindow window && window.IsAlive && window.webView1 is YorotWebView webView && findText != null)
             {
                 window.findText = findText.Text;
                 if (!string.IsNullOrWhiteSpace(window.findText))

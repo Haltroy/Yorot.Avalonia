@@ -11,6 +11,7 @@ using CefNet;
 using CefNet.Avalonia;
 using CefNet.Internal;
 using CefNet.Net;
+using FluentAvalonia.UI.Controls;
 using Yorot;
 using Yorot_Avalonia.Views;
 using static Yorot.DefaultApps;
@@ -427,7 +428,16 @@ namespace Yorot_Avalonia.Handlers
 
         protected override void OnFaviconUrlChange(CefBrowser browser, CefStringList iconUrls)
         {
-            base.OnFaviconUrlChange(browser, iconUrls);
+            if (Window is TabWindow tab && tab.Parent is TabViewItem item)
+            {
+                // TODO: Get Icon from URL and set here
+                //item.IconSource =
+            }
+            else if (Window is PopupWindow popup)
+            {
+                // TODO: Get Icon from URL and set here
+                //popup.Icon =
+            }
         }
 
         protected override bool OnFileDialog(CefBrowser browser, CefFileDialogMode mode, string title, string defaultFilePath, CefStringList acceptFilters, CefFileDialogCallback callback)
