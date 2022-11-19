@@ -430,7 +430,7 @@ namespace Yorot_Avalonia.Views
             YorotGlobal.Main.Profiles.Current = profile;
             profile.Settings.CurrentTheme = selectedTheme;
             profile.Settings.CurrentLanguage = selectedLang;
-            profile.Settings.Locale = selectedLocale;
+            profile.Manager.Main.Locale = selectedLocale;
             switch (datetimeBox.SelectedIndex)
             {
                 case 0:

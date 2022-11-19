@@ -9,5 +9,6 @@
 
 	<Application.Styles>
 		<sty:FluentAvaloniaTheme />
+		<StyleInclude Source="avares://Avalonia.Themes.Default/Accents/BaseLight.xaml" />
 	</Application.Styles>
 </Application>

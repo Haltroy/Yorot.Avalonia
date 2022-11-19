@@ -30,26 +30,6 @@ namespace Yorot_Avalonia
 
         public override void AfterInit()
         {
-            // CEF
-
-            var settings = new CefSettings();
-            settings.LocalesDirPath = EngineLocaleFolder;
-            settings.ResourcesDirPath = EngineFolder;
-            settings.NoSandbox = true;
-            // These two should be always true, otherwise it won't create the browser obejct or display anything.
-            settings.MultiThreadedMessageLoop = true;
-            settings.WindowlessRenderingEnabled = true;
-
-            settings.Locale = "tr";
-
-            settings.UserDataPath = Profiles.Current.CacheLoc;
-            settings.UserAgent = GetUserAgent("Chrome", YorotGlobal.ChromiumVersion);
-
-            var app = new CefNetApplication();
-            app.Initialize(EngineFolder, settings);
-
-            CefApi.RegisterSchemeHandlerFactory("yorot", "", new Handlers.YorotSchemeHandlerFactory());
-
             // Yorot-Avalonia
 
             var packages = GetPackages();

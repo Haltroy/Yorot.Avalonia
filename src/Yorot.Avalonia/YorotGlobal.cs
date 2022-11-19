@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 
 namespace Yorot_Avalonia
 {
@@ -7,7 +8,7 @@ namespace Yorot_Avalonia
     /// </summary>
     public static class YorotGlobal
     {
-        public static ViewModels.ViewModelBase ViewModel { get; set; }
+        public static ViewModels.ViewModelBase ViewModel { get; set; } = new ViewModels.MainViewModel();
 
         public static string Arch
         {
