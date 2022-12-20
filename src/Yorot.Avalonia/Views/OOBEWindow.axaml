@@ -114,14 +114,11 @@
 				<TextBlock HorizontalAlignment="Center" Text="{Binding OOBEImportDesc}" />
 				<Separator Height="50" />
 				<StackPanel Name="Browsers" Spacing="5" Orientation="Vertical" HorizontalAlignment="Center">
-					<CheckBox  Name="Korot" Content="Korot" />
 					<CheckBox Name="Chrome" Content="Google Chrome" />
-					<CheckBox  Name="Firefox" Content="Mozilla Firefox" />
 					<CheckBox  Name="OtherFlavor" Content="{Binding OOBEOtherFlavor}" />
 					<CheckBox  Name="Edge" Content="Microsoft Edge" />
-					<CheckBox  Name="EdgeLegacy" Content="Microsoft Edge (Legacy)" />
-					<CheckBox  Name="IntExp" Content="Microsoft Internet Explorer" />
 					<CheckBox  Name="Opera" Content="Opera" />
+					<CheckBox  Name="OperaGX" Content="Opera GX" />
 					<CheckBox  Name="Chromium" Content="{Binding OOBEChromium}" />
 					<CheckBox  Name="HTML" Content="{Binding OOBEHTML}" />
 				</StackPanel>

@@ -92,6 +92,7 @@
     <None Remove="Languages\English-GB.ylf" />
     <None Remove="Languages\English-US.ylf" />
     <None Remove="Languages\Turkish.ylf" />
+    <None Remove="WebSources\jquery.min.js" />
     <None Remove="WebSources\map.html" />
     <None Remove="WebSources\test.html" />
 	  <AvaloniaResource Include="Assets\userdefault-b.png" />
@@ -123,6 +124,7 @@
     <EmbeddedResource Include="WebSources\incognito.html">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
+    <EmbeddedResource Include="WebSources\jquery.min.js" />
     <EmbeddedResource Include="WebSources\license.html">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
@@ -152,11 +154,13 @@
     <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="0.10.18" />
     <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.18" />
     <PackageReference Include="CefNet" Version="105.3.22248.142" />
-    <PackageReference Include="FluentAvaloniaUI" Version="1.4.4" />
+    <PackageReference Include="FluentAvaloniaUI" Version="1.4.5" />
 	<PackageReference Include="CefNet.Avalonia" Version="105.3.22248.142" />
+	<PackageReference Include="MessageBox.Avalonia" Version="2.1.0" />
 	
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\BrowserBookmarkManager\BrowserBookmarkManager.csproj" />
     <ProjectReference Include="..\Yorot.Standart\Yorot.Standart.csproj" />
   </ItemGroup>
   <ItemGroup>
@@ -164,8 +168,5 @@
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <UpToDateCheckInput Remove="Views\MessageBox.axaml" />
   </ItemGroup>
 </Project>

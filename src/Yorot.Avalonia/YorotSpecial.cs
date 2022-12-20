@@ -41,6 +41,7 @@ namespace Yorot_Avalonia
                 packlist += "<a><b>" + packages[i, 0] + ":</b>" + packages[i, 1] + "</a></br>" + Environment.NewLine;
             }
 
+            RegisterWebSource("yorot://jquery.min", YorotTools.ReadResource("Yorot_Avalonia.WebSources.jquery.min.js"), "text/javascript", false, true);
             RegisterWebSource("yorot://newtab", YorotTools.ReadResource("Yorot_Avalonia.WebSources.newtab.html"), "text/html", false, false);
             RegisterWebSource("yorot://test", YorotTools.ReadResource("Yorot_Avalonia.WebSources.test.html"), "text/html", false, false);
             RegisterWebSource("yorot://license", YorotTools.ReadResource("Yorot_Avalonia.WebSources.license.html"), "text/html", false, false);

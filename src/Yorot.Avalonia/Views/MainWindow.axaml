@@ -39,7 +39,7 @@
 			</DockPanel>
 			<Panel Grid.Row="0"  Name="SidebarSplitter" Background="{Binding OverlayColor}" PointerMoved="sidebarMove" Cursor="SizeWestEast" PointerReleased="sidebarRelease" PointerPressed="sidebarPressed" Grid.Column="1" MinWidth="5" />
 			<Canvas Name="ContentCanvas" Grid.Row="0" Grid.Column="2" Margin="0 0 60 0">
-				<ui:TabView Width="{Binding $parent.Bounds.Width}" Height="{Binding $parent.Bounds.Height}" VerticalAlignment="Stretch" Foreground="{Binding ForeColor}" Name="Tabs" />
+				<ui:TabView VerticalAlignment="Stretch" Width="{Binding $parent.Bounds.Width}" Height="{Binding $parent.Bounds.Height}" HorizontalAlignment="Stretch" Foreground="{Binding ForeColor}" Name="Tabs" />
 				<Grid ColumnDefinitions="40,40,40,40,40,*,40,Auto,40,40,40" Name="dockPanel1" Canvas.Top="40" Width="{Binding $parent.Bounds.Width}" Margin="0 0 0 0">
 					<Button Click="goback"  Grid.Column="0" Name="goback" Background="{Binding ArtColor}" Foreground="{Binding ArtForeColor}">
 						<Panel>

@@ -24,11 +24,13 @@ namespace Yorot_Avalonia
         {
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
+                Console.WriteLine("CefNet App Started...");
                 if (YorotGlobal.Main != null)
                 {
                     YorotGlobal.Main.Init();
                     if (!YorotGlobal.Main.OOBE)
                     {
+                        Console.WriteLine("Main Window Started...");
                         desktop.MainWindow = new MainWindow
                         {
                             DataContext = YorotGlobal.ViewModel,
@@ -36,6 +38,7 @@ namespace Yorot_Avalonia
                     }
                     else
                     {
+                        Console.WriteLine("OOBE Started...");
                         desktop.MainWindow = new OOBEWindow()
                         {
                             DataContext = YorotGlobal.ViewModel,
@@ -44,6 +47,8 @@ namespace Yorot_Avalonia
                 }
                 desktop.Startup += Desktop_Startup;
                 desktop.Exit += Desktop_Exit;
+            } else {
+                Console.WriteLine("Type of ApplicationLifetime is \"" + ApplicationLifetime.GetType().Name + "\".");
             }
 
             base.OnFrameworkInitializationCompleted();

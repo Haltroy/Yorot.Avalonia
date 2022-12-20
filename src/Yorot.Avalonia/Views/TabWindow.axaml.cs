@@ -1,6 +1,7 @@
 using Avalonia;
 using Avalonia.Collections;
 using Avalonia.Controls;
+using Avalonia.Controls.Mixins;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
@@ -14,7 +15,7 @@ using Yorot_Avalonia.Handlers;
 
 namespace Yorot_Avalonia.Views
 {
-    public partial class TabWindow : UserControl
+    public partial class TabWindow : UserControl, IDisposable
     {
         public TabWindow() : this(null)
         {
@@ -36,6 +37,27 @@ namespace Yorot_Avalonia.Views
         public MainWindow? mainWindow;
 
         public SessionSystem? SessionSystem;
+
+        private Grid? ContentGrid;
+        public YorotWebView? webView1;
+        public bool Searching = false;
+        // TODO: Add this function
+#pragma warning disable IDE0044 // Add readonly modifier
+        public bool findNext = false;
+#pragma warning restore IDE0044 // Add readonly modifier
+        public bool matchCase = false;
+
+        // For some reason, the web view's ZoomLevel is broken, always showing up 0. So we have to implement ours.
+        public int zoomLevel = 0;
+
+        public bool bypassThisDeletion = false;
+        public bool indexChanged = false;
+        public string title = "";
+        public string url = "";
+
+        private Avalonia.Controls.Flyout? RightClickMenu;
+        private YorotGlue.ContextMenuParams? lastRCMParams;
+        private bool disposedValue;
 
         // tbUrl
 
@@ -121,8 +143,6 @@ namespace Yorot_Avalonia.Views
         private string _FindCount = ""; public string FindCount
 
         { get => _FindCount; set { _FindCount = value; RefreshMainWindow(); } }
-
-        private Grid? ContentGrid;
 
         private void RefreshMainWindow()
         {
@@ -235,8 +255,6 @@ namespace Yorot_Avalonia.Views
             }
         }
 
-        public YorotWebView? webView1;
-
         private void WebView_DocumentTitleChanged(object? sender, CefNet.DocumentTitleChangedEventArgs e)
         {
             Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(new System.Action(() =>
@@ -298,16 +316,6 @@ namespace Yorot_Avalonia.Views
             }
         }
 
-        public bool Searching = false;
-        // TODO: Add this function
-#pragma warning disable IDE0044 // Add readonly modifier
-        public bool findNext = false;
-#pragma warning restore IDE0044 // Add readonly modifier
-        public bool matchCase = false;
-
-        // For some reason, the web view's ZoomLevel is broken, always showing up 0. So we have to implement ours.
-        public int zoomLevel = 0;
-
         private void WebView_Navigated(object? sender, CefNet.NavigatedEventArgs e)
         {
             if (YorotGlobal.Main != null && SessionSystem != null && webView1 != null && e.Frame.IsMain)
@@ -327,9 +335,6 @@ namespace Yorot_Avalonia.Views
             }
         }
 
-        public bool bypassThisDeletion = false;
-        public bool indexChanged = false;
-
         public void redirectTo(string url, string title = "")
         {
             if (SessionSystem != null)
@@ -339,12 +344,6 @@ namespace Yorot_Avalonia.Views
                 SessionSystem.Add(url, title);
             }
         }
-
-        public string title = "";
-        public string url = "";
-
-        private Avalonia.Controls.Flyout? RightClickMenu;
-        private YorotGlue.ContextMenuParams? lastRCMParams;
 
         internal void ShowContextMenu(YorotGlue.ContextMenuParams menuParams, CefFrame frame)
         {
@@ -565,7 +564,7 @@ namespace Yorot_Avalonia.Views
                         var task = frame.GetSourceAsync(System.Threading.CancellationToken.None);
                         if (task.IsCompletedSuccessfully)
                         {
-                            mainWindow.RunSaveFileDialog(YorotGlobal.Main.CurrentLanguage.GetItemText("DialogBox.SaveFileDialog"),
+                            Dialogs.RunSaveFileDialog(mainWindow, YorotGlobal.Main.CurrentLanguage.GetItemText("DialogBox.SaveFileDialog"),
                                 new string[] { "html" },
                                 new Action<string>((filename) =>
                                 {
@@ -594,7 +593,7 @@ namespace Yorot_Avalonia.Views
                     };
                     printPdf.Click += (sender, e) =>
                     {
-                        mainWindow.RunSaveFileDialog(YorotGlobal.Main.CurrentLanguage.GetItemText("DialogBox.SaveFileDialog"),
+                        Dialogs.RunSaveFileDialog(mainWindow, YorotGlobal.Main.CurrentLanguage.GetItemText("DialogBox.SaveFileDialog"),
                                 new string[] { "pdf" },
                                 new Action<string>((filename) =>
                                 {
@@ -624,6 +623,49 @@ namespace Yorot_Avalonia.Views
                 }
                 RightClickMenu.ShowAt(webView1, true);
             }
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    // TODO: dispose managed state (managed objects)
+                }
+
+                // TODO: free unmanaged resources (unmanaged objects) and override finalizer
+
+                _startUrl = null;
+                findText = null;
+                CurrentSite = null;
+                mainWindow = null;
+                SessionSystem = null;
+                ContentGrid = null;
+                webView1 = null;
+                title = null;
+                url = null;
+                _tbUrl = null;
+                _ZoomLevel = null;
+                _FindCount = null;
+
+                Content = null;
+
+                disposedValue = true;
+            }
+        }
+
+        ~TabWindow()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: false);
+        }
+
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
         }
     }
 }

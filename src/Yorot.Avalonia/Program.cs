@@ -1,4 +1,5 @@
 ﻿using Avalonia;
+using Avalonia.Controls;
 using Avalonia.ReactiveUI;
 using Avalonia.Threading;
 using CefNet;
@@ -59,6 +60,25 @@ namespace Yorot_Avalonia
             app = new CefAppImpl();
             app.CefProcessMessageReceived += App_CefProcessMessageReceived;
             app.ScheduleMessagePumpWorkCallback = OnScheduleMessagePumpWork;
+
+            Output.WriteLine($"Starting Engine \"Chromium Embedded Framework - CefNet\" on \"{YorotGlobal.Main.EngineFolder}\".", HTAlt.LogLevel.Info);
+
+            string _engineset = Environment.NewLine +
+                                $"          UserAgent: \"{settings.UserAgent}\"" + Environment.NewLine +
+                                $"          UserDataPath: \"{settings.UserDataPath}\"" + Environment.NewLine +
+                                $"          Locale: \"{settings.Locale}\"" + Environment.NewLine +
+                                $"          LogSeverity: \"{settings.LogSeverity.ToString()}\"" + Environment.NewLine +
+                                $"          WindowlessRenderingEnabled: \"{(settings.WindowlessRenderingEnabled ? "true" : "false")}\"" + Environment.NewLine +
+                                $"          MultiThreadedMessageLoop: \"{(settings.MultiThreadedMessageLoop ? "true" : "false")}\"" + Environment.NewLine +
+                                $"          ExternalMessagePump: \"{(settings.ExternalMessagePump ? "true" : "false")}\"" + Environment.NewLine +
+                                $"          MultiThreadedMessageLoop: \"{(settings.MultiThreadedMessageLoop ? "true" : "false")}\"" + Environment.NewLine +
+                                $"          NoSandBox: \"{(settings.NoSandbox ? "true" : "false")}\"" + Environment.NewLine +
+                                $"          LocalePath: \"{settings.LocalesDirPath}\"" + Environment.NewLine +
+                                $"          ResourcesDirPath: \"{settings.ResourcesDirPath}\"" + Environment.NewLine +
+                                $"          Arguments: \"{string.Join(' ', args)}\"" + Environment.NewLine;
+
+            Output.WriteLine($"Engine Settings: \"{_engineset}\".", HTAlt.LogLevel.Info);
+
             app.Initialize(YorotGlobal.Main.EngineFolder, settings);
 
             CefApi.RegisterSchemeHandlerFactory("yorot", "", new Handlers.YorotSchemeHandlerFactory());
@@ -66,6 +86,8 @@ namespace Yorot_Avalonia
             BuildAvaloniaApp()
             //    .With(new AvaloniaNativePlatformOptions { UseGpu = !PlatformInfo.IsMacOS })
                 .StartWithCefNetApplicationLifetime(args, Avalonia.Controls.ShutdownMode.OnExplicitShutdown);
+
+            Output.WriteLine("Exiting...", HTAlt.LogLevel.Info);
         }
 
         // Avalonia configuration, don't remove; also used by visual designer.
@@ -127,7 +149,7 @@ namespace Yorot_Avalonia
                 string message = e.Message.ArgumentList.GetString(0);
                 Dispatcher.UIThread.Post(() =>
                 {
-                    var msgbox = new MessageBox("title", message, new MessageBoxButton[] { new MessageBoxButton.Ok() }, true);
+                    var msgbox = MessageBox.Avalonia.MessageBoxManager.GetMessageBoxStandardWindow("Title", message, MessageBox.Avalonia.Enums.ButtonEnum.Ok);
                     msgbox.Show();
                 });
                 e.Handled = true;

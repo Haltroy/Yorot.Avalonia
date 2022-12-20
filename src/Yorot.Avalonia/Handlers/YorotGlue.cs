@@ -12,6 +12,8 @@ using CefNet.Avalonia;
 using CefNet.Internal;
 using CefNet.Net;
 using FluentAvalonia.UI.Controls;
+using MessageBox.Avalonia.Enums;
+using MessageBox.Avalonia.Models;
 using Yorot;
 using Yorot_Avalonia.Views;
 using static Yorot.DefaultApps;
@@ -505,25 +507,36 @@ namespace Yorot_Avalonia.Handlers
                 case CefJSDialogType.Alert:
                     var task = Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(() =>
                     {
-                        var alertmessage = new MessageBox(
-                            YorotGlobal.Main.CurrentLanguage.GetItemText("DialogBox.MessageFromSite").Replace("[Parameter.Url]", originUrl),
-                            messageText,
-                            new MessageBoxButton[] { new MessageBoxButton.Ok(), new MessageBoxButton.Cancel()
-                                // TODO: Add Image here
-                            });
-                        alertmessage.Closing += new EventHandler<System.ComponentModel.CancelEventArgs>((sender, e) =>
+                        var alertmessage = MessageBox.Avalonia.MessageBoxManager.GetMessageBoxCustomWindow(new MessageBox.Avalonia.DTO.MessageBoxCustomParams()
                         {
-                            site.ShowMessageBoxes = !alertmessage.DontShowThis;
-                            if (alertmessage.DialogResult is MessageBoxButton.Ok)
+                            WindowIcon = YorotGlobal.Main.MainForm.Icon,
+                            Icon = dialogType == CefJSDialogType.Alert ? Icon.Error : Icon.Info,
+                            ContentTitle = "Yorot",
+                            ContentHeader = YorotGlobal.Main.CurrentLanguage.GetItemText("DialogBox.MessageFromSite").Replace("[Parameter.Url]", originUrl),
+                            ContentMessage = messageText,
+                            ButtonDefinitions = new[]
+                            {
+                                new ButtonDefinition {Name = YorotGlobal.Main.CurrentLanguage.GetItemText("DialogBox.OK")},
+                                new ButtonDefinition {Name = YorotGlobal.Main.CurrentLanguage.GetItemText("DialogBox.Cancel")},
+                                new ButtonDefinition {Name = YorotGlobal.Main.CurrentLanguage.GetItemText("DialogBox.DontAskAgain")}
+                            },
+                            WindowStartupLocation = WindowStartupLocation.CenterScreen
+                        });
+                        Dialogs.RunMessageBoxDialog(alertmessage, YorotGlobal.Main.MainForm, new Action<string>((result) =>
+                        {
+                            if (result == YorotGlobal.Main.CurrentLanguage.GetItemText("DialogBox.OK"))
                             {
                                 callback.Continue(true, "");
                             }
                             else
                             {
+                                if (result == YorotGlobal.Main.CurrentLanguage.GetItemText("DialogBox.DontAskAgain"))
+                                {
+                                    site.ShowMessageBoxes = false;
+                                }
                                 callback.Continue(false, "");
                             }
-                        });
-                        alertmessage.ShowDialog(YorotGlobal.Main.MainForm);
+                        }));
                     }, Avalonia.Threading.DispatcherPriority.Input);
 
                     return true;
@@ -532,25 +545,46 @@ namespace Yorot_Avalonia.Handlers
                 case CefJSDialogType.Prompt:
                     var task2 = Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(() =>
                     {
-                        var promptmessage = new MessageBox(
-                            YorotGlobal.Main.CurrentLanguage.GetItemText("DialogBox.MessageFromSite").Replace("[Parameter.Url]", originUrl),
-                            messageText, defaultPromptText,
-                            new MessageBoxButton[] { new MessageBoxButton.Ok(), new MessageBoxButton.Cancel()
-                                // TODO: Add Image here
-                            });
-                        promptmessage.Closing += new EventHandler<System.ComponentModel.CancelEventArgs>((sender, e) =>
+                        var promptmessage = MessageBox.Avalonia.MessageBoxManager.GetMessageBoxInputWindow(new MessageBox.Avalonia.DTO.MessageBoxInputParams()
                         {
-                            site.ShowMessageBoxes = !promptmessage.DontShowThis;
-                            if (promptmessage.DialogResult is MessageBoxButton.Ok)
+                            WindowIcon = YorotGlobal.Main.MainForm.Icon,
+                            Icon = Icon.Question,
+                            ContentTitle = "Yorot",
+                            ContentHeader = YorotGlobal.Main.CurrentLanguage.GetItemText("DialogBox.MessageFromSite").Replace("[Parameter.Url]", originUrl),
+                            ContentMessage = messageText,
+                            InputDefaultValue = defaultPromptText,
+                            ButtonDefinitions = new[]
                             {
-                                callback.Continue(true, promptmessage.Prompt);
+                                new ButtonDefinition {Name = YorotGlobal.Main.CurrentLanguage.GetItemText("DialogBox.OK")},
+                                new ButtonDefinition {Name = YorotGlobal.Main.CurrentLanguage.GetItemText("DialogBox.Cancel")},
+                                new ButtonDefinition {Name = YorotGlobal.Main.CurrentLanguage.GetItemText("DialogBox.DontAskAgain")}
+                            },
+                            WindowStartupLocation = WindowStartupLocation.CenterScreen
+                        });
+
+                        Dialogs.RunInputBoxDialog(YorotGlobal.Main.MainForm, promptmessage, new Action<MessageBox.Avalonia.DTO.MessageWindowResultDTO>((result) =>
+                        {
+                            if (result.Button == YorotGlobal.Main.CurrentLanguage.GetItemText("DialogBox.OK"))
+                            {
+                                callback.Continue(true, result.Message);
+                            }
+                            else if (result.Button == YorotGlobal.Main.CurrentLanguage.GetItemText("DialogBox.DontAskAgain"))
+                            {
+                                site.ShowMessageBoxes = false;
+                                if (string.IsNullOrWhiteSpace(result.Message))
+                                {
+                                    callback.Continue(false, "");
+                                }
+                                else
+                                {
+                                    callback.Continue(true, result.Message);
+                                }
                             }
                             else
                             {
                                 callback.Continue(false, "");
                             }
-                        });
-                        promptmessage.ShowDialog(YorotGlobal.Main.MainForm).Wait();
+                        }));
                     }, Avalonia.Threading.DispatcherPriority.Input);
                     return true;
             }
