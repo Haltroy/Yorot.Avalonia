@@ -3,9 +3,6 @@
              xmlns:local="using:Yorot_Avalonia"
              x:Class="Yorot_Avalonia.App"
 			 xmlns:sty="using:FluentAvalonia.Styling">
-	<Application.DataTemplates>
-		<local:ViewLocator />
-	</Application.DataTemplates>
 
 	<Application.Styles>
 		<sty:FluentAvaloniaTheme />

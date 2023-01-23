@@ -82,7 +82,7 @@ namespace Yorot_Avalonia.Views
                 if (langBox.SelectedItem != null && langBox.SelectedItem is ComboBoxItem item && item.Tag is YorotLanguage lang)
                 {
                     YorotGlobal.Main.CurrentSettings.CurrentLanguage = lang;
-                    // TODO: Reload the entire window. Don't worry about the language thing because it is working, the UI isnt updated.
+                    YorotTools.RefreshWindow(this);
                 }
                 if (localeBox.SelectedIndex > -1 && langBox.SelectedIndex > -1 && datetimeBox.SelectedIndex > -1)
                 {

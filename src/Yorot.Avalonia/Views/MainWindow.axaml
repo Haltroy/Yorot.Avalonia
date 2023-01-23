@@ -5,7 +5,6 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 		xmlns:uc="clr-namespace:Yorot;assembly=Yorot"
 		xmlns:ui="using:FluentAvalonia.UI.Controls"
-		xmlns:uip="using:FluentAvalonia.UI.Controls.Primitives"
         mc:Ignorable="d"
 		d:DesignWidth="800"
 		d:DesignHeight="450"
@@ -13,12 +12,88 @@
         x:Class="Yorot_Avalonia.Views.MainWindow"
         Icon="/Assets/Yorot.ico"
         Title="Yorot"
+		Opened="opened"
 		KeyDown="keyDown"
+
 		Background="{Binding BackColor}">
 
 	<Design.DataContext>
 		<vm:MainViewModel />
 	</Design.DataContext>
+
+	<Window.Styles>
+		<Style Selector="Button:pointerover /template/ ContentPresenter">
+			<Setter Property="Background" Value="{Binding ArtColor2}" />
+		</Style>
+		<Style Selector="Button">
+			<Setter Property="Foreground" Value="{Binding ArtForeColor}" />
+		</Style>
+		<Style Selector="Button:pressed /template/ ContentPresenter">
+			<Setter Property="Background" Value="{Binding ArtColor3}" />
+		</Style>
+		<Style Selector="Button:disabled /template/ ContentPresenter">
+			<Setter Property="Background" Value="{Binding ArtColor4}" />
+		</Style>
+		<Style Selector="TextBox">
+			<Setter Property="Background" Value="{Binding ArtColor}" />
+			<Setter Property="Foreground" Value="{Binding ArtForeColor}" />
+		</Style>
+		<Style Selector="TextBox Border#PART_BorderElement">
+			<Setter Property="Background" Value="{Binding ArtColor}" />
+			<Setter Property="TextBlock.Foreground" Value="{Binding ArtForeColor}" />
+		</Style>
+		<Style Selector="TextBox:pointerover Border#PART_BorderElement">
+			<Setter Property="Background" Value="{Binding ArtColor2}" />
+			<Setter Property="TextBlock.Foreground" Value="{Binding ArtForeColor}" />
+		</Style>
+		<Style Selector="TextBox:pointerover TextPresenter">
+			<Setter Property="TextBlock.Foreground" Value="{Binding ArtForeColor}" />
+		</Style>
+		<Style Selector="TextBox:focus TextPresenter">
+			<Setter Property="TextBlock.Foreground" Value="{Binding ArtForeColor}" />
+		</Style>
+		<Style Selector="TextBox:focus Border#PART_BorderElement">
+			<Setter Property="Background" Value="{Binding ArtColor3}" />
+			<Setter Property="TextBlock.Foreground" Value="{Binding ArtForeColor}" />
+		</Style>
+		<Style Selector="FlyoutPresenter">
+			<Setter Property="Background" Value="{Binding ArtColor}" />
+			<Setter Property="BorderBrush" Value="{Binding ArtColor}" />
+		</Style>
+		<Style Selector="ui|TabView">
+			<Setter Property="Background" Value="{Binding BackColor}" />
+			<Setter Property="Foreground" Value="{Binding ForeColor}" />
+		</Style>
+		<Style Selector="ui|TabViewItem:selected > Border > Grid > Border > Grid > ContentPresenter > TextBlock">
+			<Setter Property="Background" Value="{Binding ArtColor}" />
+			<Setter Property="TextBlock.Foreground" Value="{Binding ArtForeColor}" />
+		</Style>
+		<Style Selector="ui|TabViewItem">
+			<Setter Property="Background" Value="{Binding BackColor}" />
+			<Setter Property="Foreground" Value="{Binding ForeColor}" />
+		</Style>
+		<Style Selector="CheckBox:unchecked > Border > Grid > Grid > Border#NormalRectangle">
+			<Setter Property="Background" Value="Transparent" />
+			<Setter Property="BorderBrush" Value="{Binding OverlayColor}" />
+		</Style>
+		<Style Selector="CheckBox:checked > Border > Grid > Grid > Border#NormalRectangle">
+			<Setter Property="Background" Value="{Binding OverlayColor}" />
+			<Setter Property="BorderBrush" Value="{Binding OverlayColor}" />
+		</Style>
+		<Style Selector="ToggleSwitch:unchecked > Grid > Grid > Border#OuterBorder">
+			<Setter Property="BorderBrush" Value="{Binding ArtColor4}" />
+		</Style>
+		<Style Selector="ToggleSwitch:unchecked > Grid > Grid > Canvas > Grid > Ellipse#SwitchKnobOff">
+			<Setter Property="Fill" Value="{Binding ArtColor4}" />
+		</Style>
+		<Style Selector="ToggleSwitch:checked > Grid > Grid > Border#SwitchKnobBounds">
+			<Setter Property="BorderBrush" Value="{Binding OverlayColor}" />
+			<Setter Property="Background" Value="{Binding OverlayColor}" />
+		</Style>
+		<Style Selector="ToggleSwitch:checked > Grid > Grid > Canvas > Grid > Ellipse#SwitchKnobOn">
+			<Setter Property="Fill" Value="{Binding OverlayForeColor}" />
+		</Style>
+	</Window.Styles>
 
 	<StackPanel Name="frmMain" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Width="{Binding $parent.Width}" Height="{Binding $parent.Height}">
 		<Grid Name="sidebarGrid" Background="{Binding BackColor}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Width="{Binding $parent.Width}" Height="{Binding $parent.Height}">
@@ -78,10 +153,10 @@
 							<Image Name="WebsiteBad" Source="/Assets/lockr.png" Width="36" Height="36" VerticalAlignment="Center" HorizontalAlignment="Center" />
 						</Panel>
 						<Button.ContextFlyout>
-							<Flyout>
+							<Flyout ShowMode="Transient">
 								<!-- Whenever you change stuff here (adding, removing, reorganizing etc.) don't forget to also
 								update the InitializeComponent() part.-->
-								<StackPanel Orientation="Vertical" Background="{Binding ArtColor}">
+								<StackPanel Orientation="Vertical">
 									<Panel Margin="5 5 5 5">
 										<StackPanel>
 											<TextBlock Text="{Binding PageSafe}" Foreground="{Binding ArtForeColor}" FontSize="15" />
@@ -112,7 +187,7 @@
 							</Flyout>
 						</Button.ContextFlyout>
 					</Button>
-					<TextBox Name="tbUrl" Grid.Column="5"  KeyDown="urlkeydown" Background="{Binding ArtColor2}" Foreground="{Binding ArtForeColor}" />
+					<TextBox Name="tbUrl" Grid.Column="5"  KeyDown="urlkeydown" />
 					<Button Grid.Column="6" Name="favoritedbutton" Click="unfavorite" Background="{Binding ArtColor}" Foreground="{Binding ArtForeColor}">
 						<Panel>
 							<Image Source="/Assets/faved-b.png" IsVisible="{Binding !IsBackDark}" Width="36" Height="36" VerticalAlignment="Center" HorizontalAlignment="Center" />
@@ -146,7 +221,7 @@
 						</Panel>
 						<Button.ContextFlyout>
 							<Flyout>
-								<StackPanel Background="{Binding ArtColor}" Orientation="Horizontal" Margin="5 5 5 5">
+								<StackPanel Orientation="Horizontal" Margin="5 5 5 5">
 									<StackPanel Orientation="Vertical">
 										<Image Source="{Binding UserProfilePicture}" Margin="5 5 5 5" Width="64" Height="64" />
 										<TextBlock Text="{Binding UserName}" HorizontalAlignment="Center" />
@@ -170,7 +245,7 @@
 							<!-- Whenever you change stuff here (adding, removing, reorganizing etc.) don't forget to also
 								update the InitializeComponent() part.-->
 							<Flyout>
-								<StackPanel Orientation="Vertical" Background="{Binding ArtColor}">
+								<StackPanel Orientation="Vertical">
 									<StackPanel Margin="5 5 5 5" Orientation="Horizontal">
 										<Panel>
 											<Button>
@@ -237,7 +312,6 @@
 					</Button>
 				</Grid>
 				<Menu Canvas.Top="80" Width="{Binding $parent.Bounds.Width}" Name="Favorites" Background="{Binding ArtColor}" Foreground="{Binding ArtForeColor}">
-					<MenuItem Background="{Binding ArtColor}" Foreground="{Binding ArtForeColor}" Header="{Binding OtherBookmarks}" Name="other_bookmarks" />
 				</Menu>
 			</Canvas>
 		</Grid>

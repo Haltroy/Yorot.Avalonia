@@ -8,7 +8,7 @@ namespace Yorot_Avalonia
     /// </summary>
     public static class YorotGlobal
     {
-        public static ViewModels.ViewModelBase ViewModel { get; set; } = new ViewModels.MainViewModel();
+        public static ViewModels.ViewModelBase ViewModel { get; set; } = new ViewModels.ViewModelBase();
 
         public static string Arch
         {

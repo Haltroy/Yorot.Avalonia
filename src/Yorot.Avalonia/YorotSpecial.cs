@@ -5,6 +5,9 @@ using LibFoster;
 using Yorot;
 using CefNet;
 using System.Reflection;
+using Avalonia.Controls;
+using Avalonia;
+using FluentAvalonia.Styling;
 
 namespace Yorot_Avalonia
 {
@@ -132,5 +135,96 @@ namespace Yorot_Avalonia
 
         public List<Views.MainWindow> MainForms { get; set; } = new List<Views.MainWindow>();
         public Views.MainWindow MainForm { get => MainForms[0]; }
+
+        public List<object> UIs { get; set; } = new List<object>();
+
+        public void UpdateUIs()
+        {
+            if (CurrentSettings != null && CurrentTheme != null)
+            {
+                AvaloniaLocator.Current.GetService<FluentAvaloniaTheme>().CustomAccentColor = Avalonia.Media.Color.Parse(CurrentTheme.OverlayColor.ToHex());
+            }
+            for (int i = 0; i < UIs.Count; i++)
+            {
+                switch (UIs[i])
+                {
+                    case Window:
+                        (UIs[i] as Window).RefreshWindow();
+                        break;
+
+                    case UserControl:
+                        (UIs[i] as UserControl).RefreshUserControl();
+                        break;
+                }
+            }
+        }
+
+        public override void OnThemeChange(YorotTheme theme)
+        {
+            UpdateUIs();
+        }
+
+        public override void OnFavoriteChange(YorotFavFolder fav)
+        {
+            for (int i = 0; i < MainForms.Count; i++)
+            {
+                // TODO: update this specific favorite
+            }
+        }
+
+        public override void OnLanguageChange(YorotLanguage lang)
+        {
+            UpdateUIs();
+        }
+
+        public override void OnSiteChange(YorotSite site)
+        {
+            // TODO: refresh tabs that are on this site
+        }
+
+        public override void OnDownloadChange(YorotSite site)
+        {
+            // TODO: Update this specific download
+        }
+
+        public override void OnAppListChanged()
+        {
+            // TODO: Update App List
+        }
+
+        public override void OnLangListChanged()
+        {
+            // TODO: Update Language list on settings
+        }
+
+        public override void OnThemeListChanged()
+        {
+            // TODO: Update Theme list on settings
+        }
+
+        public override void OnExtListChanged()
+        {
+            // TODO: Update Extension list on settings and windows
+        }
+
+        public override void OnDownloadListChanged()
+        {
+            // TODO: Update download list on its app
+        }
+
+        public override void OnHistoryChanged()
+        {
+            // TODO: Update History list on settings
+        }
+
+        public override void OnProfileChange(YorotProfile profile)
+        {
+            // TODO: Update this profile on profile flyout & settings
+        }
+
+        public override void OnProfileListChanged()
+        {
+            // TODO: Update porfile list on settings
+        }
     }
 }

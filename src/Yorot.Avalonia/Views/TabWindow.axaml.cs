@@ -207,8 +207,8 @@ namespace Yorot_Avalonia.Views
         private void InitializeComponent()
         {
             SessionSystem.LoadPage += (url) => { if (webView1 != null) { webView1.Navigate(url); } };
-            SessionSystem.Sessions.Add(new Session(_startUrl));
-            SessionSystem.SelectedSession = SessionSystem.Sessions[0];
+            SessionSystem.Add(new Session(_startUrl));
+            SessionSystem.SelectedSession = SessionSystem[0];
             SessionSystem.SelectedIndex = 0;
             AvaloniaXamlLoader.Load(this);
             ContentGrid = this.FindControl<Grid>("Content");
@@ -244,11 +244,11 @@ namespace Yorot_Avalonia.Views
 
         private void WebView1_AddressChange(object? sender, CefNet.AddressChangeEventArgs e)
         {
-            if (SessionSystem != null && e.IsMainFrame && SessionSystem.Sessions.Count != 0)
+            if (SessionSystem != null && e.IsMainFrame && SessionSystem.Count != 0)
             {
                 url = e.Url;
                 tbUrl = e.Url;
-                if (e.Url != SessionSystem.Sessions[^1].ToString())
+                if (e.Url != SessionSystem[^1].ToString())
                 {
                     redirectTo(e.Url, title);
                 }
@@ -264,19 +264,19 @@ namespace Yorot_Avalonia.Views
                     int si = SessionSystem.SelectedIndex;
                     if (si != -1)
                     {
-                        if (SessionSystem.Sessions[si].Url == url)
+                        if (SessionSystem[si].Url == url)
                         {
                             YorotBrowserWebSource source = YorotGlobal.Main.GetWebSource(url);
                             if (source != null)
                             {
                                 if (!source.IgnoreOnSessionList)
                                 {
-                                    SessionSystem.Sessions[si].Title = e.Title;
+                                    SessionSystem[si].Title = e.Title;
                                 }
                             }
                             else
                             {
-                                SessionSystem.Sessions[si].Title = e.Title;
+                                SessionSystem[si].Title = e.Title;
                             }
                         }
                     }
@@ -310,7 +310,7 @@ namespace Yorot_Avalonia.Views
         {
             if (sender is Avalonia.Controls.MenuItem item && item.Tag is Session session && SessionSystem != null && webView1 != null)
             {
-                SessionSystem.SelectedIndex = SessionSystem.Sessions.IndexOf(session);
+                SessionSystem.SelectedIndex = SessionSystem.IndexOf(session);
                 SessionSystem.SelectedSession = session;
                 webView1.Navigate(session.Url);
             }
