@@ -14,7 +14,129 @@
 		<vm:MainViewModel />
 	</Design.DataContext>
 
-	<!-- TODO: Styles here -->
+	<Window.Styles>
+		<Style Selector="Button:pointerover /template/ ContentPresenter">
+			<Setter Property="Background" Value="{Binding BackColor2}" />
+		</Style>
+		<Style Selector="Button">
+			<Setter Property="Foreground" Value="{Binding ForeColor}" />
+		</Style>
+		<Style Selector="Button:pressed /template/ ContentPresenter">
+			<Setter Property="Background" Value="{Binding BackColor3}" />
+		</Style>
+		<Style Selector="Button:disabled /template/ ContentPresenter">
+			<Setter Property="Background" Value="{Binding BackColor4}" />
+		</Style>
+		<Style Selector="TextBox">
+			<Setter Property="Background" Value="{Binding BackColor}" />
+			<Setter Property="Foreground" Value="{Binding ForeColor}" />
+		</Style>
+		<Style Selector="TextBox Border#PART_BorderElement">
+			<Setter Property="Background" Value="{Binding BackColor}" />
+			<Setter Property="TextBlock.Foreground" Value="{Binding ForeColor}" />
+		</Style>
+		<Style Selector="TextBox:pointerover Border#PART_BorderElement">
+			<Setter Property="Background" Value="{Binding BackColor2}" />
+			<Setter Property="TextBlock.Foreground" Value="{Binding ForeColor}" />
+		</Style>
+		<Style Selector="TextBox:pointerover TextPresenter">
+			<Setter Property="TextBlock.Foreground" Value="{Binding ForeColor}" />
+		</Style>
+		<Style Selector="TextBox:focus TextPresenter">
+			<Setter Property="TextBlock.Foreground" Value="{Binding ForeColor}" />
+		</Style>
+		<Style Selector="TextBox:focus Border#PART_BorderElement">
+			<Setter Property="Background" Value="{Binding BackColor3}" />
+			<Setter Property="TextBlock.Foreground" Value="{Binding ForeColor}" />
+		</Style>
+		<Style Selector="FlyoutPresenter">
+			<Setter Property="Background" Value="{Binding BackColor}" />
+			<Setter Property="BorderBrush" Value="{Binding BackColor}" />
+		</Style>
+		<Style Selector="CheckBox:unchecked > Border > Grid > Grid > Border#NormalRectangle">
+			<Setter Property="Background" Value="Transparent" />
+			<Setter Property="BorderBrush" Value="{Binding OverlayColor}" />
+		</Style>
+		<Style Selector="CheckBox:checked > Border > Grid > Grid > Border#NormalRectangle">
+			<Setter Property="Background" Value="{Binding OverlayColor}" />
+			<Setter Property="BorderBrush" Value="{Binding OverlayColor}" />
+		</Style>
+		<Style Selector="ToggleSwitch:unchecked > Grid > Grid > Border#OuterBorder">
+			<Setter Property="BorderBrush" Value="{Binding BackColor4}" />
+		</Style>
+		<Style Selector="ToggleSwitch:unchecked > Grid > Grid > Canvas > Grid > Ellipse#SwitchKnobOff">
+			<Setter Property="Fill" Value="{Binding BackColor4}" />
+		</Style>
+		<Style Selector="ToggleSwitch:checked > Grid > Grid > Border#SwitchKnobBounds">
+			<Setter Property="BorderBrush" Value="{Binding OverlayColor}" />
+			<Setter Property="Background" Value="{Binding OverlayColor}" />
+		</Style>
+		<Style Selector="ToggleSwitch:checked > Grid > Grid > Canvas > Grid > Ellipse#SwitchKnobOn">
+			<Setter Property="Fill" Value="{Binding OverlayForeColor}" />
+		</Style>
+		<Style Selector="Menu ContentPresenter">
+			<Setter Property="TextBlock.Foreground" Value="{Binding ForeColor}" />
+			<Setter Property="Background" Value="{Binding BackColor}" />
+		</Style>
+		<Style Selector="MenuItem:selected ContentPresenter">
+			<Setter Property="TextBlock.Foreground" Value="{Binding ForeColor}" />
+			<Setter Property="Background" Value="{Binding BackColor2}" />
+		</Style>
+		<Style Selector="MenuItem Border">
+			<Setter Property="TextBlock.Foreground" Value="{Binding ForeColor}" />
+			<Setter Property="Background" Value="{Binding BackColor}" />
+		</Style>
+		<Style Selector="MenuItem Panel">
+			<Setter Property="TextBlock.Foreground" Value="{Binding ForeColor}" />
+			<Setter Property="Background" Value="{Binding BackColor}" />
+		</Style>
+		<Style Selector="MenuItem:pointerover Border">
+			<Setter Property="TextBlock.Foreground" Value="{Binding ForeColor}" />
+			<Setter Property="Background" Value="{Binding BackColor2}" />
+		</Style>
+		<Style Selector="MenuItem:pointerover Panel">
+			<Setter Property="TextBlock.Foreground" Value="{Binding ForeColor}" />
+			<Setter Property="Background" Value="{Binding BackColor2}" />
+		</Style>
+		<Style Selector="ComboBox">
+			<Setter Property="TextBlock.Foreground" Value="{Binding ForeColor}" />
+			<Setter Property="Background" Value="{Binding BackColor}" />
+		</Style>
+		<Style Selector="ComboBoxItem Border">
+			<Setter Property="TextBlock.Foreground" Value="{Binding ForeColor}" />
+			<Setter Property="Background" Value="{Binding BackColor}" />
+		</Style>
+		<Style Selector="ComboBoxItem ContentPresenter">
+			<Setter Property="TextBlock.Foreground" Value="{Binding ForeColor}" />
+		</Style>
+		<Style Selector="Carousel">
+			<Setter Property="Background" Value="{Binding BackColor}" />
+		</Style>
+		<Style Selector="Grid">
+			<Setter Property="Background" Value="{Binding BackColor}" />
+		</Style>
+		<Style Selector="StackPanel">
+			<Setter Property="Background" Value="{Binding BackColor}" />
+		</Style>
+		<Style Selector="Panel">
+			<Setter Property="Background" Value="{Binding BackColor}" />
+		</Style>
+		<Style Selector="TextBlock">
+			<Setter Property="Foreground" Value="{Binding ForeColor}" />
+		</Style>
+		<Style Selector="ToggleButton">
+			<Setter Property="Background" Value="{Binding BackColor2}" />
+		</Style>
+		<Style Selector="ToggleButton ContentPresenter">
+			<Setter Property="Background" Value="{Binding BackColor2}" />
+		</Style>
+		<Style Selector="ToggleButton:checked">
+			<Setter Property="Background" Value="{Binding OverlayColor}" />
+		</Style>
+		<Style Selector="ToggleButton:checked ContentPresenter">
+			<Setter Property="Background" Value="{Binding OverlayColor}" />
+		</Style>
+	</Window.Styles>
 
 	<Grid Name="ContentGrid" RowDefinitions="*,40">
 		<Carousel Margin="10 10 10 10" Name="Carousel" Grid.Row="0">

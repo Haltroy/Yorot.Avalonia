@@ -8,6 +8,10 @@ using System.Reflection;
 using Avalonia.Controls;
 using Avalonia;
 using FluentAvalonia.Styling;
+using MessageBox.Avalonia.Models;
+using System.Threading.Tasks;
+using System.Drawing;
+using Yorot_Avalonia.Views;
 
 namespace Yorot_Avalonia
 {
@@ -106,31 +110,96 @@ namespace Yorot_Avalonia
             set { }
         }
 
-        public override YorotPermissionMode OnPermissionRequest(YorotPermission permission, YorotPermissionMode requested)
+        private async Task<YorotPermissionMode> OnPermissionRequestAsync(YorotPermission permission, YorotPermissionMode requested, string ClassType, string name, string title)
+        {
+            // TODO: In here, everything should work fine. Except the below which throws a InvalidOperationException
+            // Maybe at this time MessageBox.Avalonia wasn't ready yet?
+            var box = MessageBox.Avalonia.MessageBoxManager.GetMessageBoxCustomWindow(new MessageBox.Avalonia.DTO.MessageBoxCustomParams()
+            {
+                Icon = MessageBox.Avalonia.Enums.Icon.Question,
+                ContentTitle = "Yorot",
+                ContentHeader = YorotGlobal.Main.CurrentLanguage.GetItemText("Permission.Request" + ClassType).Replace("[Parameter.name]", name).Replace("[Parameter.title]", title).Replace("[Parameter.permission]", YorotGlobal.Main.CurrentLanguage.GetItemText("Permission." + permission.ID)),
+                ContentMessage = YorotGlobal.Main.CurrentLanguage.GetItemText("Permission." + permission.ID, false),
+                ButtonDefinitions = new[]
+                            {
+                            new ButtonDefinition() { Name = YorotGlobal.Main.CurrentLanguage.GetItemText("Permission.Allow")},
+                            new ButtonDefinition() { Name = YorotGlobal.Main.CurrentLanguage.GetItemText("Permission.AllowOnce")},
+                            new ButtonDefinition() { Name = YorotGlobal.Main.CurrentLanguage.GetItemText("Permission.Deny")},
+                        },
+                WindowStartupLocation = WindowStartupLocation.CenterScreen
+            });
+
+            var result = await box.Show();
+
+            if (result == YorotGlobal.Main.CurrentLanguage.GetItemText("Permission.Allow"))
+            {
+                return requested;
+            }
+            else if (result == YorotGlobal.Main.CurrentLanguage.GetItemText("Permission.AllowOnce"))
+            {
+                return YorotPermissionMode.AllowOneTime;
+            }
+            else
+            {
+                return YorotPermissionMode.Deny;
+            }
+        }
+
+        public override System.Threading.Tasks.Task<YorotPermissionMode> OnPermissionRequest(YorotPermission permission, YorotPermissionMode requested)
         {
             if (permission.Allowance != requested)
             {
-                // TODO
                 switch (permission.Requestor)
                 {
                     case YorotApp _:
-                        Console.WriteLine("Permission \"" + permission.ID + "\" request accepted (NOT_IMPLEMENTED) from ID\"" + ((YorotApp)permission.Requestor).AppCodeName + "\" " + permission.Allowance.ToString() + " => " + requested.ToString());
-                        break;
+                        var app = permission.Requestor as YorotApp;
+
+                        return Avalonia.Threading.Dispatcher.UIThread.InvokeAsync<YorotPermissionMode>(() => { return OnPermissionRequestAsync(permission, requested, "App", app.AppCodeName, app.AppName); });
 
                     case YorotExtension _:
-                        Console.WriteLine("Permission \"" + permission.ID + "\" request accepted (NOT_IMPLEMENTED) from ID\"" + ((YorotExtension)permission.Requestor).CodeName + "\" " + permission.Allowance.ToString() + " => " + requested.ToString());
-                        break;
+                        var ext = permission.Requestor as YorotExtension;
+
+                        return Avalonia.Threading.Dispatcher.UIThread.InvokeAsync<YorotPermissionMode>(() =>
+                        {
+                            return OnPermissionRequestAsync(permission, requested, "Ext", ext.CodeName, ext.Name);
+                        });
 
                     case YorotTheme _:
-                        Console.WriteLine("Permission \"" + permission.ID + "\" request accepted (NOT_IMPLEMENTED) from ID\"" + ((YorotTheme)permission.Requestor).CodeName + "\" " + permission.Allowance.ToString() + " => " + requested.ToString());
-                        break;
+                        var theme = permission.Requestor as YorotTheme;
+
+                        return Avalonia.Threading.Dispatcher.UIThread.InvokeAsync<YorotPermissionMode>(() =>
+                        {
+                            return OnPermissionRequestAsync(permission, requested, "Theme", theme.CodeName, theme.Name);
+                        });
 
                     case YorotLanguage _:
-                        Console.WriteLine("Permission \"" + permission.ID + "\" request accepted (NOT_IMPLEMENTED) from ID\"" + ((YorotLanguage)permission.Requestor).CodeName + "\" " + permission.Allowance.ToString() + " => " + requested.ToString());
-                        break;
+                        var lang = permission.Requestor as YorotLanguage;
+
+                        return Avalonia.Threading.Dispatcher.UIThread.InvokeAsync<YorotPermissionMode>(() =>
+                        {
+                            return OnPermissionRequestAsync(permission, requested, "Lang", lang.CodeName, lang.Name);
+                        });
+
+                    case YorotSite _:
+                        var site = permission.Requestor as YorotSite;
+
+                        return Avalonia.Threading.Dispatcher.UIThread.InvokeAsync<YorotPermissionMode>(() =>
+                        {
+                            return OnPermissionRequestAsync(permission, requested, "Site", site.Url, site.Name);
+                        });
+
+                    default:
+
+                        return Avalonia.Threading.Dispatcher.UIThread.InvokeAsync<YorotPermissionMode>(() =>
+                        {
+                            return OnPermissionRequestAsync(permission, requested, permission.Requestor.GetType().FullName ?? "Unknown", "", "");
+                        });
                 }
             }
-            return requested;
+            else
+            {
+                return new Task<YorotPermissionMode>(() => { return requested; });
+            }
         }
 
         public List<Views.MainWindow> MainForms { get; set; } = new List<Views.MainWindow>();

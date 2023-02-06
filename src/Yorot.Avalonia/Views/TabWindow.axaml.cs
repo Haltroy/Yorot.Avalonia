@@ -190,7 +190,7 @@ namespace Yorot_Avalonia.Views
                     mainWindow.MatchCase.IsChecked = MatchCase;
                     if (CurrentSite is null)
                     {
-                        CurrentSite = YorotGlobal.Main.CurrentSettings.SiteMan.GetSite(String.IsNullOrWhiteSpace(url) ? _startUrl : url);
+                        CurrentSite = YorotGlobal.Main.CurrentSettings.SiteMan.GetSite(string.IsNullOrWhiteSpace(url) ? _startUrl : url);
                     }
                     mainWindow.AllowMic.IsChecked = CurrentSite.Permissions.allowMic.Allowance == YorotPermissionMode.Allow || CurrentSite.Permissions.allowMic.Allowance == YorotPermissionMode.AllowOneTime;
                     mainWindow.AllowCam.IsChecked = CurrentSite.Permissions.allowCam.Allowance == YorotPermissionMode.Allow || CurrentSite.Permissions.allowCam.Allowance == YorotPermissionMode.AllowOneTime;
@@ -280,6 +280,7 @@ namespace Yorot_Avalonia.Views
                             }
                         }
                     }
+                    CurrentSite.Name = e.Title;
                     title = e.Title;
                     tabItem.Header = e.Title;
                 }

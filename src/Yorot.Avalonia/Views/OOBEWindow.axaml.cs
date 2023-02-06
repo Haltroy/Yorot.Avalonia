@@ -198,7 +198,7 @@ namespace Yorot_Avalonia.Views
                     Margin = new Thickness(5, 5, 5, 5),
                     IsChecked = YorotGlobal.Main.CurrentTheme == theme,
                 };
-                StackPanel pnl = new();
+                StackPanel pnl = new() { Background = new Avalonia.Media.SolidColorBrush(Avalonia.Media.Colors.Transparent) };
                 Image img = new() { Source = YorotTools.ThemeThumbnail(theme), Width = 128, Height = 128 };
                 pnl.Children.Add(img);
                 TextBlock name = new() { Text = theme.Name };
@@ -219,6 +219,7 @@ namespace Yorot_Avalonia.Views
                     }
                     selectedTheme = theme;
                     YorotGlobal.Main.CurrentSettings.CurrentTheme = theme;
+                    this.RefreshWindow();
                 };
 
                 themepanel.Children.Add(button);

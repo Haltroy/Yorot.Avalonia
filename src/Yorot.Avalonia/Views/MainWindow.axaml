@@ -93,6 +93,34 @@
 		<Style Selector="ToggleSwitch:checked > Grid > Grid > Canvas > Grid > Ellipse#SwitchKnobOn">
 			<Setter Property="Fill" Value="{Binding OverlayForeColor}" />
 		</Style>
+		<Style Selector="Menu ContentPresenter">
+			<Setter Property="TextBlock.Foreground" Value="{Binding ArtForeColor}" />
+			<Setter Property="Background" Value="{Binding ArtColor}" />
+		</Style>
+		<Style Selector="MenuItem:selected ContentPresenter">
+			<Setter Property="TextBlock.Foreground" Value="{Binding ArtForeColor}" />
+			<Setter Property="Background" Value="{Binding ArtColor2}" />
+		</Style>
+		<Style Selector="MenuItem Border">
+			<Setter Property="TextBlock.Foreground" Value="{Binding ArtForeColor}" />
+			<Setter Property="Background" Value="{Binding ArtColor}" />
+		</Style>
+		<Style Selector="MenuItem Panel">
+			<Setter Property="TextBlock.Foreground" Value="{Binding ArtForeColor}" />
+			<Setter Property="Background" Value="{Binding ArtColor}" />
+		</Style>
+		<Style Selector="MenuItem:pointerover Border">
+			<Setter Property="TextBlock.Foreground" Value="{Binding ArtForeColor}" />
+			<Setter Property="Background" Value="{Binding ArtColor2}" />
+		</Style>
+		<Style Selector="MenuItem:pointerover Panel">
+			<Setter Property="TextBlock.Foreground" Value="{Binding ArtForeColor}" />
+			<Setter Property="Background" Value="{Binding ArtColor2}" />
+		</Style>
+		<Style Selector="ComboBox StackPanel">
+			<Setter Property="TextBlock.Foreground" Value="{Binding ArtForeColor}" />
+			<Setter Property="Background" Value="{Binding ArtColor}" />
+		</Style>
 	</Window.Styles>
 
 	<StackPanel Name="frmMain" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Width="{Binding $parent.Width}" Height="{Binding $parent.Height}">

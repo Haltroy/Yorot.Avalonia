@@ -114,10 +114,10 @@ namespace Yorot_Avalonia.Handlers
                 tab.IsPageSafe = true;
                 tab.IsPageUsedCookie = false;
                 tab.IsPageUnsafe = false;
-                _cookie = tab.CurrentSite.Permissions.allowPopup.Allowance == YorotPermissionMode.Allow || tab.CurrentSite.Permissions.allowPopup.Allowance == YorotPermissionMode.AllowOneTime;
-                if (tab.CurrentSite.Permissions.allowPopup.Allowance == YorotPermissionMode.AllowOneTime)
+                _cookie = tab.CurrentSite.Permissions.allowCookies.Allowance == YorotPermissionMode.Allow || tab.CurrentSite.Permissions.allowCookies.Allowance == YorotPermissionMode.AllowOneTime;
+                if (tab.CurrentSite.Permissions.allowCookies.Allowance == YorotPermissionMode.AllowOneTime)
                 {
-                    tab.CurrentSite.Permissions.allowPopup.Allowance = YorotPermissionMode.Deny;
+                    tab.CurrentSite.Permissions.allowCookies.Allowance = YorotPermissionMode.Deny;
                 }
             }
             return _cookie;
@@ -151,11 +151,11 @@ namespace Yorot_Avalonia.Handlers
         protected override CefResourceHandler GetResourceHandler(CefBrowser browser, CefFrame frame, CefRequest request)
         {
             var site = YorotGlobal.Main.CurrentSettings.SiteMan.GetSite(request.Url);
-            if (Window is TabWindow tab)
+            if (frame.IsMain && Window is TabWindow tab)
             {
                 tab.CurrentSite = site;
             }
-            else if (Window is PopupWindow popup)
+            else if (frame.IsMain && Window is PopupWindow popup)
             {
                 popup.CurrentSite = site;
             }

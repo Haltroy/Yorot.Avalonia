@@ -60,7 +60,7 @@ namespace Yorot_Avalonia
             app = new CefAppImpl();
             app.CefProcessMessageReceived += App_CefProcessMessageReceived;
             app.ScheduleMessagePumpWorkCallback = OnScheduleMessagePumpWork;
-
+#if DEBUG
             Output.WriteLine($"Starting Engine \"Chromium Embedded Framework - CefNet\" on \"{YorotGlobal.Main.EngineFolder}\".", HTAlt.LogLevel.Info);
 
             string _engineset = Environment.NewLine +
@@ -79,6 +79,7 @@ namespace Yorot_Avalonia
 
             Output.WriteLine($"Engine Settings: \"{_engineset}\".", HTAlt.LogLevel.Info);
 
+#endif
             app.Initialize(YorotGlobal.Main.EngineFolder, settings);
 
             CefApi.RegisterSchemeHandlerFactory("yorot", "", new Handlers.YorotSchemeHandlerFactory());
