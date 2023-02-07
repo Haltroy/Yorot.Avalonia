@@ -3,8 +3,10 @@ using Avalonia.Collections;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Controls.Mixins;
+using Avalonia.Controls.Notifications;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
+using Avalonia.Input;
 using Avalonia.Markup.Xaml;
 using Avalonia.Markup.Xaml.Styling;
 using Avalonia.Styling;
@@ -20,6 +22,7 @@ using MessageBox.Avalonia.Models;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Linq;
 using Yorot;
@@ -36,6 +39,7 @@ namespace Yorot_Avalonia.Views
 #if DEBUG
             this.AttachDevTools();
 #endif
+
             this.Opened += (sender, e) =>
             {
                 if (!YorotGlobal.Main.CurrentSettings.SessionManager.PreviousShutdownWasSafe)
@@ -128,10 +132,10 @@ namespace Yorot_Avalonia.Views
 
             tabs.AddTabButtonClick += Tabs_AddTabButtonClick;
             tabs.TabCloseRequested += Tabs_TabCloseRequested;
+
             tabs.TabDroppedOutside += Tabs_TabDroppedOutside;
             tabs.SelectionChanged += Tabs_SelectionChanged;
             tabs.TabStripDragOver += Tabs_TabStripDragOver;
-            tabs.TabStripDrop += Tabs_TabStripDrop;
             tabs.PointerPressed += Tabs_PointerPressed;
 
             this.PropertyChanged += MainWindow_PropertyChanged;
@@ -1069,45 +1073,74 @@ namespace Yorot_Avalonia.Views
             }
         }
 
-        private void Tabs_TabStripDrop(object? sender, Avalonia.Input.DragEventArgs e)
-        {
-            // TODO
-        }
-
         private void Tabs_TabStripDragOver(object? sender, Avalonia.Input.DragEventArgs e)
         {
+            e.Handled = true;
             e.DragEffects = Avalonia.Input.DragDropEffects.Move;
         }
 
         private void Tabs_TabDroppedOutside(TabView sender, TabViewTabDroppedOutsideEventArgs args)
         {
-            if (YorotGlobal.Main is null) { return; }
-            var window = new MainWindow()
+            if (YorotGlobal.Main is null || (YorotGlobal.Main.MainForms.Count <= 1 && tabs.TabItems.Count() <= 1)) { return; }
+
+            bool isAttached = false;
+            for (int i = 0; i < YorotGlobal.Main.MainForms.Count; i++)
             {
-                DataContext = YorotGlobal.ViewModel,
-                //IsVisible = true,
-                //IsEnabled = true,
-                WindowState = WindowState.Normal,
-                ShowInTaskbar = true,
-                Position = new PixelPoint(YorotGlobal.Main.CurrentSettings.LastLocation.X, YorotGlobal.Main.CurrentSettings.LastLocation.Y),
-                Width = YorotGlobal.Main.CurrentSettings.LastSize.Width,
-                Height = YorotGlobal.Main.CurrentSettings.LastSize.Height,
-                Bounds = new Rect(YorotGlobal.Main.CurrentSettings.LastLocation.X, YorotGlobal.Main.CurrentSettings.LastLocation.Y, YorotGlobal.Main.CurrentSettings.LastSize.Width, YorotGlobal.Main.CurrentSettings.LastSize.Height),
-            };
+                var mainform = YorotGlobal.Main.MainForms[i];
+                if (mainform.WindowState == WindowState.Minimized || mainform.tabs is null) { continue; }
 
-            window.Show();
-            window.Activate();
-            window.BringIntoView();
+                var tabBound = new Rect(Position.X + args.Tab.Bounds.X, Position.Y + args.Tab.Bounds.Y, args.Tab.Bounds.Width, args.Tab.Bounds.Height);
 
-            YorotGlobal.Main.MainForms.Add(window);
+                var formBound = new Rect(mainform.Position.X, mainform.Position.Y, mainform.Bounds.Width, mainform.Bounds.Height);
 
-            if (window.tabs != null && window.tabs.TabItems is AvaloniaList<object> list && sender.TabItems is AvaloniaList<object> list2)
-            {
-                list2.Remove(args.Tab);
-                list.Add(args.Tab);
-                if (list2.Count <= 0)
+                if (formBound.Intersects(tabBound))
                 {
-                    Close();
+                    isAttached = true;
+
+                    if (sender.TabItems is AvaloniaList<object> list && tabs != null && mainform.tabs != null && mainform.tabs.TabItems is AvaloniaList<object> list2)
+                    {
+                        list.Remove(args.Tab);
+                        list2.Add(args.Tab);
+
+                        if (list.Count <= 0)
+                        {
+                            Close();
+                        }
+                    }
+
+                    break;
+                }
+            }
+            if (!isAttached)
+            {
+                var window = new MainWindow()
+                {
+                    DataContext = YorotGlobal.ViewModel,
+                    //IsVisible = true,
+                    //IsEnabled = true,
+                    WindowState = WindowState.Normal,
+                    ShowInTaskbar = true,
+                    Position = new PixelPoint(YorotGlobal.Main.CurrentSettings.LastLocation.X, YorotGlobal.Main.CurrentSettings.LastLocation.Y),
+                    Width = YorotGlobal.Main.CurrentSettings.LastSize.Width,
+                    Height = YorotGlobal.Main.CurrentSettings.LastSize.Height,
+                    Bounds = new Rect(YorotGlobal.Main.CurrentSettings.LastLocation.X, YorotGlobal.Main.CurrentSettings.LastLocation.Y, YorotGlobal.Main.CurrentSettings.LastSize.Width, YorotGlobal.Main.CurrentSettings.LastSize.Height),
+                };
+
+                window.Show();
+                window.Activate();
+                window.BringIntoView();
+
+                YorotGlobal.Main.MainForms.Add(window);
+
+                if (sender.TabItems is AvaloniaList<object> list && tabs != null && window.tabs.TabItems is AvaloniaList<object> list2)
+                {
+                    list.Remove(args.Tab);
+                    list2.Add(args.Tab);
+
+                    if (list.Count <= 0)
+                    {
+                        Close();
+                    }
                 }
             }
         }
