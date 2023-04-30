@@ -18,7 +18,7 @@
 		Background="{Binding BackColor}">
 
 	<Design.DataContext>
-		<vm:MainViewModel />
+		<vm:ViewModelBase />
 	</Design.DataContext>
 
 	<Window.Styles>

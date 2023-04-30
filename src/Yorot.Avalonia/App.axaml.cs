@@ -14,6 +14,7 @@ namespace Yorot_Avalonia
         public static event EventHandler FrameworkInitialized;
 
         public static event EventHandler FrameworkShutdown;
+        public static bool IsCefSubProcess { get; set; } = false;
 
         public override void Initialize()
         {
@@ -47,8 +48,6 @@ namespace Yorot_Avalonia
                 }
                 desktop.Startup += Desktop_Startup;
                 desktop.Exit += Desktop_Exit;
-            } else {
-                Console.WriteLine("Type of ApplicationLifetime is \"" + ApplicationLifetime.GetType().Name + "\".");
             }
 
             base.OnFrameworkInitializationCompleted();
