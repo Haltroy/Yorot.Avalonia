@@ -1,18 +1,31 @@
 using Avalonia;
 using Avalonia.Collections;
 using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Controls.Mixins;
+using Avalonia.Controls.Notifications;
+using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
+using Avalonia.Input;
 using Avalonia.Markup.Xaml;
+using Avalonia.Markup.Xaml.Styling;
+using Avalonia.Styling;
+using Avalonia.VisualTree;
 using CefNet;
 using CefNet.Avalonia;
 using DynamicData;
 using FluentAvalonia.Core;
+using FluentAvalonia.Styling;
 using FluentAvalonia.UI.Controls;
+using MessageBox.Avalonia.Enums;
+using MessageBox.Avalonia.Models;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using System.Reactive.Linq;
 using Yorot;
-using Yorot.AppForms;
 using Yorot_Avalonia.Handlers;
 using Yorot_Avalonia.ViewModels;
 
@@ -26,14 +39,28 @@ namespace Yorot_Avalonia.Views
 #if DEBUG
             this.AttachDevTools();
 #endif
+
             this.Opened += (sender, e) =>
             {
                 if (!YorotGlobal.Main.CurrentSettings.SessionManager.PreviousShutdownWasSafe)
                 {
-                    MessageBox box = new(YorotGlobal.Main.CurrentLanguage.GetItemText("UI.RestoreSessionTitle"), YorotGlobal.Main.CurrentLanguage.GetItemText("UI.RestoreSessionDesc"), new MessageBoxButton[] { new MessageBoxButton.Yes(), new MessageBoxButton.No() });
-                    RunDialog(box, new Action(() =>
+                    var box = MessageBox.Avalonia.MessageBoxManager.GetMessageBoxCustomWindow(new MessageBox.Avalonia.DTO.MessageBoxCustomParams()
                     {
-                        if (box.DialogResult is MessageBoxButton.Yes && YorotGlobal.Main.CurrentSettings.SessionManager.Systems[YorotGlobal.Main.CurrentSettings.SessionManager.Systems.Count - 2] is SessionSystem session)
+                        WindowIcon = this.Icon,
+                        Icon = MessageBox.Avalonia.Enums.Icon.Question,
+                        ContentTitle = "Yorot",
+                        ContentHeader = YorotGlobal.Main.CurrentLanguage.GetItemText("UI.RestoreSessionTitle"),
+                        ContentMessage = YorotGlobal.Main.CurrentLanguage.GetItemText("UI.RestoreSessionDesc"),
+                        ButtonDefinitions = new[]
+                        {
+                            new ButtonDefinition() { Name = YorotGlobal.Main.CurrentLanguage.GetItemText("DialogBox.Yes")},
+                            new ButtonDefinition() { Name = YorotGlobal.Main.CurrentLanguage.GetItemText("DialogBox.No")},
+                        },
+                        WindowStartupLocation = WindowStartupLocation.CenterScreen
+                    });
+                    Dialogs.RunMessageBoxDialog(box, this, new Action<string>((result) =>
+                    {
+                        if (result == YorotGlobal.Main.CurrentLanguage.GetItemText("DialogBox.Yes") && YorotGlobal.Main.CurrentSettings.SessionManager.Systems[YorotGlobal.Main.CurrentSettings.SessionManager.Systems.Count - 2] is SessionSystem session)
                         {
                             NewTab(session: session);
                         }
@@ -81,6 +108,9 @@ namespace Yorot_Avalonia.Views
         private void InitializeComponent()
         {
             AvaloniaXamlLoader.Load(this);
+
+            this.SystemDecorations = SystemDecorations.Full;
+
             if (YorotGlobal.Main != null)
             {
                 Width = YorotGlobal.Main.CurrentSettings.LastSize.Width;
@@ -92,12 +122,21 @@ namespace Yorot_Avalonia.Views
             Sidebar = sidebarGrid.FindControl<DockPanel>("Sidebar");
             AppGrid = Sidebar.FindControl<WrapPanel>("AppGrid");
             SidebarSplitter = sidebarGrid.FindControl<Panel>("SidebarSplitter");
-            var contentcanvas = sidebarGrid.FindControl<Canvas>("ContentCanvas");
+            var contentcanvas = sidebarGrid.FindControl<Panel>("ContentCanvas");
+
             tabs = contentcanvas.FindControl<TabView>("Tabs");
+
+            tabs.AllowDropTabs = true;
+            tabs.CanDragTabs = true;
+            tabs.CanReorderTabs = true;
+
             tabs.AddTabButtonClick += Tabs_AddTabButtonClick;
             tabs.TabCloseRequested += Tabs_TabCloseRequested;
+
             tabs.TabDroppedOutside += Tabs_TabDroppedOutside;
             tabs.SelectionChanged += Tabs_SelectionChanged;
+            tabs.TabStripDragOver += Tabs_TabStripDragOver;
+            tabs.PointerPressed += Tabs_PointerPressed;
 
             this.PropertyChanged += MainWindow_PropertyChanged;
             this.Closed += MainWindow_Closed;
@@ -271,11 +310,26 @@ namespace Yorot_Avalonia.Views
             other_bookmarks = favoritesmenu.FindControl<Avalonia.Controls.MenuItem>("other_bookmarks");
 
             RefreshFavorites(true);
+        }
 
+        private void opened(object? sender, EventArgs e)
+        {
             if (YorotGlobal.Main != null && YorotGlobal.Main.MainForms.Count <= 0)
             {
                 YorotGlobal.Main.MainForms.Add(this);
                 NewTab(url: "yorot://homepage", switchTo: true);
+            }
+        }
+
+        private void Tabs_PointerPressed(object? sender, Avalonia.Input.PointerPressedEventArgs e)
+        {
+            if (sender is Control control)
+            {
+                var pos = e.GetPosition(control);
+                if (pos.Y < 41)
+                {
+                    this.BeginMoveDrag(e);
+                }
             }
         }
 
@@ -395,6 +449,10 @@ namespace Yorot_Avalonia.Views
                 AllowNotifBoot.IsChecked = window.CurrentSite.Permissions.startNotifOnBoot;
                 NotifPriority.SelectedIndex = window.CurrentSite.Permissions.notifPriority + 1;
             }
+            if (tabs.TabItems.Count() <= 0)
+            {
+                Close();
+            }
         }
 
         private void ManageBookmarks(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
@@ -406,11 +464,24 @@ namespace Yorot_Avalonia.Views
 
         private async void ProfileChangeName(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
-            var msgbox = new MessageBox("Yorot", YorotGlobal.Main.CurrentLanguage.GetItemText("UI.ChangeProfileNameDesc"), YorotGlobal.Main.Profiles.Current.Text, new MessageBoxButton[] { new MessageBoxButton.Ok(), new MessageBoxButton.Cancel(), }, true);
-            await msgbox.ShowDialog(this);
-            if (msgbox.DialogResult is MessageBoxButton.Ok)
+            var msgbox = MessageBox.Avalonia.MessageBoxManager.GetMessageBoxInputWindow(new MessageBox.Avalonia.DTO.MessageBoxInputParams()
             {
-                YorotGlobal.Main.Profiles.Current.Text = msgbox.Prompt;
+                WindowIcon = this.Icon,
+                Icon = MessageBox.Avalonia.Enums.Icon.Setting,
+                ContentTitle = "Yorot",
+                ContentMessage = YorotGlobal.Main.CurrentLanguage.GetItemText("UI.ChangeProfileNameDesc"),
+                InputDefaultValue = YorotGlobal.Main.Profiles.Current.Text,
+                ButtonDefinitions = new[]
+                {
+                    new ButtonDefinition {Name = YorotGlobal.Main.CurrentLanguage.GetItemText("DialogBox.OK")},
+                    new ButtonDefinition {Name = YorotGlobal.Main.CurrentLanguage.GetItemText("DialogBox.Cancel")}
+                },
+                WindowStartupLocation = WindowStartupLocation.CenterScreen
+            });
+            var result = await msgbox.ShowDialog(this);
+            if (result.Button == YorotGlobal.Main.CurrentLanguage.GetItemText("DialogBox.OK"))
+            {
+                YorotGlobal.Main.Profiles.Current.Text = result.Message;
             }
         }
 
@@ -638,18 +709,7 @@ namespace Yorot_Avalonia.Views
             if (IsFavorited is null || YorotGlobal.Main is null || IsNotFavorited is null) { return; }
             if (tabs != null && tabs.SelectedItem is TabViewItem item && item.Content is DockPanel dockPanel1 && dockPanel1.Children[0] is TabWindow window)
             {
-                var favbars = YorotGlobal.Main.CurrentSettings.FavManager.Favorites.FindAll(it => it.Name == "FavBar");
-                if (favbars.Count > 0)
-                {
-                    var favbar = favbars[0];
-                    favbar.Favorites.Add(new YorotFavorite(favbar, window.url, window.title));
-                }
-                else
-                {
-                    var favbar = new YorotFavFolder(YorotGlobal.Main.CurrentSettings.FavManager, "FavBar", "Favorites Bar");
-                    YorotGlobal.Main.CurrentSettings.FavManager.Favorites.Add(favbar);
-                    favbar.Favorites.Add(new YorotFavorite(favbar, window.url, window.title));
-                }
+                YorotGlobal.Main.CurrentSettings.FavManager.Favorites.Add(new YorotFavorite(YorotGlobal.Main.CurrentSettings.FavManager.RootFolder, window.url, window.title));
             }
             RefreshFavorites(true);
             IsFavorited.OnNext(true);
@@ -664,54 +724,19 @@ namespace Yorot_Avalonia.Views
                 var favs = YorotGlobal.Main.CurrentSettings.FavManager.GetFavorite(window.url);
                 if (favs.Count > 0)
                 {
-                    favs[0].ParentFolder.Favorites.Remove(favs[0]);
+                    if (favs[0].ParentFolder is null)
+                    {
+                        YorotGlobal.Main.CurrentSettings.FavManager.RootFolder.Favorites.Remove(favs[0]);
+                    }
+                    else
+                    {
+                        favs[0].ParentFolder.Favorites.Remove(favs[0]);
+                    }
                     RefreshFavorites(true);
                     IsFavorited.OnNext(true);
                     IsNotFavorited.OnNext(false);
                 }
             }
-        }
-
-        public async void RunSaveFileDialog(string title, string[] filetypes, Action<string> OnSuccess)
-        {
-            if (YorotGlobal.Main != null)
-            {
-                SaveFileDialog saveFileDialog = new()
-                {
-                    Title = string.IsNullOrWhiteSpace(title) ? YorotGlobal.Main.CurrentLanguage.GetItemText("DialogBox.SaveFileDialog") : title
-                };
-                List<FileDialogFilter> Filters = new();
-
-                for (int i = 0; i < filetypes.Length; i++)
-                {
-                    FileDialogFilter filter = new();
-                    List<string> extension = new()
-                    {
-                        filetypes[i]
-                    };
-                    filter.Extensions = extension;
-                    filter.Name = YorotGlobal.Main.CurrentLanguage.GetItemText("FileTypes." + filetypes[i].ToUpperInvariant());
-                    Filters.Add(filter);
-                }
-                saveFileDialog.Filters = Filters;
-
-                saveFileDialog.DefaultExtension = filetypes[0];
-
-                saveFileDialog.Directory = YorotGlobal.Main.CurrentSettings.DownloadManager.DownloadFolder;
-
-                var filename = await saveFileDialog.ShowAsync(YorotGlobal.Main.MainForm);
-
-                if (!string.IsNullOrWhiteSpace(filename))
-                {
-                    OnSuccess(filename);
-                }
-            }
-        }
-
-        public async void RunDialog(Window window, Action OnSuccess)
-        {
-            await window.ShowDialog(this);
-            OnSuccess();
         }
 
         private void printbutton_click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
@@ -726,7 +751,7 @@ namespace Yorot_Avalonia.Views
         {
             if (YorotGlobal.Main != null && tabs != null && tabs.SelectedItem is TabViewItem item && item.Content is DockPanel dockPanel1 && dockPanel1.Children[0] is TabWindow window && window.webView1 is YorotWebView webView)
             {
-                RunSaveFileDialog(YorotGlobal.Main.CurrentLanguage.GetItemText("UI.SaveScreenshot"),
+                Dialogs.RunSaveFileDialog(this, YorotGlobal.Main.CurrentLanguage.GetItemText("UI.SaveScreenshot"),
                     new string[] { "png" },
                     (path) =>
                     {
@@ -907,7 +932,7 @@ namespace Yorot_Avalonia.Views
                 var task = webView.GetMainFrame().GetSourceAsync(System.Threading.CancellationToken.None);
                 if (task.IsCompletedSuccessfully)
                 {
-                    RunSaveFileDialog(YorotGlobal.Main.CurrentLanguage.GetItemText("DialogBox.SaveFileDialog"),
+                    Dialogs.RunSaveFileDialog(this, YorotGlobal.Main.CurrentLanguage.GetItemText("DialogBox.SaveFileDialog"),
                                 new string[] { "html" },
                                 new Action<string>((filename) =>
                                 {
@@ -971,16 +996,12 @@ namespace Yorot_Avalonia.Views
                     if ((favoritesmenu != null && favoritesmenu.Items is AvaloniaList<object> list))
                     {
                         list.Clear();
-                        if (other_bookmarks != null)
+                        var favbars = YorotGlobal.Main.CurrentSettings.FavManager.RootFolder;
+                        if (favbars.Favorites.Count > 0)
                         {
-                            list.Add(other_bookmarks);
-                        }
-                        var favbars = YorotGlobal.Main.CurrentSettings.FavManager.Favorites.FindAll(it => it.Name == "FavBar");
-                        if (favbars.Count > 0)
-                        {
-                            for (int i = 0; i < favbars[0].Favorites.Count; i++)
+                            for (int i = 0; i < favbars.Favorites.Count; i++)
                             {
-                                var fav = favbars[0].Favorites[i];
+                                var fav = favbars.Favorites[i];
                                 Avalonia.Controls.MenuItem item = new();
                                 item.Bind(BackgroundProperty, tbUrl.GetBindingObservable(BackgroundProperty));
                                 item.Bind(ForegroundProperty, tbUrl.GetBindingObservable(ForegroundProperty));
@@ -998,35 +1019,29 @@ namespace Yorot_Avalonia.Views
                                 }
                             }
                         }
-                        else
-                        {
-                            YorotGlobal.Main.CurrentSettings.FavManager.Favorites.Add(new YorotFavFolder(YorotGlobal.Main.CurrentSettings.FavManager, "FavBar", "Favorites Bar"));
-                        }
                     }
                     if (other_bookmarks != null && other_bookmarks.Items is AvaloniaList<object> oblist)
                     {
                         for (int i = 0; i < YorotGlobal.Main.CurrentSettings.FavManager.Favorites.Count; i++)
                         {
                             var fav = YorotGlobal.Main.CurrentSettings.FavManager.Favorites[i];
-                            if (fav.Name != "FavBar")
+
+                            Avalonia.Controls.MenuItem item = new()
                             {
-                                Avalonia.Controls.MenuItem item = new()
-                                {
-                                    Header = fav.Text,
-                                    Tag = fav
-                                };
-                                item.Bind(BackgroundProperty, tbUrl.GetBindingObservable(BackgroundProperty));
-                                item.Bind(ForegroundProperty, tbUrl.GetBindingObservable(ForegroundProperty));
-                                //item.Icon = fav.Icon; // TODO
-                                oblist.Add(item);
-                                if (fav is not YorotFavorite and not null)
-                                {
-                                    AddFavorites(item, fav);
-                                }
-                                else
-                                {
-                                    item.Click += favitem_Click;
-                                }
+                                Header = fav.Text,
+                                Tag = fav
+                            };
+                            item.Bind(BackgroundProperty, tbUrl.GetBindingObservable(BackgroundProperty));
+                            item.Bind(ForegroundProperty, tbUrl.GetBindingObservable(ForegroundProperty));
+                            //item.Icon = fav.Icon; // TODO
+                            oblist.Add(item);
+                            if (fav is not YorotFavorite and not null)
+                            {
+                                AddFavorites(item, fav);
+                            }
+                            else
+                            {
+                                item.Click += favitem_Click;
                             }
                         }
                     }
@@ -1058,15 +1073,75 @@ namespace Yorot_Avalonia.Views
             }
         }
 
+        private void Tabs_TabStripDragOver(object? sender, Avalonia.Input.DragEventArgs e)
+        {
+            e.Handled = true;
+            e.DragEffects = Avalonia.Input.DragDropEffects.Move;
+        }
+
         private void Tabs_TabDroppedOutside(TabView sender, TabViewTabDroppedOutsideEventArgs args)
         {
-            if (YorotGlobal.Main is null) { return; }
-            MainWindow window = new MainWindow();
-            YorotGlobal.Main.MainForms.Add(window);
-            if (window.tabs != null && window.tabs.TabItems is AvaloniaList<object> list && sender.TabItems is AvaloniaList<object> list2)
+            if (YorotGlobal.Main is null || (YorotGlobal.Main.MainForms.Count <= 1 && tabs.TabItems.Count() <= 1)) { return; }
+
+            bool isAttached = false;
+            for (int i = 0; i < YorotGlobal.Main.MainForms.Count; i++)
             {
-                list2.Remove(args.Tab);
-                list.Add(args.Tab);
+                var mainform = YorotGlobal.Main.MainForms[i];
+                if (mainform.WindowState == WindowState.Minimized || mainform.tabs is null) { continue; }
+
+                var tabBound = new Rect(Position.X + args.Tab.Bounds.X, Position.Y + args.Tab.Bounds.Y, args.Tab.Bounds.Width, args.Tab.Bounds.Height);
+
+                var formBound = new Rect(mainform.Position.X, mainform.Position.Y, mainform.Bounds.Width, mainform.Bounds.Height);
+
+                if (formBound.Intersects(tabBound))
+                {
+                    isAttached = true;
+
+                    if (sender.TabItems is AvaloniaList<object> list && tabs != null && mainform.tabs != null && mainform.tabs.TabItems is AvaloniaList<object> list2)
+                    {
+                        list.Remove(args.Tab);
+                        list2.Add(args.Tab);
+
+                        if (list.Count <= 0)
+                        {
+                            Close();
+                        }
+                    }
+
+                    break;
+                }
+            }
+            if (!isAttached)
+            {
+                var window = new MainWindow()
+                {
+                    DataContext = YorotGlobal.ViewModel,
+                    //IsVisible = true,
+                    //IsEnabled = true,
+                    WindowState = WindowState.Normal,
+                    ShowInTaskbar = true,
+                    Position = new PixelPoint(YorotGlobal.Main.CurrentSettings.LastLocation.X, YorotGlobal.Main.CurrentSettings.LastLocation.Y),
+                    Width = YorotGlobal.Main.CurrentSettings.LastSize.Width,
+                    Height = YorotGlobal.Main.CurrentSettings.LastSize.Height,
+                    Bounds = new Rect(YorotGlobal.Main.CurrentSettings.LastLocation.X, YorotGlobal.Main.CurrentSettings.LastLocation.Y, YorotGlobal.Main.CurrentSettings.LastSize.Width, YorotGlobal.Main.CurrentSettings.LastSize.Height),
+                };
+
+                window.Show();
+                window.Activate();
+                window.BringIntoView();
+
+                YorotGlobal.Main.MainForms.Add(window);
+
+                if (sender.TabItems is AvaloniaList<object> list && tabs != null && window.tabs.TabItems is AvaloniaList<object> list2)
+                {
+                    list.Remove(args.Tab);
+                    list2.Add(args.Tab);
+
+                    if (list.Count <= 0)
+                    {
+                        Close();
+                    }
+                }
             }
         }
 
@@ -1074,7 +1149,38 @@ namespace Yorot_Avalonia.Views
         {
             if (sender.TabItems is AvaloniaList<object> list)
             {
-                list.Remove(args.Item);
+                var item = args.Item as TabViewItem;
+                var dockPanel = item.Content as DockPanel;
+                var tabWindow = dockPanel.Children[0] as TabWindow;
+
+                YorotGlobal.Main.CurrentSettings.SessionManager.Close(tabWindow.SessionSystem);
+
+                tabWindow.SessionSystem.RemoveAllEvents();
+
+                tabWindow.webView1.Stop();
+                tabWindow.webView1.Navigate("about:blank");
+                //tabWindow.webView1 = null;
+
+                tabWindow.Content = null;
+
+                list.Remove(item);
+
+                dockPanel.Children.Clear();
+
+                dockPanel.GetVisualChildren().ToList().Clear();
+
+                item.Content = null;
+
+                tabWindow.webView1.DisposeWith(new System.Reactive.Disposables.CompositeDisposable(tabWindow));
+
+                tabWindow.Dispose();
+
+                GC.Collect();
+
+                if (list.Count <= 0)
+                {
+                    Close();
+                }
             }
         }
 
@@ -1093,6 +1199,10 @@ namespace Yorot_Avalonia.Views
                 YorotGlobal.Main.CurrentSettings.LastSize = new System.Drawing.Size((int)Width, (int)Height);
                 YorotGlobal.Main.Shutdown();
                 CefNetApplication.Instance.Shutdown();
+                if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime app)
+                {
+                    app.Shutdown(0);
+                }
             }
         }
 
@@ -1100,7 +1210,27 @@ namespace Yorot_Avalonia.Views
         {
             if (tabs is null) { return; }
             TabViewItem item = new TabViewItem() { Header = "New Tab" };
+            //item.Styles.Add(Styles);
+            item.Bind(BackgroundProperty, tabs.GetObservable(BackgroundProperty));
             item.Bind(ForegroundProperty, tabs.GetObservable(ForegroundProperty));
+            var style1 = new Avalonia.Styling.Style(new Func<Selector?, Selector>((s) =>
+            {
+                return
+                    //Selectors.OfType(
+                    Selectors.Template(
+                        Selectors.Class(
+                            Selectors.OfType(s, typeof(TabViewItem))
+                            , ":selected")
+                        )
+                //, typeof(ContentPresenter))
+                ;
+            }));
+            var backstyle = Styles[12] as Style;
+            var setter1 = backstyle.Setters[0];
+            var setter2 = backstyle.Setters[1];
+            style1.Setters.Add(setter1);
+            style1.Setters.Add(setter2);
+            item.Styles.Add(style1);
             DockPanel panel = new();
             item.Content = panel;
             var tabform = new TabWindow(session) { mainWindow = this, _startUrl = url, VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch, HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch };
@@ -1121,17 +1251,21 @@ namespace Yorot_Avalonia.Views
             var mainform = new MainWindow()
             {
                 DataContext = YorotGlobal.ViewModel,
-                IsVisible = true,
-                IsEnabled = true,
+                //IsVisible = true,
+                //IsEnabled = true,
                 WindowState = WindowState.Normal,
                 ShowInTaskbar = true,
                 Position = new PixelPoint(YorotGlobal.Main.CurrentSettings.LastLocation.X, YorotGlobal.Main.CurrentSettings.LastLocation.Y),
                 Width = YorotGlobal.Main.CurrentSettings.LastSize.Width,
-                Height = YorotGlobal.Main.CurrentSettings.LastSize.Height
+                Height = YorotGlobal.Main.CurrentSettings.LastSize.Height,
+                Bounds = new Rect(YorotGlobal.Main.CurrentSettings.LastLocation.X, YorotGlobal.Main.CurrentSettings.LastLocation.Y, YorotGlobal.Main.CurrentSettings.LastSize.Width, YorotGlobal.Main.CurrentSettings.LastSize.Height),
             };
-            mainform.Activate();
+
             mainform.Show();
+            mainform.Activate();
             mainform.BringIntoView();
+
+            mainform.NewTab(url);
 
             YorotGlobal.Main.MainForms.Add(mainform);
         }
@@ -1256,6 +1390,29 @@ namespace Yorot_Avalonia.Views
                 case Avalonia.Input.Key.LeftShift:
                 case Avalonia.Input.Key.RightShift:
                     shiftPressed = true;
+                    break;
+
+                // TODO: Remove, random theme test
+                case Avalonia.Input.Key.F2:
+                    YorotTheme random = YorotGlobal.Main.ThemeMan.Themes[new Random().Next(0, YorotGlobal.Main.ThemeMan.Themes.Count)];
+                    YorotGlobal.Main.CurrentSettings.CurrentTheme = random;
+                    var box = MessageBox.Avalonia.MessageBoxManager.GetMessageBoxCustomWindow(new MessageBox.Avalonia.DTO.MessageBoxCustomParams()
+                    {
+                        WindowIcon = this.Icon,
+                        Icon = MessageBox.Avalonia.Enums.Icon.Question,
+                        ContentTitle = "Yorot",
+                        ContentHeader = "Switched to:" + random.CodeName,
+                        ContentMessage = $"ViewModel: {YorotGlobal.ViewModel.BackColor.ToString()} Panel: {Sidebar.Background.ToString()} Theme: {random.BackColor.ToHex()}",
+                        ButtonDefinitions = new[]
+                        {
+                            new ButtonDefinition() { Name = "OK"},
+                        },
+                        WindowStartupLocation = WindowStartupLocation.CenterScreen
+                    });
+                    Dialogs.RunMessageBoxDialog(box, this, new Action<string>((result) => { }));
+                    this.DataContext = null;
+                    this.DataContext = YorotGlobal.ViewModel;
+                    this.InvalidateVisual();
                     break;
             }
         }

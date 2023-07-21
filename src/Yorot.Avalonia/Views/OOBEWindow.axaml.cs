@@ -4,7 +4,9 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
+using BrowserBookmarkManager;
 using CefNet;
+using System;
 using System.Reactive.Subjects;
 using Yorot;
 using Yorot_Avalonia.Handlers;
@@ -34,14 +36,11 @@ namespace Yorot_Avalonia.Views
         private YorotLanguage selectedLang;
         private YorotTheme selectedTheme;
         private ToggleButton[] themes;
-        private CheckBox importKorot;
         private CheckBox importChrome;
-        private CheckBox importFirefox;
         private CheckBox importYorot;
         private CheckBox importEdge;
-        private CheckBox importEdgeLegacy;
-        private CheckBox importIE;
         private CheckBox importOpera;
+        private CheckBox importOperaGX;
         private CheckBox importChromium;
         private CheckBox importHTML;
 
@@ -83,7 +82,7 @@ namespace Yorot_Avalonia.Views
                 if (langBox.SelectedItem != null && langBox.SelectedItem is ComboBoxItem item && item.Tag is YorotLanguage lang)
                 {
                     YorotGlobal.Main.CurrentSettings.CurrentLanguage = lang;
-                    // TODO: Reload the entire window. Don't worry about the language thing because it is working, the UI isnt updated.
+                    YorotTools.RefreshWindow(this);
                 }
                 if (localeBox.SelectedIndex > -1 && langBox.SelectedIndex > -1 && datetimeBox.SelectedIndex > -1)
                 {
@@ -199,7 +198,7 @@ namespace Yorot_Avalonia.Views
                     Margin = new Thickness(5, 5, 5, 5),
                     IsChecked = YorotGlobal.Main.CurrentTheme == theme,
                 };
-                StackPanel pnl = new();
+                StackPanel pnl = new() { Background = new Avalonia.Media.SolidColorBrush(Avalonia.Media.Colors.Transparent) };
                 Image img = new() { Source = YorotTools.ThemeThumbnail(theme), Width = 128, Height = 128 };
                 pnl.Children.Add(img);
                 TextBlock name = new() { Text = theme.Name };
@@ -220,6 +219,7 @@ namespace Yorot_Avalonia.Views
                     }
                     selectedTheme = theme;
                     YorotGlobal.Main.CurrentSettings.CurrentTheme = theme;
+                    this.RefreshWindow();
                 };
 
                 themepanel.Children.Add(button);
@@ -240,14 +240,11 @@ namespace Yorot_Avalonia.Views
 
             var importfrom = carousel.FindControl<StackPanel>("ImportFrom").FindControl<StackPanel>("Browsers");
 
-            importKorot = importfrom.FindControl<CheckBox>("Korot");
             importChrome = importfrom.FindControl<CheckBox>("Chrome");
-            importFirefox = importfrom.FindControl<CheckBox>("Firefox");
             importYorot = importfrom.FindControl<CheckBox>("OtherFlavor");
             importEdge = importfrom.FindControl<CheckBox>("Edge");
-            importEdgeLegacy = importfrom.FindControl<CheckBox>("EdgeLegacy");
-            importIE = importfrom.FindControl<CheckBox>("IntExp");
             importOpera = importfrom.FindControl<CheckBox>("Opera");
+            importOperaGX = importfrom.FindControl<CheckBox>("OperaGX");
             importChromium = importfrom.FindControl<CheckBox>("Chromium");
             importHTML = importfrom.FindControl<CheckBox>("HTML");
 
@@ -422,15 +419,46 @@ namespace Yorot_Avalonia.Views
             }
         }
 
+        private void ImportFromBookmarkRoot(BookmarkRoot root, string browserName, YorotProfile profile)
+        {
+            var favman = profile.Settings.FavManager;
+
+            YorotFavFolder roots = new YorotFavFolder(favman, "ImportedFrom" + browserName.Replace(" ", ""), YorotGlobal.Main.CurrentLanguage.GetItemText("OOBE.ImportedFrom").Replace("[Parameter.Name]", browserName));
+
+            for (int i = 0; i < root.Bookmarks.Count; i++)
+            {
+                ImportBookmarkToFavorite(roots, root.Bookmarks[i]);
+            }
+            favman.Favorites.Add(roots);
+        }
+
+        private void ImportBookmarkToFavorite(YorotFavFolder folder, Bookmark bookmark)
+        {
+            YorotFavFolder fav = null;
+            if (bookmark.IsFolder == true)
+            {
+                fav = new YorotFavFolder(folder.Manager, HTAlt.Tools.GenerateRandomText(17), bookmark.Name);
+                for (int i = 0; i < bookmark.Bookmarks.Count; i++)
+                {
+                    ImportBookmarkToFavorite(fav, bookmark.Bookmarks[i]);
+                }
+            }
+            else
+            {
+                fav = new YorotFavorite(folder, bookmark.Url, bookmark.Name);
+            }
+            folder.Favorites.Add(fav);
+        }
+
         public void Finish(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
-            // Create the profile and switch to it
             var profile = new YorotProfile(profileusername.Text, profilename.Text, YorotGlobal.Main.Profiles);
             YorotGlobal.Main.Profiles.Profiles.Add(profile);
             YorotGlobal.Main.Profiles.Current = profile;
+            profile.Settings = new Settings(profile);
             profile.Settings.CurrentTheme = selectedTheme;
             profile.Settings.CurrentLanguage = selectedLang;
-            profile.Settings.Locale = selectedLocale;
+            profile.Manager.Main.Locale = selectedLocale;
             switch (datetimeBox.SelectedIndex)
             {
                 case 0:
@@ -445,13 +473,89 @@ namespace Yorot_Avalonia.Views
                     profile.Settings.DateFormat = YorotDateAndTime.MDY;
                     break;
             }
-            // TODO: Import from other browsers
 
-            // Shutdown
-            YorotGlobal.Main.Shutdown(true);
-            CefNetApplication.Instance.Shutdown();
-            this.Close();
-            System.Diagnostics.Process.Start(System.Diagnostics.Process.GetCurrentProcess().ProcessName);
+            if (importEdge != null && importEdge.IsChecked == true)
+            {
+                ImportFromBookmarkRoot(Loader.LoadEdgeBookmarks(), "Edge", profile);
+            }
+
+            if (importChrome != null && importChrome.IsChecked == true)
+            {
+                ImportFromBookmarkRoot(Loader.LoadChromeBookmarks(), "Chrome", profile);
+            }
+
+            if (importOpera != null && importOpera.IsChecked == true)
+            {
+                ImportFromBookmarkRoot(Loader.LoadOperaBookmarks(), "Opera", profile);
+            }
+
+            if (importOperaGX != null && importOperaGX.IsChecked == true)
+            {
+                ImportFromBookmarkRoot(Loader.LoadOperaGXBookmarks(), "Opera GX", profile);
+            }
+
+            if (importChromium != null && importChromium.IsChecked == true)
+            {
+                lockChromium = true;
+                OpenFolderDialog dialog = new OpenFolderDialog();
+                dialog.Title = YorotGlobal.Main.CurrentLanguage.GetItemText("OOBE.OpenChromiumData");
+                Dialogs.RunFolderDialog(dialog, this, new Action<string?>((result) =>
+                {
+                    ImportFromBookmarkRoot(Loader.LoadChromiumBookmarksFromData(result, BookmarkBrowser.Chromium), "Chromium", profile);
+                    lockChromium = false;
+                    Shutdown();
+                }));
+            }
+
+            if (importYorot != null && importYorot.IsChecked == true)
+            {
+                lockYorot = true;
+                OpenFolderDialog dialog = new OpenFolderDialog();
+                dialog.Title = YorotGlobal.Main.CurrentLanguage.GetItemText("OOBE.OpenYorotRoot");
+                Dialogs.RunFolderDialog(dialog, this, new Action<string?>((result) =>
+                {
+                    ImportFromBookmarkRoot(Loader.LoadYorotBookmarks(result), "Yorot", profile);
+                    lockYorot = false;
+                    Shutdown();
+                }));
+            }
+
+            if (importHTML != null && importHTML.IsChecked == true)
+            {
+                lockHTML = true;
+                OpenFileDialog dialog = new();
+                dialog.Title = YorotGlobal.Main.CurrentLanguage.GetItemText("OOBE.OpenHTML");
+                dialog.AllowMultiple = true;
+                Dialogs.RunFileDialog(dialog, this, new Action<string[]?>((files) =>
+                {
+                    if (files != null)
+                    {
+                        for (int i = 0; i < files.Length; i++)
+                        {
+                            ImportFromBookmarkRoot(Loader.LoadFromHTMLFile(files[i]), "HTML", profile);
+                        }
+                    }
+                    lockHTML = false;
+                    Shutdown();
+                }));
+            }
+
+            Shutdown();
+        }
+
+        public bool lockChromium = false;
+        public bool lockHTML = false;
+        public bool lockYorot = false;
+
+        public void Shutdown()
+        {
+            if (!lockChromium && !lockHTML && !lockYorot)
+            {
+                YorotGlobal.Main.Shutdown(true);
+                CefNetApplication.Instance.Shutdown();
+                this.Close();
+                System.Diagnostics.Process.Start(System.Diagnostics.Process.GetCurrentProcess().ProcessName);
+            }
         }
     }
 }

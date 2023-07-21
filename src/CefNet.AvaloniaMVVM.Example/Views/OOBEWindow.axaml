@@ -1,0 +1,255 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:vm="using:Yorot_Avalonia.ViewModels"
+        mc:Ignorable="d" d:DesignWidth="{Binding Width}" d:DesignHeight="{Binding Height}" Width="700" Height="550"
+		WindowStartupLocation="CenterScreen"
+        x:Class="Yorot_Avalonia.Views.OOBEWindow"
+		CanResize="False"
+		Icon="/Assets/Yorot.ico"
+        Title="Yorot">
+
+	<Design.DataContext>
+		<vm:ViewModelBase />
+	</Design.DataContext>
+
+	<Window.Styles>
+		<Style Selector="Button:pointerover /template/ ContentPresenter">
+			<Setter Property="Background" Value="{Binding BackColor2}" />
+		</Style>
+		<Style Selector="Button">
+			<Setter Property="Foreground" Value="{Binding ForeColor}" />
+		</Style>
+		<Style Selector="Button:pressed /template/ ContentPresenter">
+			<Setter Property="Background" Value="{Binding BackColor3}" />
+		</Style>
+		<Style Selector="Button:disabled /template/ ContentPresenter">
+			<Setter Property="Background" Value="{Binding BackColor4}" />
+		</Style>
+		<Style Selector="TextBox">
+			<Setter Property="Background" Value="{Binding BackColor}" />
+			<Setter Property="Foreground" Value="{Binding ForeColor}" />
+		</Style>
+		<Style Selector="TextBox Border#PART_BorderElement">
+			<Setter Property="Background" Value="{Binding BackColor}" />
+			<Setter Property="TextBlock.Foreground" Value="{Binding ForeColor}" />
+		</Style>
+		<Style Selector="TextBox:pointerover Border#PART_BorderElement">
+			<Setter Property="Background" Value="{Binding BackColor2}" />
+			<Setter Property="TextBlock.Foreground" Value="{Binding ForeColor}" />
+		</Style>
+		<Style Selector="TextBox:pointerover TextPresenter">
+			<Setter Property="TextBlock.Foreground" Value="{Binding ForeColor}" />
+		</Style>
+		<Style Selector="TextBox:focus TextPresenter">
+			<Setter Property="TextBlock.Foreground" Value="{Binding ForeColor}" />
+		</Style>
+		<Style Selector="TextBox:focus Border#PART_BorderElement">
+			<Setter Property="Background" Value="{Binding BackColor3}" />
+			<Setter Property="TextBlock.Foreground" Value="{Binding ForeColor}" />
+		</Style>
+		<Style Selector="FlyoutPresenter">
+			<Setter Property="Background" Value="{Binding BackColor}" />
+			<Setter Property="BorderBrush" Value="{Binding BackColor}" />
+		</Style>
+		<Style Selector="CheckBox:unchecked > Border > Grid > Grid > Border#NormalRectangle">
+			<Setter Property="Background" Value="Transparent" />
+			<Setter Property="BorderBrush" Value="{Binding OverlayColor}" />
+		</Style>
+		<Style Selector="CheckBox:checked > Border > Grid > Grid > Border#NormalRectangle">
+			<Setter Property="Background" Value="{Binding OverlayColor}" />
+			<Setter Property="BorderBrush" Value="{Binding OverlayColor}" />
+		</Style>
+		<Style Selector="ToggleSwitch:unchecked > Grid > Grid > Border#OuterBorder">
+			<Setter Property="BorderBrush" Value="{Binding BackColor4}" />
+		</Style>
+		<Style Selector="ToggleSwitch:unchecked > Grid > Grid > Canvas > Grid > Ellipse#SwitchKnobOff">
+			<Setter Property="Fill" Value="{Binding BackColor4}" />
+		</Style>
+		<Style Selector="ToggleSwitch:checked > Grid > Grid > Border#SwitchKnobBounds">
+			<Setter Property="BorderBrush" Value="{Binding OverlayColor}" />
+			<Setter Property="Background" Value="{Binding OverlayColor}" />
+		</Style>
+		<Style Selector="ToggleSwitch:checked > Grid > Grid > Canvas > Grid > Ellipse#SwitchKnobOn">
+			<Setter Property="Fill" Value="{Binding OverlayForeColor}" />
+		</Style>
+		<Style Selector="Menu ContentPresenter">
+			<Setter Property="TextBlock.Foreground" Value="{Binding ForeColor}" />
+			<Setter Property="Background" Value="{Binding BackColor}" />
+		</Style>
+		<Style Selector="MenuItem:selected ContentPresenter">
+			<Setter Property="TextBlock.Foreground" Value="{Binding ForeColor}" />
+			<Setter Property="Background" Value="{Binding BackColor2}" />
+		</Style>
+		<Style Selector="MenuItem Border">
+			<Setter Property="TextBlock.Foreground" Value="{Binding ForeColor}" />
+			<Setter Property="Background" Value="{Binding BackColor}" />
+		</Style>
+		<Style Selector="MenuItem Panel">
+			<Setter Property="TextBlock.Foreground" Value="{Binding ForeColor}" />
+			<Setter Property="Background" Value="{Binding BackColor}" />
+		</Style>
+		<Style Selector="MenuItem:pointerover Border">
+			<Setter Property="TextBlock.Foreground" Value="{Binding ForeColor}" />
+			<Setter Property="Background" Value="{Binding BackColor2}" />
+		</Style>
+		<Style Selector="MenuItem:pointerover Panel">
+			<Setter Property="TextBlock.Foreground" Value="{Binding ForeColor}" />
+			<Setter Property="Background" Value="{Binding BackColor2}" />
+		</Style>
+		<Style Selector="ComboBox">
+			<Setter Property="TextBlock.Foreground" Value="{Binding ForeColor}" />
+			<Setter Property="Background" Value="{Binding BackColor}" />
+		</Style>
+		<Style Selector="ComboBoxItem Border">
+			<Setter Property="TextBlock.Foreground" Value="{Binding ForeColor}" />
+			<Setter Property="Background" Value="{Binding BackColor}" />
+		</Style>
+		<Style Selector="ComboBoxItem ContentPresenter">
+			<Setter Property="TextBlock.Foreground" Value="{Binding ForeColor}" />
+		</Style>
+		<Style Selector="Carousel">
+			<Setter Property="Background" Value="{Binding BackColor}" />
+		</Style>
+		<Style Selector="Grid">
+			<Setter Property="Background" Value="{Binding BackColor}" />
+		</Style>
+		<Style Selector="StackPanel">
+			<Setter Property="Background" Value="{Binding BackColor}" />
+		</Style>
+		<Style Selector="Panel">
+			<Setter Property="Background" Value="{Binding BackColor}" />
+		</Style>
+		<Style Selector="TextBlock">
+			<Setter Property="Foreground" Value="{Binding ForeColor}" />
+		</Style>
+		<Style Selector="ToggleButton">
+			<Setter Property="Background" Value="{Binding BackColor2}" />
+		</Style>
+		<Style Selector="ToggleButton ContentPresenter">
+			<Setter Property="Background" Value="{Binding BackColor2}" />
+		</Style>
+		<Style Selector="ToggleButton:checked">
+			<Setter Property="Background" Value="{Binding OverlayColor}" />
+		</Style>
+		<Style Selector="ToggleButton:checked ContentPresenter">
+			<Setter Property="Background" Value="{Binding OverlayColor}" />
+		</Style>
+	</Window.Styles>
+
+	<Grid Name="ContentGrid" RowDefinitions="*,40">
+		<Carousel Margin="10 10 10 10" Name="Carousel" Grid.Row="0">
+			<Carousel.PageTransition>
+				<CompositePageTransition>
+					<CrossFade Duration="0:00:00.200" />
+				</CompositePageTransition>
+			</Carousel.PageTransition>
+			<StackPanel Name="LangSelection" Spacing="5">
+				<DockPanel HorizontalAlignment="Stretch" VerticalAlignment="Top" Name="cefpanel" />
+				<Grid Name="LangLocDTF" HorizontalAlignment="Center" VerticalAlignment="Bottom" RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="Auto,*">
+					<TextBlock Grid.Row="0" Grid.Column="0" Margin="5 5 5 5" VerticalAlignment="Center" Text="{Binding OOBELang}" />
+					<ComboBox Name="LangList" Grid.Row="0" Grid.Column="1" Margin="5 5 5 5"></ComboBox>
+					<TextBlock Grid.Row="1" Grid.Column="0" Margin="5 5 5 5" VerticalAlignment="Center" Text="{Binding OOBELocale}" />
+					<ComboBox Name="LocList" Grid.Row="1" Grid.Column="1" Margin="5 5 5 5">
+						<ComboBoxItem Name="ar" Content="{Binding Locale_ar}" />
+						<ComboBoxItem Name="am" Content="{Binding Locale_am}" />
+						<ComboBoxItem Name="bg" Content="{Binding Locale_bg}" />
+						<ComboBoxItem Name="bn" Content="{Binding Locale_bn}" />
+						<ComboBoxItem Name="ca" Content="{Binding Locale_ca}" />
+						<ComboBoxItem Name="cs" Content="{Binding Locale_cs}" />
+						<ComboBoxItem Name="da" Content="{Binding Locale_da}" />
+						<ComboBoxItem Name="de" Content="{Binding Locale_de}" />
+						<ComboBoxItem Name="el" Content="{Binding Locale_el}" />
+						<ComboBoxItem Name="en" Content="{Binding Locale_en}" />
+						<ComboBoxItem Name="en_GB" Content="{Binding Locale_en_GB}" />
+						<ComboBoxItem Name="en_US" Content="{Binding Locale_en_US}" />
+						<ComboBoxItem Name="es" Content="{Binding Locale_es}" />
+						<ComboBoxItem Name="es_419" Content="{Binding Locale_es_419}" />
+						<ComboBoxItem Name="et" Content="{Binding Locale_et}" />
+						<ComboBoxItem Name="fa" Content="{Binding Locale_fa}" />
+						<ComboBoxItem Name="fi" Content="{Binding Locale_fi}" />
+						<ComboBoxItem Name="fil" Content="{Binding Locale_fil}" />
+						<ComboBoxItem Name="fr" Content="{Binding Locale_fr}" />
+						<ComboBoxItem Name="gu" Content="{Binding Locale_gu}" />
+						<ComboBoxItem Name="he" Content="{Binding Locale_he}" />
+						<ComboBoxItem Name="hi" Content="{Binding Locale_hi}" />
+						<ComboBoxItem Name="hr" Content="{Binding Locale_hr}" />
+						<ComboBoxItem Name="hu" Content="{Binding Locale_hu}" />
+						<ComboBoxItem Name="id" Content="{Binding Locale_id}" />
+						<ComboBoxItem Name="it" Content="{Binding Locale_it}" />
+						<ComboBoxItem Name="ja" Content="{Binding Locale_ja}" />
+						<ComboBoxItem Name="kn" Content="{Binding Locale_kn}" />
+						<ComboBoxItem Name="ko" Content="{Binding Locale_ko}" />
+						<ComboBoxItem Name="lt" Content="{Binding Locale_lt}" />
+						<ComboBoxItem Name="lv" Content="{Binding Locale_lv}" />
+						<ComboBoxItem Name="ml" Content="{Binding Locale_ml}" />
+						<ComboBoxItem Name="mr" Content="{Binding Locale_mr}" />
+						<ComboBoxItem Name="ms" Content="{Binding Locale_ms}" />
+						<ComboBoxItem Name="nl" Content="{Binding Locale_nl}" />
+						<ComboBoxItem Name="no" Content="{Binding Locale_no}" />
+						<ComboBoxItem Name="pl" Content="{Binding Locale_pl}" />
+						<ComboBoxItem Name="pt_BR" Content="{Binding Locale_pt_BR}" />
+						<ComboBoxItem Name="pt_PT" Content="{Binding Locale_pt_PT}" />
+						<ComboBoxItem Name="ro" Content="{Binding Locale_ro}" />
+						<ComboBoxItem Name="ru" Content="{Binding Locale_ru}" />
+						<ComboBoxItem Name="sk" Content="{Binding Locale_sk}" />
+						<ComboBoxItem Name="sl" Content="{Binding Locale_sl}" />
+						<ComboBoxItem Name="sr" Content="{Binding Locale_sr}" />
+						<ComboBoxItem Name="sv" Content="{Binding Locale_sv}" />
+						<ComboBoxItem Name="sw" Content="{Binding Locale_sw}" />
+						<ComboBoxItem Name="ta" Content="{Binding Locale_ta}" />
+						<ComboBoxItem Name="te" Content="{Binding Locale_te}" />
+						<ComboBoxItem Name="th" Content="{Binding Locale_th}" />
+						<ComboBoxItem Name="tr" Content="{Binding Locale_tr}" />
+						<ComboBoxItem Name="uk" Content="{Binding Locale_uk}" />
+						<ComboBoxItem Name="vi" Content="{Binding Locale_vi}" />
+						<ComboBoxItem Name="zh_CN" Content="{Binding Locale_zh_CN}" />
+						<ComboBoxItem Name="zh_TW" Content="{Binding Locale_zh_TW}" />
+					</ComboBox>
+					<TextBlock Grid.Row="2" Grid.Column="0" Margin="5 5 5 5" VerticalAlignment="Center" Text="{Binding OOBEDateTimeFormat}" />
+					<ComboBox Name="DateTimeList" Grid.Row="2" Grid.Column="1" Margin="5 5 5 5">
+						<ComboBoxItem Content="{Binding OOBEDateTimeDMY}" />
+						<ComboBoxItem Content="{Binding OOBEDateTimeMDY}" />
+						<ComboBoxItem Content="{Binding OOBEDateTimeYMD}" />
+					</ComboBox>
+				</Grid>
+			</StackPanel>
+			<StackPanel Name="ProfileCreation">
+				<TextBlock HorizontalAlignment="Center" FontSize="25" Text="{Binding OOBEWelcome}" />
+				<TextBlock HorizontalAlignment="Center" Text="{Binding OOBEProfileCreation}" />
+				<Separator Height="50" />
+				<TextBlock Text="{Binding OOBEProfileName}" />
+				<TextBox Name="ProfileName" />
+				<TextBlock Text="{Binding OOBEProfileUserName}" />
+				<TextBox Name="ProfileCodeName" />
+				<Separator Height="50" />
+			</StackPanel>
+			<StackPanel Name="ThemeSelect">
+				<TextBlock HorizontalAlignment="Center" FontSize="25" Text="{Binding OOBEThemeTitle}" />
+				<TextBlock HorizontalAlignment="Center" Text="{Binding OOBEThemeDesc}" />
+				<TextBlock HorizontalAlignment="Center" Text="{Binding OOBEThemeHint}" />
+				<WrapPanel Name="Themes" HorizontalAlignment="Center" />
+			</StackPanel>
+			<StackPanel Name="ImportFrom">
+				<TextBlock HorizontalAlignment="Center" FontSize="25" Text="{Binding OOBEImportTitle}" />
+				<TextBlock HorizontalAlignment="Center" Text="{Binding OOBEImportDesc}" />
+				<Separator Height="50" />
+				<StackPanel Name="Browsers" Spacing="5" Orientation="Vertical" HorizontalAlignment="Center">
+					<CheckBox Name="Chrome" Content="Google Chrome" />
+					<CheckBox  Name="OtherFlavor" Content="{Binding OOBEOtherFlavor}" />
+					<CheckBox  Name="Edge" Content="Microsoft Edge" />
+					<CheckBox  Name="Opera" Content="Opera" />
+					<CheckBox  Name="OperaGX" Content="Opera GX" />
+					<CheckBox  Name="Chromium" Content="{Binding OOBEChromium}" />
+					<CheckBox  Name="HTML" Content="{Binding OOBEHTML}" />
+				</StackPanel>
+			</StackPanel>
+		</Carousel>
+		<StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Name="Navigation" Grid.Row="1">
+			<Button Name="Back" Content="{Binding OOBEBack}" Click="CarouselPrevious" />
+			<Button Name="Next" Content="{Binding OOBENext}" Click="CarouselNext" />
+			<Button Name="FinishSetup" Content="{Binding OOBEFinish}" Click="Finish" />
+		</StackPanel>
+	</Grid>
+</Window>

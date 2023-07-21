@@ -1,6 +1,7 @@
 using Avalonia;
 using Avalonia.Collections;
 using Avalonia.Controls;
+using Avalonia.Controls.Mixins;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
@@ -14,7 +15,7 @@ using Yorot_Avalonia.Handlers;
 
 namespace Yorot_Avalonia.Views
 {
-    public partial class TabWindow : UserControl
+    public partial class TabWindow : UserControl, IDisposable
     {
         public TabWindow() : this(null)
         {
@@ -36,6 +37,27 @@ namespace Yorot_Avalonia.Views
         public MainWindow? mainWindow;
 
         public SessionSystem? SessionSystem;
+
+        private Grid? ContentGrid;
+        public YorotWebView? webView1;
+        public bool Searching = false;
+        // TODO: Add this function
+#pragma warning disable IDE0044 // Add readonly modifier
+        public bool findNext = false;
+#pragma warning restore IDE0044 // Add readonly modifier
+        public bool matchCase = false;
+
+        // For some reason, the web view's ZoomLevel is broken, always showing up 0. So we have to implement ours.
+        public int zoomLevel = 0;
+
+        public bool bypassThisDeletion = false;
+        public bool indexChanged = false;
+        public string title = "";
+        public string url = "";
+
+        private Avalonia.Controls.Flyout? RightClickMenu;
+        private YorotGlue.ContextMenuParams? lastRCMParams;
+        private bool disposedValue;
 
         // tbUrl
 
@@ -122,8 +144,6 @@ namespace Yorot_Avalonia.Views
 
         { get => _FindCount; set { _FindCount = value; RefreshMainWindow(); } }
 
-        private Grid? ContentGrid;
-
         private void RefreshMainWindow()
         {
             Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(() =>
@@ -170,7 +190,7 @@ namespace Yorot_Avalonia.Views
                     mainWindow.MatchCase.IsChecked = MatchCase;
                     if (CurrentSite is null)
                     {
-                        CurrentSite = YorotGlobal.Main.CurrentSettings.SiteMan.GetSite(String.IsNullOrWhiteSpace(url) ? _startUrl : url);
+                        CurrentSite = YorotGlobal.Main.CurrentSettings.SiteMan.GetSite(string.IsNullOrWhiteSpace(url) ? _startUrl : url);
                     }
                     mainWindow.AllowMic.IsChecked = CurrentSite.Permissions.allowMic.Allowance == YorotPermissionMode.Allow || CurrentSite.Permissions.allowMic.Allowance == YorotPermissionMode.AllowOneTime;
                     mainWindow.AllowCam.IsChecked = CurrentSite.Permissions.allowCam.Allowance == YorotPermissionMode.Allow || CurrentSite.Permissions.allowCam.Allowance == YorotPermissionMode.AllowOneTime;
@@ -187,8 +207,8 @@ namespace Yorot_Avalonia.Views
         private void InitializeComponent()
         {
             SessionSystem.LoadPage += (url) => { if (webView1 != null) { webView1.Navigate(url); } };
-            SessionSystem.Sessions.Add(new Session(_startUrl));
-            SessionSystem.SelectedSession = SessionSystem.Sessions[0];
+            SessionSystem.Add(new Session(_startUrl));
+            SessionSystem.SelectedSession = SessionSystem[0];
             SessionSystem.SelectedIndex = 0;
             AvaloniaXamlLoader.Load(this);
             ContentGrid = this.FindControl<Grid>("Content");
@@ -224,18 +244,16 @@ namespace Yorot_Avalonia.Views
 
         private void WebView1_AddressChange(object? sender, CefNet.AddressChangeEventArgs e)
         {
-            if (SessionSystem != null && e.IsMainFrame && SessionSystem.Sessions.Count != 0)
+            if (SessionSystem != null && e.IsMainFrame && SessionSystem.Count != 0)
             {
                 url = e.Url;
                 tbUrl = e.Url;
-                if (e.Url != SessionSystem.Sessions[^1].ToString())
+                if (e.Url != SessionSystem[^1].ToString())
                 {
                     redirectTo(e.Url, title);
                 }
             }
         }
-
-        public YorotWebView? webView1;
 
         private void WebView_DocumentTitleChanged(object? sender, CefNet.DocumentTitleChangedEventArgs e)
         {
@@ -246,22 +264,23 @@ namespace Yorot_Avalonia.Views
                     int si = SessionSystem.SelectedIndex;
                     if (si != -1)
                     {
-                        if (SessionSystem.Sessions[si].Url == url)
+                        if (SessionSystem[si].Url == url)
                         {
                             YorotBrowserWebSource source = YorotGlobal.Main.GetWebSource(url);
                             if (source != null)
                             {
                                 if (!source.IgnoreOnSessionList)
                                 {
-                                    SessionSystem.Sessions[si].Title = e.Title;
+                                    SessionSystem[si].Title = e.Title;
                                 }
                             }
                             else
                             {
-                                SessionSystem.Sessions[si].Title = e.Title;
+                                SessionSystem[si].Title = e.Title;
                             }
                         }
                     }
+                    CurrentSite.Name = e.Title;
                     title = e.Title;
                     tabItem.Header = e.Title;
                 }
@@ -292,21 +311,11 @@ namespace Yorot_Avalonia.Views
         {
             if (sender is Avalonia.Controls.MenuItem item && item.Tag is Session session && SessionSystem != null && webView1 != null)
             {
-                SessionSystem.SelectedIndex = SessionSystem.Sessions.IndexOf(session);
+                SessionSystem.SelectedIndex = SessionSystem.IndexOf(session);
                 SessionSystem.SelectedSession = session;
                 webView1.Navigate(session.Url);
             }
         }
-
-        public bool Searching = false;
-        // TODO: Add this function
-#pragma warning disable IDE0044 // Add readonly modifier
-        public bool findNext = false;
-#pragma warning restore IDE0044 // Add readonly modifier
-        public bool matchCase = false;
-
-        // For some reason, the web view's ZoomLevel is broken, always showing up 0. So we have to implement ours.
-        public int zoomLevel = 0;
 
         private void WebView_Navigated(object? sender, CefNet.NavigatedEventArgs e)
         {
@@ -327,9 +336,6 @@ namespace Yorot_Avalonia.Views
             }
         }
 
-        public bool bypassThisDeletion = false;
-        public bool indexChanged = false;
-
         public void redirectTo(string url, string title = "")
         {
             if (SessionSystem != null)
@@ -339,12 +345,6 @@ namespace Yorot_Avalonia.Views
                 SessionSystem.Add(url, title);
             }
         }
-
-        public string title = "";
-        public string url = "";
-
-        private Avalonia.Controls.Flyout? RightClickMenu;
-        private YorotGlue.ContextMenuParams? lastRCMParams;
 
         internal void ShowContextMenu(YorotGlue.ContextMenuParams menuParams, CefFrame frame)
         {
@@ -565,7 +565,7 @@ namespace Yorot_Avalonia.Views
                         var task = frame.GetSourceAsync(System.Threading.CancellationToken.None);
                         if (task.IsCompletedSuccessfully)
                         {
-                            mainWindow.RunSaveFileDialog(YorotGlobal.Main.CurrentLanguage.GetItemText("DialogBox.SaveFileDialog"),
+                            Dialogs.RunSaveFileDialog(mainWindow, YorotGlobal.Main.CurrentLanguage.GetItemText("DialogBox.SaveFileDialog"),
                                 new string[] { "html" },
                                 new Action<string>((filename) =>
                                 {
@@ -594,7 +594,7 @@ namespace Yorot_Avalonia.Views
                     };
                     printPdf.Click += (sender, e) =>
                     {
-                        mainWindow.RunSaveFileDialog(YorotGlobal.Main.CurrentLanguage.GetItemText("DialogBox.SaveFileDialog"),
+                        Dialogs.RunSaveFileDialog(mainWindow, YorotGlobal.Main.CurrentLanguage.GetItemText("DialogBox.SaveFileDialog"),
                                 new string[] { "pdf" },
                                 new Action<string>((filename) =>
                                 {
@@ -624,6 +624,49 @@ namespace Yorot_Avalonia.Views
                 }
                 RightClickMenu.ShowAt(webView1, true);
             }
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    // TODO: dispose managed state (managed objects)
+                }
+
+                // TODO: free unmanaged resources (unmanaged objects) and override finalizer
+
+                _startUrl = null;
+                findText = null;
+                CurrentSite = null;
+                mainWindow = null;
+                SessionSystem = null;
+                ContentGrid = null;
+                webView1 = null;
+                title = null;
+                url = null;
+                _tbUrl = null;
+                _ZoomLevel = null;
+                _FindCount = null;
+
+                Content = null;
+
+                disposedValue = true;
+            }
+        }
+
+        ~TabWindow()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: false);
+        }
+
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
         }
     }
 }
