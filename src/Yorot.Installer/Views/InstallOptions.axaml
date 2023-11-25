@@ -1,0 +1,31 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="Yorot.Installer.Views.InstallOptions">
+    <ScrollViewer>
+        <StackPanel Orientation="Vertical" Spacing="5">
+            <CheckBox Name="InstallSomewhereElse" Content="Customize installation location" />
+            <DockPanel LastChildFill="True" Margin="30 0 10 0"
+                       IsEnabled="{CompiledBinding #InstallSomewhereElse.IsChecked}">
+                <TextBlock DockPanel.Dock="Left" VerticalAlignment="Center" Text="Location:" />
+                <Button Content="..." DockPanel.Dock="Right" Click="CustomInstallLocation" />
+                <TextBox Margin="5 0" Text="/opt/yorot" Name="InstallLocation" />
+            </DockPanel>
+            <StackPanel Orientation="Horizontal" Spacing="5" Margin="0 30">
+                <TextBlock VerticalAlignment="Center" Text="Cleanup temporary files and folder after the installation:" />
+                <ToggleSwitch IsChecked="True" OnContent="" OffContent="" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Spacing="5" Margin="0 30">
+                <TextBlock VerticalAlignment="Center" Text="Failure retry count:" />
+                <NumericUpDown Increment="1" Maximum="20" Minimum="0" Value="10" />
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" Spacing="5" Margin="0 30">
+                <TextBlock VerticalAlignment="Center" Text="Separate each flavor's data:" />
+                <ToggleSwitch IsChecked="False" OnContent="" OffContent="" />
+            </StackPanel>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

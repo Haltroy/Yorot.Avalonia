@@ -1,0 +1,34 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="Yorot.Installer.Views.UpdateInstaller">
+    <Grid RowDefinitions="*,Auto,*" ColumnDefinitions="*,Auto,*">
+        <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Vertical">
+            <StackPanel Orientation="Vertical" Spacing="5">
+                <TextBlock Text="There's an update for Yorot Installer." HorizontalAlignment="Center" />
+                <StackPanel Orientation="Horizontal" Spacing="5" HorizontalAlignment="Center">
+                    <Button Content="Update" HorizontalAlignment="Center" Click="UpdateClick" />
+                    <Button Content="Skip" HorizontalAlignment="Center" Click="SkipUpdate" />
+                </StackPanel>
+            </StackPanel>
+            <StackPanel Name="ProgressPanel" IsVisible="False" Orientation="Vertical" Spacing="5">
+                <TextBlock Text="Please wait while Yorot Installer gets updated..." HorizontalAlignment="Center" />
+                <DockPanel LastChildFill="True">
+                    <TextBlock Text="%" DockPanel.Dock="Right" />
+                    <TextBlock Text="{CompiledBinding #UpdateProgress.Value}" DockPanel.Dock="Right" />
+                    <ProgressBar Name="UpdateProgress" IsIndeterminate="True" Margin="5 0" />
+                </DockPanel>
+                <CheckBox Content="Automatically restart Yorot Installer" HorizontalAlignment="Center"
+                          Name="AutoRestart" />
+                <Button Content="Cancel" HorizontalAlignment="Center" Click="CancelUpdate" />
+            </StackPanel>
+            <StackPanel Name="RestartPrompt" IsVisible="False" Orientation="Vertical" Spacing="5">
+                <TextBlock Text="Yorot Installer need to be restarted in order to continue."
+                           HorizontalAlignment="Center" />
+                <Button Content="Restart Installer" HorizontalAlignment="Center" Click="RestartInstaller" />
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</UserControl>

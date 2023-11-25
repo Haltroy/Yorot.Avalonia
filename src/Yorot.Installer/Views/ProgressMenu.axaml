@@ -1,0 +1,55 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="Yorot.Installer.Views.ProgressMenu">
+    <DockPanel LastChildFill="True">
+        <StackPanel Orientation="Vertical" Spacing="5" DockPanel.Dock="Bottom" Margin="10">
+            <ToggleButton HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Name="ShowHideLog">
+                <Panel>
+                    <TextBlock Text="Show log..." IsVisible="{CompiledBinding !#ShowHideLog.IsChecked}" />
+                    <TextBlock Text="Hide log..." IsVisible="{CompiledBinding #ShowHideLog.IsChecked}" />
+                </Panel>
+            </ToggleButton>
+            <StackPanel Orientation="Horizontal" Spacing="5">
+                <TextBlock Text="Downloading:" />
+                <TextBlock Text="Yorot Source Code" />
+            </StackPanel>
+            <DockPanel LastChildFill="True">
+                <TextBlock Text="%" DockPanel.Dock="Right" />
+                <TextBlock Text="{CompiledBinding #DownloadProgress.Value}" DockPanel.Dock="Right" />
+                <ProgressBar Name="DownloadProgress" Margin="5 0" />
+            </DockPanel>
+            <StackPanel Orientation="Horizontal" Spacing="5">
+                <TextBlock Text="Installing:" />
+                <TextBlock Text="Yorot Source Code" />
+            </StackPanel>
+            <DockPanel LastChildFill="True">
+                <TextBlock Text="%" DockPanel.Dock="Right" />
+                <TextBlock Text="{CompiledBinding #InstallProgress.Value}" DockPanel.Dock="Right" />
+                <ProgressBar Name="InstallProgress" Margin="5 0" />
+            </DockPanel>
+        </StackPanel>
+        <Panel Margin="10">
+            <Panel IsVisible="{CompiledBinding !#ShowHideLog.IsChecked}">
+                <DockPanel LastChildFill="True">
+                    <Button Content="&lt;" DockPanel.Dock="Left" Click="CarouselPrevious" />
+                    <Button Content="&gt;" DockPanel.Dock="Right" Click="CarouselNext" />
+                    <Carousel Name="AdCarousel">
+                        <Carousel.PageTransition>
+                            <CompositePageTransition>
+                                <PageSlide Orientation="Horizontal" Duration="0:00:00.150" />
+                            </CompositePageTransition>
+                        </Carousel.PageTransition>
+                    </Carousel>
+                </DockPanel>
+            </Panel>
+            <Panel IsVisible="{CompiledBinding #ShowHideLog.IsChecked}">
+                <ScrollViewer>
+                    <TextBox TextWrapping="Wrap" IsReadOnly="True" />
+                </ScrollViewer>
+            </Panel>
+        </Panel>
+    </DockPanel>
+</UserControl>

@@ -1,0 +1,67 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="450"
+        Width="600" Height="450"
+        x:Class="Yorot.Installer.MainWindow"
+        Closing="OnClosing"
+        TransparencyLevelHint="AcrylicBlur,Blur,Transparent"
+        Title="Yorot Installer">
+    <DockPanel LastChildFill="True" Margin="10">
+        <DockPanel LastChildFill="True" DockPanel.Dock="Bottom">
+            <Separator DockPanel.Dock="Top" />
+            <WrapPanel Orientation="Horizontal" HorizontalAlignment="Right" Name="ButtonPanel" />
+        </DockPanel>
+
+        <DockPanel LastChildFill="True" DockPanel.Dock="Top">
+            <Separator DockPanel.Dock="Bottom" />
+            <DockPanel LastChildFill="True">
+                <Button DockPanel.Dock="Right" Margin="10 0">
+                    <Button.Content>
+                        <Canvas Width="24" Height="24">
+                            <Line StartPoint="2 7" EndPoint="24 7" Stroke="{CompiledBinding #VersionText.Foreground}"
+                                  StrokeThickness="2.5" />
+                            <Line StartPoint="2 14" EndPoint="24 14" Stroke="{CompiledBinding #VersionText.Foreground}"
+                                  StrokeThickness="2.5" />
+                            <Line StartPoint="2 21" EndPoint="24 21" Stroke="{CompiledBinding #VersionText.Foreground}"
+                                  StrokeThickness="2.5" />
+                        </Canvas>
+                    </Button.Content>
+                    <Button.Flyout>
+                        <Flyout>
+                            <StackPanel Orientation="Vertical" Spacing="5">
+                                <StackPanel Orientation="Horizontal" Spacing="5">
+                                    <TextBlock VerticalAlignment="Center" Text="Use System Theme:" />
+                                    <ToggleSwitch Name="UseSystemTheme" IsChecked="True" OnContent="" OffContent=""
+                                                  IsCheckedChanged="UseSystemThemeChanged" />
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Spacing="5"
+                                            IsEnabled="{CompiledBinding !#UseSystemTheme.IsChecked}">
+                                    <TextBlock Text="Theme:" VerticalAlignment="Center" />
+                                    <ToggleSwitch Name="LightDarkMode" OnContent="Light" OffContent="Dark"
+                                                  IsCheckedChanged="LightDarkModeChanged" />
+                                </StackPanel>
+                                <Separator />
+                                <Button Content="Send feedback..." HorizontalAlignment="Stretch"
+                                        HorizontalContentAlignment="Center" Click="SendFeedbackClick" />
+                            </StackPanel>
+                        </Flyout>
+                    </Button.Flyout>
+                </Button>
+                <StackPanel Orientation="Horizontal" Spacing="5" Margin="10 0">
+                    <Image Source="/Assets/avalonia-logo.ico" Width="48" Height="48" />
+                    <TextBlock Text="Yorot Installer" VerticalAlignment="Center" FontSize="20" FontWeight="Bold" />
+                    <TextBlock Name="VersionText" Text="v1" VerticalAlignment="Top" />
+                </StackPanel>
+            </DockPanel>
+        </DockPanel>
+        <Carousel Name="ContentCarousel">
+            <Carousel.PageTransition>
+                <CompositePageTransition>
+                    <CrossFade Duration="0:00:00.500" />
+                </CompositePageTransition>
+            </Carousel.PageTransition>
+        </Carousel>
+    </DockPanel>
+</Window>

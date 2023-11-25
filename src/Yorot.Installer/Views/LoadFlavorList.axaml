@@ -1,0 +1,19 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:progRing="clr-namespace:AvaloniaProgressRing;assembly=AvaloniaProgressRing"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             Initialized="Init"
+             x:Class="Yorot.Installer.Views.LoadFlavorList">
+    <Grid ColumnDefinitions="*,Auto,*" RowDefinitions="*,Auto,*">
+        <progRing:ProgressRing
+            Grid.Column="1"
+            Grid.Row="1"
+            Width="40"
+            Height="40"
+            IsActive="True"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top" />
+    </Grid>
+</UserControl>

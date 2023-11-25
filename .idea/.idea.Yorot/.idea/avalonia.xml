@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AvaloniaProject">
+    <option name="projectPerEditor">
+      <map>
+        <entry key="src/CefNet.AvaloniaMVVM.Example/App.axaml" value="src/CefNet.AvaloniaMVVM.Example/Yorot.csproj" />
+        <entry key="src/Yorot.Desktop/App.axaml" value="src/Yorot.Desktop/Yorot.Desktop.csproj" />
+        <entry key="src/Yorot.Installer/App.axaml" value="src/Yorot.Installer/Yorot.Installer.csproj" />
+        <entry key="src/Yorot.Installer/MainWindow.axaml" value="src/Yorot.Installer/Yorot.Installer.csproj" />
+        <entry key="src/Yorot.Installer/Views/ActionMenu.axaml" value="src/Yorot.Installer/Yorot.Installer.csproj" />
+        <entry key="src/Yorot.Installer/Views/FinishMenu.axaml" value="src/Yorot.Installer/Yorot.Installer.csproj" />
+        <entry key="src/Yorot.Installer/Views/FlavorPick.axaml" value="src/Yorot.Installer/Yorot.Installer.csproj" />
+        <entry key="src/Yorot.Installer/Views/InstallOptions.axaml" value="src/Yorot.Installer/Yorot.Installer.csproj" />
+        <entry key="src/Yorot.Installer/Views/LoadFlavorList.axaml" value="src/Yorot.Installer/Yorot.Installer.csproj" />
+        <entry key="src/Yorot.Installer/Views/ProgressMenu.axaml" value="src/Yorot.Installer/Yorot.Installer.csproj" />
+        <entry key="src/Yorot.Installer/Views/UpdateInstaller.axaml" value="src/Yorot.Installer/Yorot.Installer.csproj" />
+        <entry key="src/Yorot.Installer/Views/UpdateMenu.axaml" value="src/Yorot.Installer/Yorot.Installer.csproj" />
+        <entry key="src/YorotAppDesigner/App.axaml" value="src/YorotAppDesigner/YorotAppDesigner.csproj" />
+      </map>
+    </option>
+  </component>
+</project>

@@ -1,0 +1,31 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="Yorot.Installer.Views.FlavorPick">
+    <DockPanel LastChildFill="True">
+        <StackPanel Orientation="Vertical" DockPanel.Dock="Top" Spacing="5">
+            <TextBlock Text="Select a flavor" FontSize="20" FontWeight="Bold" />
+            <TextBlock Text="Choose at least one flavor to install..." />
+            <Separator />
+        </StackPanel>
+        <ScrollViewer>
+            <WrapPanel>
+                <ToggleButton Margin="10" Name="OfficialYorotFlavor">
+                    <StackPanel Orientation="Vertical" Spacing="5" HorizontalAlignment="Center" Margin="10">
+                        <Image Source="/Assets/avalonia-logo.ico" Width="86" Height="86" />
+                        <Separator />
+                        <TextBlock Text="Yorot" FontSize="17.5" HorizontalAlignment="Center" />
+                        <TextBlock Text="The official Yorot flavor." HorizontalAlignment="Center" TextWrapping="Wrap" />
+                        <Separator />
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="5">
+                            <TextBlock Text="Method:" VerticalAlignment="Center" />
+                            <ToggleSwitch OnContent="From Source" OffContent="Package" />
+                        </StackPanel>
+                    </StackPanel>
+                </ToggleButton>
+            </WrapPanel>
+        </ScrollViewer>
+    </DockPanel>
+</UserControl>

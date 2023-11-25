@@ -1,0 +1,31 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             Initialized="Init"
+             x:Class="Yorot.Installer.Views.FinishMenu">
+    <DockPanel LastChildFill="True">
+        <StackPanel Spacing="5" DockPanel.Dock="Bottom" Orientation="Vertical"
+                    IsVisible="{CompiledBinding !#ErrorPanel.IsVisible}">
+            <StackPanel Spacing="5" Orientation="Horizontal">
+                <CheckBox Name="RunFlavor" Content="Run this flavor after closing:" />
+                <ComboBox Name="FlavorList" />
+            </StackPanel>
+        </StackPanel>
+        <Grid RowDefinitions="*,Auto,*" ColumnDefinitions="*,Auto,*">
+            <Panel Grid.Column="1" Grid.Row="1">
+                <StackPanel IsVisible="False" Name="ErrorPanel" Orientation="Vertical" Spacing="5">
+                    <TextBlock Name="ErrorTitle" Text="There was an error while installing a Yorot flavor..." />
+                    <ScrollViewer>
+                        <TextBox IsReadOnly="True" Name="ErrorText" Width="{CompiledBinding #ErrorTitle.Bounds.Width}"
+                                 TextWrapping="Wrap" Height="150" />
+                    </ScrollViewer>
+                    <Button Content="Save to file..." HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+                            Click="SaveToFileClick" />
+                </StackPanel>
+                <TextBlock IsVisible="{CompiledBinding !#ErrorPanel.IsVisible}" Text="Yorot is successfully installed." />
+            </Panel>
+        </Grid>
+    </DockPanel>
+</UserControl>

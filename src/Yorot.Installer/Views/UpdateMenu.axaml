@@ -1,0 +1,33 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="Yorot.Installer.Views.UpdateMenu">
+    <StackPanel Orientation="Vertical" Spacing="5">
+        <TextBlock Text="Modify, Update or Uninstall" FontSize="20" FontWeight="Bold" />
+        <TextBlock Text="Select flavor(s) to modify, update or uninstall." />
+        <Separator />
+        <ScrollViewer>
+            <StackPanel Margin="10" Orientation="Vertical" Spacing="5">
+                <ToggleButton HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
+                    <StackPanel Orientation="Horizontal">
+                        <CheckBox IsChecked="{CompiledBinding $parent[ToggleButton].IsChecked, Mode=TwoWay}" />
+                        <Image Width="86" Height="86" Source="/Assets/avalonia-logo.ico" />
+                        <StackPanel Orientation="Vertical" Spacing="5">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Yorot" FontSize="17.5" FontWeight="Bold" VerticalAlignment="Center" />
+                                <TextBlock Text="v1" FontSize="12" VerticalAlignment="Top" />
+                            </StackPanel>
+                            <TextBlock Text="The official flavor." />
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock VerticalAlignment="Center" Text="Method:" />
+                                <ToggleSwitch OnContent="From Source" OffContent="Package" />
+                            </StackPanel>
+                        </StackPanel>
+                    </StackPanel>
+                </ToggleButton>
+            </StackPanel>
+        </ScrollViewer>
+    </StackPanel>
+</UserControl>
