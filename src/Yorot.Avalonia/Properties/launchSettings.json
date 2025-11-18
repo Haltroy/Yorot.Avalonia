@@ -9,7 +9,8 @@
       "commandLineArgs": "-i"
     },
     "Yorot": {
-      "commandName": "Project"
+      "commandName": "Project",
+      "nativeDebugging": true
     }
   }
 }

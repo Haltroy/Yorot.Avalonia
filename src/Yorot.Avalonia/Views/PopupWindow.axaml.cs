@@ -3,6 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using CefNet;
 using CefNet.Avalonia;
+using FluentAvalonia.UI.Controls;
 using System;
 using System.Collections.Generic;
 using Yorot;
@@ -34,6 +35,14 @@ namespace Yorot_Avalonia.Views
         private TextBox? Urlbox;
         private YorotWebView webView;
         public MainWindow? mainWindow;
+        public ToggleSwitch? AllowMic;
+        public ToggleSwitch? AllowCam;
+        public ToggleSwitch? AllowCookies;
+        public ToggleSwitch? AllowYS;
+        public ToggleSwitch? AllowPopup;
+        public ToggleSwitch? AllowNotif;
+        public ToggleSwitch? AllowNotifBoot;
+        public Avalonia.Controls.ComboBox? NotifPriority;
 
         private void InitializeComponent()
         {
@@ -50,7 +59,7 @@ namespace Yorot_Avalonia.Views
             var urlbox = contentpanel.FindControl<Grid>("UrlBar");
             Urlbox = urlbox.FindControl<TextBox>("Url");
 
-            var pageinfo = urlbox.FindControl<Button>("SecurityInfo");
+            var pageinfo = urlbox.FindControl<Avalonia.Controls.Button>("SecurityInfo");
             pageinfo.Click += (sender, e) =>
             {
                 if (pageinfo.ContextFlyout != null)
@@ -64,6 +73,40 @@ namespace Yorot_Avalonia.Views
                 panel.FindControl<Image>("WebsiteMeh").Bind(IsVisibleProperty, IsPageUsedCookie);
                 panel.FindControl<Image>("WebsiteBad").Bind(IsVisibleProperty, IsPageUnsafe);
             }
+
+            if (pageinfo.ContextFlyout is Flyout flyout && flyout.Content is StackPanel stackPanel)
+            {
+                var pageSafe = stackPanel.Children[0] as Panel;
+                (pageSafe.Children[0] as Panel).Bind(IsVisibleProperty, IsPageSafe);
+                (pageSafe.Children[1] as Panel).Bind(IsVisibleProperty, IsPageUsedCookie);
+
+                AllowMic = stackPanel.Children[1] as ToggleSwitch;
+                AllowCam = stackPanel.Children[2] as ToggleSwitch;
+                AllowCookies = stackPanel.Children[3] as ToggleSwitch;
+                AllowYS = stackPanel.Children[4] as ToggleSwitch;
+                AllowPopup = stackPanel.Children[5] as ToggleSwitch;
+                AllowNotif = stackPanel.Children[6] as ToggleSwitch;
+                AllowNotifBoot = stackPanel.Children[7] as ToggleSwitch;
+
+                var notifPanel = stackPanel.Children[8] as StackPanel;
+                NotifPriority = notifPanel.Children[1] as Avalonia.Controls.ComboBox;
+            }
+
+            KeyDown += (sender, e) =>
+            {
+                if (e.Key == Avalonia.Input.Key.LeftShift || e.Key == Avalonia.Input.Key.RightShift || e.KeyModifiers.HasFlag(Avalonia.Input.KeyModifiers.Shift))
+                {
+                    shiftPressed = true;
+                }
+            };
+
+            KeyUp += (sender, e) =>
+            {
+                if (e.Key == Avalonia.Input.Key.LeftShift || e.Key == Avalonia.Input.Key.RightShift || e.KeyModifiers.HasFlag(Avalonia.Input.KeyModifiers.Shift))
+                {
+                    shiftPressed = false;
+                }
+            };
 
             webView = new YorotWebView(this);
 
@@ -82,6 +125,8 @@ namespace Yorot_Avalonia.Views
 
             contentpanel.FindControl<DockPanel>("cefpanel").Children.Add(webView);
         }
+
+        private bool shiftPressed = false;
 
         internal void redirectTo(string url, string title = "")
         {
@@ -119,6 +164,131 @@ namespace Yorot_Avalonia.Views
                 {
                     OnSuccess(filename);
                 }
+            }
+        }
+
+        private void PageSettings(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+        {
+            // TODO: Open Settings for this page.
+        }
+
+        private void NotifPriorityChange(object? sender, SelectionChangedEventArgs e)
+        {
+            if (sender is Avalonia.Controls.ComboBox cBox)
+            {
+                CurrentSite.Permissions.notifPriority = cBox.SelectedIndex - 1;
+            }
+        }
+
+        private void AllowMicChecked(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+        {
+            if (sender is Avalonia.Controls.ComboBox cBox)
+            {
+                CurrentSite.Permissions.allowMic.Allowance = shiftPressed ? YorotPermissionMode.AllowOneTime : YorotPermissionMode.Allow;
+            }
+        }
+
+        private void DisableMicrophone(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+        {
+            if (sender is Avalonia.Controls.ComboBox cBox)
+            {
+                CurrentSite.Permissions.allowMic.Allowance = YorotPermissionMode.Deny;
+            }
+        }
+
+        private void AllowCamChecked(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+        {
+            if (sender is Avalonia.Controls.ComboBox cBox)
+            {
+                CurrentSite.Permissions.allowCam.Allowance = shiftPressed ? YorotPermissionMode.AllowOneTime : YorotPermissionMode.Allow;
+            }
+        }
+
+        private void DisableCamera(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+        {
+            if (sender is Avalonia.Controls.ComboBox cBox)
+            {
+                CurrentSite.Permissions.allowCam.Allowance = YorotPermissionMode.Deny;
+            }
+        }
+
+        private void AllowCookieChecked(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+        {
+            if (sender is Avalonia.Controls.ComboBox cBox)
+            {
+                CurrentSite.Permissions.allowCookies.Allowance = shiftPressed ? YorotPermissionMode.AllowOneTime : YorotPermissionMode.Allow;
+            }
+        }
+
+        private void DisableCookie(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+        {
+            if (sender is Avalonia.Controls.ComboBox cBox)
+            {
+                CurrentSite.Permissions.allowCookies.Allowance = YorotPermissionMode.Deny;
+            }
+        }
+
+        private void AllowPopupChecked(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+        {
+            if (sender is Avalonia.Controls.ComboBox cBox)
+            {
+                CurrentSite.Permissions.allowPopup.Allowance = shiftPressed ? YorotPermissionMode.AllowOneTime : YorotPermissionMode.Allow;
+            }
+        }
+
+        private void DisablePopup(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+        {
+            if (sender is Avalonia.Controls.ComboBox cBox)
+            {
+                CurrentSite.Permissions.allowPopup.Allowance = YorotPermissionMode.Deny;
+            }
+        }
+
+        private void AllowNotifChecked(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+        {
+            if (sender is Avalonia.Controls.ComboBox cBox)
+            {
+                CurrentSite.Permissions.allowNotif.Allowance = shiftPressed ? YorotPermissionMode.AllowOneTime : YorotPermissionMode.Allow;
+            }
+        }
+
+        private void DisableNotif(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+        {
+            if (sender is Avalonia.Controls.ComboBox cBox)
+            {
+                CurrentSite.Permissions.allowNotif.Allowance = YorotPermissionMode.Deny;
+            }
+        }
+
+        private void AllowNotifBootChecked(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+        {
+            if (sender is Avalonia.Controls.ComboBox cBox)
+            {
+                CurrentSite.Permissions.startNotifOnBoot = true;
+            }
+        }
+
+        private void DisableNotifBoot(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+        {
+            if (sender is Avalonia.Controls.ComboBox cBox)
+            {
+                CurrentSite.Permissions.startNotifOnBoot = false;
+            }
+        }
+
+        private void AllowYSChecked(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+        {
+            if (sender is Avalonia.Controls.ComboBox cBox)
+            {
+                CurrentSite.Permissions.allowYS.Allowance = shiftPressed ? YorotPermissionMode.AllowOneTime : YorotPermissionMode.Allow;
+            }
+        }
+
+        private void DisableYS(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+        {
+            if (sender is Avalonia.Controls.ComboBox cBox)
+            {
+                CurrentSite.Permissions.allowYS.Allowance = YorotPermissionMode.Deny;
             }
         }
 

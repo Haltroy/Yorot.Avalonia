@@ -7,6 +7,7 @@ using System.Drawing.Imaging;
 using Avalonia.Platform;
 using Avalonia;
 using System.Linq;
+using Avalonia.Controls;
 
 namespace Yorot_Avalonia
 {
@@ -45,6 +46,28 @@ namespace Yorot_Avalonia
             {
                 return reader.ReadToEnd();
             }
+        }
+
+        /// <summary>
+        /// Refreshes the user control by removing the data context, setting it back to our base view model and invalidating the visuals of user control.
+        /// </summary>
+        /// <param name="uc">User control itself</param>
+        public static void RefreshUserControl(this UserControl uc)
+        {
+            uc.DataContext = null;
+            uc.DataContext = YorotGlobal.ViewModel;
+            uc.InvalidateVisual();
+        }
+
+        /// <summary>
+        /// Refreshes the window by removing the data context, setting it back to our base view model and invalidating the visuals of window.
+        /// </summary>
+        /// <param name="window">Window itself</param>
+        public static void RefreshWindow(this Window window)
+        {
+            window.DataContext = null;
+            window.DataContext = YorotGlobal.ViewModel;
+            window.InvalidateVisual();
         }
 
         public static Avalonia.Media.IImage GetProfilePicture(YorotProfile profile)

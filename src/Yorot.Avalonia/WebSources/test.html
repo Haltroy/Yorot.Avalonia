@@ -4,4 +4,17 @@
 <body>
     <h1>Tests</h1>
     <button onclick="alert('I am an alert box!');">Alert test</button>
+    <button onclick="myFunction()">Prompt test</button>
+
+    <p id="demo"></p>
+
+    <script>
+        function myFunction() {
+            let person = prompt("Please enter anything", "Default Text");
+            if (person != null) {
+                document.getElementById("demo").innerHTML =
+                    "Input: " + person;
+            }
+        }
+    </script>
 </body>

@@ -5,6 +5,13 @@ using LibFoster;
 using Yorot;
 using CefNet;
 using System.Reflection;
+using Avalonia.Controls;
+using Avalonia;
+using FluentAvalonia.Styling;
+using MessageBox.Avalonia.Models;
+using System.Threading.Tasks;
+using System.Drawing;
+using Yorot_Avalonia.Views;
 
 namespace Yorot_Avalonia
 {
@@ -30,26 +37,6 @@ namespace Yorot_Avalonia
 
         public override void AfterInit()
         {
-            // CEF
-
-            var settings = new CefSettings();
-            settings.LocalesDirPath = EngineLocaleFolder;
-            settings.ResourcesDirPath = EngineFolder;
-            settings.NoSandbox = true;
-            // These two should be always true, otherwise it won't create the browser obejct or display anything.
-            settings.MultiThreadedMessageLoop = true;
-            settings.WindowlessRenderingEnabled = true;
-
-            settings.Locale = "tr";
-
-            settings.UserDataPath = Profiles.Current.CacheLoc;
-            settings.UserAgent = GetUserAgent("Chrome", YorotGlobal.ChromiumVersion);
-
-            var app = new CefNetApplication();
-            app.Initialize(EngineFolder, settings);
-
-            CefApi.RegisterSchemeHandlerFactory("yorot", "", new Handlers.YorotSchemeHandlerFactory());
-
             // Yorot-Avalonia
 
             var packages = GetPackages();
@@ -61,6 +48,7 @@ namespace Yorot_Avalonia
                 packlist += "<a><b>" + packages[i, 0] + ":</b>" + packages[i, 1] + "</a></br>" + Environment.NewLine;
             }
 
+            RegisterWebSource("yorot://jquery.min", YorotTools.ReadResource("Yorot_Avalonia.WebSources.jquery.min.js"), "text/javascript", false, true);
             RegisterWebSource("yorot://newtab", YorotTools.ReadResource("Yorot_Avalonia.WebSources.newtab.html"), "text/html", false, false);
             RegisterWebSource("yorot://test", YorotTools.ReadResource("Yorot_Avalonia.WebSources.test.html"), "text/html", false, false);
             RegisterWebSource("yorot://license", YorotTools.ReadResource("Yorot_Avalonia.WebSources.license.html"), "text/html", false, false);
@@ -122,34 +110,190 @@ namespace Yorot_Avalonia
             set { }
         }
 
-        public override YorotPermissionMode OnPermissionRequest(YorotPermission permission, YorotPermissionMode requested)
+        private async Task<YorotPermissionMode> OnPermissionRequestAsync(YorotPermission permission, YorotPermissionMode requested, string ClassType, string name, string title)
+        {
+            // TODO: In here, everything should work fine. Except the below which throws a InvalidOperationException
+            // Maybe at this time MessageBox.Avalonia wasn't ready yet?
+            var box = MessageBox.Avalonia.MessageBoxManager.GetMessageBoxCustomWindow(new MessageBox.Avalonia.DTO.MessageBoxCustomParams()
+            {
+                Icon = MessageBox.Avalonia.Enums.Icon.Question,
+                ContentTitle = "Yorot",
+                ContentHeader = YorotGlobal.Main.CurrentLanguage.GetItemText("Permission.Request" + ClassType).Replace("[Parameter.name]", name).Replace("[Parameter.title]", title).Replace("[Parameter.permission]", YorotGlobal.Main.CurrentLanguage.GetItemText("Permission." + permission.ID)),
+                ContentMessage = YorotGlobal.Main.CurrentLanguage.GetItemText("Permission." + permission.ID, false),
+                ButtonDefinitions = new[]
+                            {
+                            new ButtonDefinition() { Name = YorotGlobal.Main.CurrentLanguage.GetItemText("Permission.Allow")},
+                            new ButtonDefinition() { Name = YorotGlobal.Main.CurrentLanguage.GetItemText("Permission.AllowOnce")},
+                            new ButtonDefinition() { Name = YorotGlobal.Main.CurrentLanguage.GetItemText("Permission.Deny")},
+                        },
+                WindowStartupLocation = WindowStartupLocation.CenterScreen
+            });
+
+            var result = await box.Show();
+
+            if (result == YorotGlobal.Main.CurrentLanguage.GetItemText("Permission.Allow"))
+            {
+                return requested;
+            }
+            else if (result == YorotGlobal.Main.CurrentLanguage.GetItemText("Permission.AllowOnce"))
+            {
+                return YorotPermissionMode.AllowOneTime;
+            }
+            else
+            {
+                return YorotPermissionMode.Deny;
+            }
+        }
+
+        public override System.Threading.Tasks.Task<YorotPermissionMode> OnPermissionRequest(YorotPermission permission, YorotPermissionMode requested)
         {
             if (permission.Allowance != requested)
             {
-                // TODO
                 switch (permission.Requestor)
                 {
                     case YorotApp _:
-                        Console.WriteLine("Permission \"" + permission.ID + "\" request accepted (NOT_IMPLEMENTED) from ID\"" + ((YorotApp)permission.Requestor).AppCodeName + "\" " + permission.Allowance.ToString() + " => " + requested.ToString());
-                        break;
+                        var app = permission.Requestor as YorotApp;
+
+                        return Avalonia.Threading.Dispatcher.UIThread.InvokeAsync<YorotPermissionMode>(() => { return OnPermissionRequestAsync(permission, requested, "App", app.AppCodeName, app.AppName); });
 
                     case YorotExtension _:
-                        Console.WriteLine("Permission \"" + permission.ID + "\" request accepted (NOT_IMPLEMENTED) from ID\"" + ((YorotExtension)permission.Requestor).CodeName + "\" " + permission.Allowance.ToString() + " => " + requested.ToString());
-                        break;
+                        var ext = permission.Requestor as YorotExtension;
+
+                        return Avalonia.Threading.Dispatcher.UIThread.InvokeAsync<YorotPermissionMode>(() =>
+                        {
+                            return OnPermissionRequestAsync(permission, requested, "Ext", ext.CodeName, ext.Name);
+                        });
 
                     case YorotTheme _:
-                        Console.WriteLine("Permission \"" + permission.ID + "\" request accepted (NOT_IMPLEMENTED) from ID\"" + ((YorotTheme)permission.Requestor).CodeName + "\" " + permission.Allowance.ToString() + " => " + requested.ToString());
-                        break;
+                        var theme = permission.Requestor as YorotTheme;
+
+                        return Avalonia.Threading.Dispatcher.UIThread.InvokeAsync<YorotPermissionMode>(() =>
+                        {
+                            return OnPermissionRequestAsync(permission, requested, "Theme", theme.CodeName, theme.Name);
+                        });
 
                     case YorotLanguage _:
-                        Console.WriteLine("Permission \"" + permission.ID + "\" request accepted (NOT_IMPLEMENTED) from ID\"" + ((YorotLanguage)permission.Requestor).CodeName + "\" " + permission.Allowance.ToString() + " => " + requested.ToString());
-                        break;
+                        var lang = permission.Requestor as YorotLanguage;
+
+                        return Avalonia.Threading.Dispatcher.UIThread.InvokeAsync<YorotPermissionMode>(() =>
+                        {
+                            return OnPermissionRequestAsync(permission, requested, "Lang", lang.CodeName, lang.Name);
+                        });
+
+                    case YorotSite _:
+                        var site = permission.Requestor as YorotSite;
+
+                        return Avalonia.Threading.Dispatcher.UIThread.InvokeAsync<YorotPermissionMode>(() =>
+                        {
+                            return OnPermissionRequestAsync(permission, requested, "Site", site.Url, site.Name);
+                        });
+
+                    default:
+
+                        return Avalonia.Threading.Dispatcher.UIThread.InvokeAsync<YorotPermissionMode>(() =>
+                        {
+                            return OnPermissionRequestAsync(permission, requested, permission.Requestor.GetType().FullName ?? "Unknown", "", "");
+                        });
                 }
             }
-            return requested;
+            else
+            {
+                return new Task<YorotPermissionMode>(() => { return requested; });
+            }
         }
 
         public List<Views.MainWindow> MainForms { get; set; } = new List<Views.MainWindow>();
         public Views.MainWindow MainForm { get => MainForms[0]; }
+
+        public List<object> UIs { get; set; } = new List<object>();
+
+        public void UpdateUIs()
+        {
+            if (CurrentSettings != null && CurrentTheme != null)
+            {
+                AvaloniaLocator.Current.GetService<FluentAvaloniaTheme>().CustomAccentColor = Avalonia.Media.Color.Parse(CurrentTheme.OverlayColor.ToHex());
+            }
+            for (int i = 0; i < UIs.Count; i++)
+            {
+                switch (UIs[i])
+                {
+                    case Window:
+                        (UIs[i] as Window).RefreshWindow();
+                        break;
+
+                    case UserControl:
+                        (UIs[i] as UserControl).RefreshUserControl();
+                        break;
+                }
+            }
+        }
+
+        public override void OnThemeChange(YorotTheme theme)
+        {
+            UpdateUIs();
+        }
+
+        public override void OnFavoriteChange(YorotFavFolder fav)
+        {
+            for (int i = 0; i < MainForms.Count; i++)
+            {
+                // TODO: update this specific favorite
+            }
+        }
+
+        public override void OnLanguageChange(YorotLanguage lang)
+        {
+            UpdateUIs();
+        }
+
+        public override void OnSiteChange(YorotSite site)
+        {
+            // TODO: refresh tabs that are on this site
+        }
+
+        public override void OnDownloadChange(YorotSite site)
+        {
+            // TODO: Update this specific download
+        }
+
+        public override void OnAppListChanged()
+        {
+            // TODO: Update App List
+        }
+
+        public override void OnLangListChanged()
+        {
+            // TODO: Update Language list on settings
+        }
+
+        public override void OnThemeListChanged()
+        {
+            // TODO: Update Theme list on settings
+        }
+
+        public override void OnExtListChanged()
+        {
+            // TODO: Update Extension list on settings and windows
+        }
+
+        public override void OnDownloadListChanged()
+        {
+            // TODO: Update download list on its app
+        }
+
+        public override void OnHistoryChanged()
+        {
+            // TODO: Update History list on settings
+        }
+
+        public override void OnProfileChange(YorotProfile profile)
+        {
+            // TODO: Update this profile on profile flyout & settings
+        }
+
+        public override void OnProfileListChanged()
+        {
+            // TODO: Update porfile list on settings
+        }
     }
 }
